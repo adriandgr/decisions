@@ -4,7 +4,7 @@ exports.up = function(knex, Promise) {
     table.increments();
     table.string('name');
     table.enu('type', ['plaintext', 'uri/image']);
-    table.string('poll_id');
+    table.string('poll_id').references('polls.id');
   });
 };
 
