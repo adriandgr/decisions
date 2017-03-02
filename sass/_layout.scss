@@ -1,0 +1,51 @@
+#grad {
+
+}
+
+body {
+  background: $main-bg;
+  font-family: 'Karla', sans-serif;
+  color: $main-text;
+
+  h1 {
+    color: #244751;
+  }
+}
+
+a {
+    color: #fff;
+  }
+
+a:hover {
+    color: $main-dark;
+  }
+
+.btn-nofill {
+  color: $main-light;
+  font-size: 2em;
+  background-color: Transparent;
+  background-repeat:no-repeat;
+  border: solid $main-light 4px;
+  padding: 10px 20px 10px 20px;
+  text-decoration: none;
+  cursor:pointer;
+  overflow: hidden;
+
+}
+
+.btn-nofill:hover {
+  color: #fff;
+  border: solid #fff 4px;
+  text-decoration: none;
+}
+
+.btn-nofill:active {
+  color: $main-dark;
+  border: solid $main-dark 4px;
+}
+.btn-nofill:focus {
+  outline: 0;
+}
+.btn-center {
+  margin: 0 auto;
+}

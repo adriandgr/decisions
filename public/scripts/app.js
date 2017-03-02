@@ -1,10 +1,15 @@
-$(() => {
-  $.ajax({
-    method: "GET",
-    url: "/api/users"
-  }).done((users) => {
-    for(user of users) {
-      $("<div>").text(user.name).appendTo($("body"));
-    }
-  });;
+
+
+$(document).ready(()=> {
+
+  $('#nav-control').on('click', ()=> {
+    $('#main-nav').toggle();
+  });
+
+  $('#create-poll').on('click', ()=> {
+    $('#home-view').toggle();
+    $('#create-view').toggle();
+  });
+
+
 });
