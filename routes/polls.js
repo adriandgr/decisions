@@ -19,18 +19,18 @@ module.exports = knex => {
         { name: 'Donald', email: 'geddes.3574', voter_uuid: 'asdf' },
         { name: 'Richard', email: 'an@email.com', voter_uuid: 'fdsa' },
         { name: 'Adrian', email: 'another@email.com', voter_uuid: 'afsd' }
-      ].forEach(c => {
+      ].forEach(v => {
         let query = [{
-          name: c.name,
-          email: c.email,
+          name: v.name,
+          email: v.email,
           poll_id: poll_id,
-          voter_uuid: c.voter_uuid
+          voter_uuid: v.voter_uuid
         }];
         knex('voters')
           .insert(query)
-          .return('id')
+          .returning('id')
           .then(id => {
-            console.log('    Created voter => ', id);
+            console.log('    Created voter => ', v.name);
           }).catch(err => {
             console.error('Error:', err);
           });
@@ -38,17 +38,16 @@ module.exports = knex => {
     }
 
     function createChoices(poll_id) {
-      ['a', 'b', 'c'].forEach((c, idx) => {
+      ['a', 'b', 'c'].forEach(c => {
         let query = [{
           name: c,
           poll_id: poll_id
         }];
         knex('choices')
           .insert(query)
-          .return('id')
+          .returning('id')
           .then(id => {
-            console.log('  Created choice => id:', id, '\n  => name: c');
-            createVoters(poll_id);
+            console.log('  Created choice => id:', id, '\n  => name:', c);
           }).catch(err => {
             console.error('Error:', err);
           } );
@@ -69,6 +68,9 @@ module.exports = knex => {
           console.log('Created poll => id:', id[0]);
           createChoices(id[0]);
           return id;
+        })
+        .then(id => {
+          createVoters(id[0]);
         })
         .catch(err => {
           console.log('Error: ', err);
