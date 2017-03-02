@@ -14,6 +14,8 @@ const knex        = require("knex")(knexConfig[ENV]);
 const morgan      = require('morgan');
 const knexLogger  = require('knex-logger');
 
+const db          = require('../db/lib/helpers.js')(knex);
+
 // Seperated Routes for each Resource
 const usersRoutes = require("./routes/users");
 const pollsRoutes = require('./routes/polls');
@@ -39,10 +41,10 @@ app.use("/styles", sass({
 app.use(express.static("public"));
 
 // Mount all resource routes
-app.use("/api/users", usersRoutes(knex));
-app.use('/polls', pollsRoutes(knex));
-app.use('/votes', votesRoutes(knex));
-app.use('/admins', adminsRoutes(knex));
+app.use("/api/users", usersRoutes(db));
+app.use('/polls', pollsRoutes(db));
+app.use('/votes', votesRoutes(db));
+app.use('/admins', adminsRoutes(db));
 // Home page
 app.get("/", (req, res) => {
   res.render("index");
