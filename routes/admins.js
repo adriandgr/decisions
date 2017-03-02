@@ -7,54 +7,44 @@ module.exports = (knex) => {
   route.get('/:admin_uuid', (req, res) => {
     let id = req.params.admin_uuid
 
-    //Data helper function to get ID
-
-
 
     const response = {};
     //Receive all polls information & send to page
     //Still have to get status of poll (true/false)
-    knex.select('*').from('polls')
-    .where('admin_uuid', '=', id)
-    .then(function(rows) {
-      // console.log('Polls object',rows)
-      response['poll'] = rows[0];
-      // console.log('Response object:', response);
-      res.json(rows);
-    });
-
-
+    //Returns Whole Polls Table
+    function pollsTable() {
+      knex.select('*').from('polls')
+      .where('admin_uuid', '=', id)
+      .then(function(rows) {
+        response['poll'] = rows[0];
+        let poll_id = rows[0].id
+        choicesTable(poll_id)
+      });
+    }
 
     //Total choices relating to the poll
-    knex.select('id').from('polls')
-    .where('admin_uuid', '=', id)
-    .then(function(rows) {
-      let id = rows[0].id;
-      knex.select('*').from('choices').where('poll_id', '=', id)
+    function choicesTable (pollingid){
+      knex.select('*').from('choices').where('poll_id', '=', pollingid)
       .then(function(rows) {
         response['choices'] = rows;
-        // console.log(response);
-        // console.log("Choices in the poll====>",rows);
+        let totalChoices = rows;
+        votesTableForRanks(totalChoices);
       });
-    });
+    }
 
     //Getting the ranking of the poll
-    knex.select('id').from('polls')
-    .where('admin_uuid', '=', id)
-    .then(function(rows) {
-      let id = rows[0].id;
-      knex.select('*').from('choices').where('poll_id', '=', id)
-      .then(function(rows) {
-        for (let choice of rows) {
-          knex.select('*').from('votes').where('choice_id', '=', choice.id)
-          .then(function(rows) {
-            response['ranks'] = rows;
-            // console.log('Votes Table/ Want ranks=====> ',rows);
-          });
-        }
-      });
-    });
+    function votesTableForRanks (totalChoices){
+      for (let choice of totalChoices) {
+        // knex.select('*').from('votes').where('choice_id', '=', choice.id)
+        // .then(function(rows) {
+        //   response['ranks'] = rows;
+        // });
+        console.log(choice);
+      }
+      // console.log(response);
+    }
 
+    pollsTable();
 
 
 // Show ranks
