@@ -15,6 +15,24 @@ const knex        = require("knex")(knexConfig[ENV]);
 const morgan      = require('morgan');
 const knexLogger  = require('knex-logger');
 
+const mailgun     = require('mailgun-js')({
+  apiKey: process.env.MG_KEY,
+  domain: process.env.MG_DOMAIN
+});
+
+var data = {
+  from: `Merge App <app@${process.env.MG_DOMAIN}>`,
+  to: `${process.env.MG_TEST_TO}`,
+  subject: 'Hello world',
+  text: 'Testing some Mailgun awesomness from node!',
+  html: 'hey node'
+};
+// SAMPLE mailgun send process:
+// mailgun.messages().send(data, function (error, body) {
+//   console.log(body);
+// });
+
+
 // Seperated Routes for each Resource
 const usersRoutes = require("./routes/users");
 
