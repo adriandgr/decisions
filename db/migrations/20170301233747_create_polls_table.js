@@ -1,4 +1,3 @@
-
 exports.up = function(knex, Promise) {
   return knex.schema.createTable('polls', table => {
     table.increments();
@@ -7,7 +6,7 @@ exports.up = function(knex, Promise) {
     table.string('creator_email');
     table.string('admin_uuid');
     table.string('public_uuid');
-    table.timestamps();
+    table.timestamp('created_at').defaultTo(knex.fn.now());
   });
 };
 

@@ -1,13 +1,13 @@
 
 exports.up = function(knex, Promise) {
-  return knex.schema.createTable('users', function (table) {
+  return knex.schema.createTable('choices', function (table) {
     table.increments();
     table.string('name');
     table.enu('type', ['plaintext', 'uri/image']);
-    table.string('poll_id').references('polls.id');
+    table.integer('poll_id').references('polls.id').onDelete('CASCADE');
   });
 };
 
 exports.down = function(knex, Promise) {
-  return knex.schema.dropTable('users');
+  return knex.schema.dropTable('choices');
 };

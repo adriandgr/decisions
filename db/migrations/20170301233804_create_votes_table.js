@@ -3,8 +3,8 @@ exports.up = function(knex, Promise) {
   return knex.schema.createTable('votes', function (table) {
     table.increments();
     table.integer('rank');
-    table.foreign('voter_id').references('voters.id');
-    table.foreign('choice_id').references('choice.id');
+    table.integer('voter_id').references('voters.id').onDelete('CASCADE');
+    table.integer('choice_id').references('choices.id').onDelete('CASCADE');
   });
 };
 
