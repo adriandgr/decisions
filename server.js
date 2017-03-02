@@ -14,9 +14,10 @@ const knex        = require("knex")(knexConfig[ENV]);
 const morgan      = require('morgan');
 const knexLogger  = require('knex-logger');
 
+const db          = require('./db/lib/helpers.js')(knex);
+
 // Seperated Routes for each Resource
 const pollsRoutes = require('./routes/polls');
-const votesRoutes = require('./routes/votes');
 const adminsRoutes = require('./routes/admins');
 
 // Load the logger first so all (static) HTTP requests are logged to STDOUT
@@ -39,7 +40,6 @@ app.use(express.static("public"));
 
 // Mount all resource routes
 app.use('/polls', pollsRoutes(knex));
-app.use('/votes', votesRoutes(knex));
 app.use('/admins', adminsRoutes(knex));
 // Home page
 app.get("/", (req, res) => {
