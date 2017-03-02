@@ -14,11 +14,12 @@ module.exports = knex => {
     meaning += ' and then querying the database to eventually return a response containing relevant data';
     function createPoll() {
       let query = [{
-        name: 'curly poll',
-        created_by: 'curl',
-        creator_email: 'curl@curl.curl',
-        admin_uuid: 'asdf'
+        name: req.body.name,
+        created_by: req.body.created_by,
+        creator_email: req.body.creator_email,
+        admin_uuid: 'asdfasdfasdf'
       }];
+      console.log(req.body);
       knex('polls')
         .insert(query)
         .asCallback((err, results) => {
