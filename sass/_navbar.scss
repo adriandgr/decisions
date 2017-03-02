@@ -1,0 +1,20 @@
+#main-nav {
+  padding: 50px 0;
+  background: $main-bg;
+  color: #fff;
+  display: none;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 1000;
+}
+
+#nav-control {
+ color: $main-light;
+ font-size:  2em;
+ float: right;
+}
+
+#nav-control:hover {
+ color: #fff;
+}

@@ -1,0 +1,18 @@
+//define browserupgrade style
+
+.browserupgrade {
+  background-color: $main-bg;
+  z-index: 100;
+  position: absolute;
+  top:0;
+  right:0;
+  bottom:0;
+  left:0;
+
+  p {
+    font-size: 2em;
+    color: #fff;
+    padding:50px;
+  }
+
+}
