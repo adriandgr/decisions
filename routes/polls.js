@@ -5,23 +5,19 @@ const route = express.Router();
 
 module.exports = db => {
 
-
   route.get('/', (req, res) => {
     res.send(req.params.id);
   });
 
-  route.post('/', (req, res) => {
-    // Receives stuff from post form, queries DB, returns stuff
-    //
-    //
-    // Received stuff will be poll object w/ raw poll data :
-    //  -
-    //
-    // Respone stuff will be poll object w/ refined poll data
-    //
-    // Re
+  route.get('/:id', (req, res) => {
+    let meaning = 'This page is responsible for a given voter\'s view of a poll';
+    res.send(meaning);
+  });
 
-    res.send('asdf');
+  route.post('/', (req, res) => {
+    let meaning = 'This page is responsible for receiving the POST data from the "Create a New Poll" form';
+    meaning += ' and then querying the database to eventually return a response containing relevant data';
+    res.send(meaning);
   });
   return route;
 };
