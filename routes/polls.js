@@ -13,11 +13,12 @@ module.exports = knex => {
     let meaning = 'This route is responsible for receiving the POST data from the "Create a New Poll" form';
     meaning += ' and then querying the database to eventually return a response containing relevant data';
 
+    // Still needs to be tested
     function createVoters(poll_id) {
       [
         { name: 'Donald', email: 'geddes.3574', voter_uuid: 'asdf' },
         { name: 'Richard', email: 'an@email.com', voter_uuid: 'fdsa' },
-        { name: req.body.created_by, email: req.creator_email, voter_uuid: 'afsd' }
+        { name: 'Adrian', email: 'another@email.com', voter_uuid: 'afsd' }
       ].forEach(c => {
         let query = [{
           name: c.name,
@@ -31,7 +32,7 @@ module.exports = knex => {
           .then(id => {
             console.log('    Created voter => ', id);
           }).catch(err => {
-            console.errer('Error:', err);
+            console.error('Error:', err);
           });
       });
     }
@@ -47,7 +48,7 @@ module.exports = knex => {
           .return('id')
           .then(id => {
             console.log('  Created choice => id:', id, '\n  => name: c');
-            createVoters(poll_id)
+            createVoters(poll_id);
           }).catch(err => {
             console.error('Error:', err);
           } );
@@ -61,7 +62,6 @@ module.exports = knex => {
         creator_email: req.body.creator_email,
         admin_uuid: 'asdfasdfasdf'
       }];
-
       knex('polls')
         .insert(query)
         .returning('id')
