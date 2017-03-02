@@ -4,7 +4,12 @@ $(document).ready(()=> {
 
   $('#nav-control').on('click', ()=> {
     $('#main-nav').toggle();
-    console.log('click')
   });
+
+  $('#create-poll').on('click', ()=> {
+    $('#home-view').toggle();
+    $('#create-view').toggle();
+  });
+
 
 });
