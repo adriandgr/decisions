@@ -40,9 +40,9 @@ app.use("/styles", sass({
 app.use(express.static("public"));
 
 // Mount all resource routes
-app.use("/api/users", usersRoutes(db));
-app.use('/polls', pollsRoutes(db));
-app.use('/admins', adminsRoutes(db));
+app.use("/api/users", usersRoutes(knex));
+app.use('/polls', pollsRoutes(knex));
+app.use('/admins', adminsRoutes(knex));
 // Home page
 app.get("/", (req, res) => {
   res.render("index");
