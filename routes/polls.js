@@ -22,18 +22,28 @@ module.exports = knex => {
       console.log(req.body);
       knex('polls')
         .insert(query)
-        .asCallback((err, results) => {
-          if(err === null) {
+        .then(results => {
+          console.log('Success');
+          res.json(results);
+        })
+        .catch(err => { conosle.log('Error: ', err); });
+    }
+    // createPoll();
+    function createChoices() {
+      let query = [{
+        name: 'asdf',
+        poll_id: 1
+      }];
+      knex('choices')
+        .insert(query)
+        .then(results => {
+          if(results.rowCount === 1) {
             console.log('Success');
             res.json(results);
-          } else {
-            console.log('Results: ', results);
-            res.send('error');
           }
-        });
+        }).catch(err => { console.log(err); } );
     }
-    createPoll();
-    // res.send(meaning);
+    createChoices();
   });
 
   route.get('/:uuid', (req, res) => {
