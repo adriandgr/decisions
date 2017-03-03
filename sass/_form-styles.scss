@@ -15,6 +15,16 @@
   /* Other stuff: font-weight, font-size */
 }
 
+.plus-space {
+  font-size: 2em;
+  color: $main-light;
+  line-height: 2em;
+
+}
+.plus-space:hover {
+  color: $main-text;
+}
+
 
 /* Overrides bootstrap style */
 .form-control::-webkit-input-placeholder { /* Chrome */

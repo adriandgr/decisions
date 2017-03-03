@@ -10,7 +10,12 @@
 }
 
 .brand-line {
-  transform: translate(-55px, -10px);
+  font-size: .8em;
+  padding:0;
+  transform: translate(-55px, -5px);
+  @media (min-width: $tablet-breakpoint){
+    font-size: .9em;
+  }
 }
 
 .logo {

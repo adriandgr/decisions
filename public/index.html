@@ -33,7 +33,7 @@
         <a class="nav-link" href="#">Link</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link disabled" href="#">Disabled</a>
+        <a id="close-menu" class="nav-link" href="#">close menu</a>
       </li>
     </ul>
   </nav>
@@ -51,7 +51,7 @@
       <img class="logo" src="/img/merge-logo.png">
       <div class="flex-column">
       <h1 class="home-brand">merge</h1>
-      <p class="brand-line"> make quick decisions amongst your friends</p>
+      <p class="brand-line"> get quick decisions amongst your friends</p>
       </div>
     </header>
 
@@ -69,7 +69,7 @@
 
       <div class="form-group row no-wrap"> <!-- (len - 2 index to insert) -->
         <label class="col-1 " for="choice-1">
-          <i class="delete-choice fa fa-times" aria-hidden="true"></i>
+          <i id="x1" class="delete-choice fa fa-times" aria-hidden="true"></i>
         </label>
         <input class="col-11 form-control" id="choice-1" type="text" placeholder="enter first choice">
       </div>
@@ -83,12 +83,42 @@
       </div>
       <div class="row"> <!-- (len) submit -->
         <div class="col-8"></div>
-        <button type="submit" class="col-4 btn-nofill btn-center">Submit</button>
+        <button id="capture-emails" type="submit" class="col-4 btn-nofill btn-center">NEXT</button>
       </div>
     </form>
 
   </section>
 
+  <section id="send-view">
+
+    <form id="create-form" class="merge-form" action="/tweets" method="POST">
+      <div class="form-group row"> <!-- (len - len) -->
+        <input type="text" class="col-7 xl-input form-control" id="creator-email" placeholder="enter your email">
+        <div class="col-1 plus-space"><i class="fa fa-plus" aria-hidden="true"></i> </div>
+        <input type="text" class="col-4 xl-input form-control " id="creator-name" placeholder="your name">
+      </div>
+
+      <div class="form-group row no-wrap"> <!-- (len - 2 index to insert) -->
+        <label class="col-1 " for="choice-1">
+
+        </label>
+        <input class="col-11 form-control" id="choice-1" type="text" placeholder="enter a friend's email">
+      </div>
+
+      <div class="row"> <!-- (len - 1) add choice -->
+        <div class="col-1">
+        </div>
+        <div class="col-11">
+          <a class="btn add-choice-btn btn-nofill" href=""><i class="fa fa-plus" aria-hidden="true"></i> add a friend</a>
+        </div>
+      </div>
+      <div class="row"> <!-- (len) submit -->
+        <div class="col-8"></div>
+        <button id="capture-emails" type="submit" class="col-4 btn-nofill btn-center"><i class="fa fa-paper-plane-o" aria-hidden="true"></i> SEND</button>
+      </div>
+    </form>
+
+  </section>
 
 
 

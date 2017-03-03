@@ -34,31 +34,37 @@ function addChoiceInput() {
 
   let $div = $("<div>").addClass('form-group row').attr('id', `node-${len - 2}`);
   let $label = $("<label>").addClass('col-1').attr( 'for', `choice-${len - 2}`);
-  $("<i>").addClass('delete-choice fa fa-times').appendTo($label);
+  $("<i>").addClass('delete-choice fa fa-times').attr('id', `x${len - 2}`).appendTo($label);
   $label.appendTo($div);
   $("<input>").addClass('col-11 form-control').attr({
     id: `choice-${len - 2}`,
     type: 'text',
     placeholder: ordinalWord(len - 2)
   }).appendTo($div);
-  console.log('label', $label);
-  console.log('div', $div);
   $( $div ).insertAfter( `#create-form > div:nth-child(${len - 2})` );
 }
 
-function removeLastChoice() {
-  console.log('clicked!')
+function removeChoiceById(id) {
+  let len = $('#create-form > div').length;
+  if (len < 4) {
+    return;
+  }
+  $(`#${id}`).closest('div').remove();
 }
 
 $(document).ready(()=> {
+
+  $('#close-menu').on('click', () => {
+    $('#main-nav').toggle();
+  });
 
   $('.add-choice-btn').on('click', (event)=> {
     event.preventDefault();
     addChoiceInput();
   });
-  $('.delete-choice').on('click', (event)=> {
+  $(document).on('click', '.delete-choice', (event)=> {
     event.preventDefault();
-    removeLastChoice();
+    removeChoiceById($(event.target).attr('id'));
   });
 
   $('#nav-control').on('click', ()=> {
@@ -68,6 +74,12 @@ $(document).ready(()=> {
   $('#create-poll').on('click', ()=> {
     $('#home-view').toggle();
     $('#create-view').toggle();
+  });
+
+  $('#capture-emails').on('click', (event)=> {
+    event.preventDefault();
+    $('#create-view').toggle();
+    $('#send-view').toggle();
   });
 
 
