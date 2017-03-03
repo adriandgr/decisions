@@ -14,28 +14,29 @@ module.exports = knex => {
     meaning += ' and then querying the database to eventually return a response containing relevant data';
 
     // Still needs to be tested
-    function createVoters(poll_id) {
+    function createVoters(column) {
       [
         { name: 'Donald', email: 'geddes.3574', voter_uuid: 'asdf' },
         { name: 'Richard', email: 'an@email.com', voter_uuid: 'fdsa' },
         { name: 'Adrian', email: 'another@email.com', voter_uuid: 'afsd' }
+        // { name: req.body.created_by, email: req.creator_email,  voter_uuid: column.admin_uuid }
       ].forEach(v => {
         let query = [{
           name: v.name,
           email: v.email,
-          poll_id: poll_id,
+          poll_id: column.poll_id,
           voter_uuid: v.voter_uuid
         }];
         knex('voters')
           .insert(query)
           .returning('id')
           .then(id => {
-            console.log('    Created voter => ', v.name, '(id = ', id);
+            console.log('    Created voter => ', v.name, '=> id: ', id);
           }).catch(err => {
             console.error('Error:', err);
           });
       });
-    }
+    };
 
     function createChoices(poll_id) {
       ['a', 'b', 'c'].forEach(c => {
@@ -63,15 +64,15 @@ module.exports = knex => {
       }];
       knex('polls')
         .insert(query)
-        .returning('id')
-        .then(id => {
-          console.log('Created poll => id:', id[0]);
-          createChoices(id[0]);
-          return id;
+        .returning(['id', 'admin_uuid '])
+        .then(column => {
+          console.log('Created poll => id:', column.id);
+          createChoices(column.id);
+          return column;
         })
-        .then(id => {
-          createVoters(id[0]);
-          res.json({Success: 'true'});
+        .then(column => {
+          createVoters(column);
+          res.json({success: 'true'});
         })
         .catch(err => {
           console.log('Error: ', err);
