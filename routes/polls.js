@@ -13,7 +13,8 @@ module.exports = knex => {
     let meaning = 'This route is responsible for receiving the POST data from the "Create a New Poll" form';
     meaning += ' and then querying the database to eventually return a response containing relevant data';
 
-    response = {};
+    let response = {};
+
     function createVoters(column) {
       [
         { name: 'Donald', email: 'geddes.3574', voter_uuid: 'asdf' },
@@ -66,9 +67,9 @@ module.exports = knex => {
         .insert(query)
         .returning(['id', 'admin_uuid '])
         .then(column => {
-          console.log('Created poll => id:', column.id);
-          createChoices(column.id);
-          return column;
+          console.log('Created poll => id:', column[0].id);
+          createChoices(column[0].id);
+          return column[0];
         })
         .then(column => {
           createVoters(column);
