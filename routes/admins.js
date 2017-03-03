@@ -2,6 +2,13 @@
 
 const express = require('express');
 const route = express.Router();
+const ejs         = require('ejs')
+                    , fs = require('fs')
+                    , str = fs.readFileSync('emailTemplatePollEnd.ejs', 'utf8');
+const mailgun     = require('mailgun-js')({
+  apiKey: process.env.MG_KEY,
+  domain: process.env.MG_DOMAIN
+});
 
 module.exports = (knex) => {
   route.get('/:admin_uuid', (req, res) => {
@@ -53,6 +60,30 @@ module.exports = (knex) => {
     }
     checkActive();
 
+    //Send emails to existing voters
+    function sendEmail (){
+      knex('polls')
+      .join('voters', 'polls.id', 'voters.poll_id')
+      .where('polls.admin_uuid', id)
+      .select('polls.name','voters.name', 'voters.email', 'polls.admin_uuid')
+      .returning(['polls.name', 'voters.name', 'voters.email', 'polls.admin_uuid'])
+      .then(function(column) {
+        const messageHtml = ejs.render(str, {pollInfo:column});
+        column.forEach(c => {
+          let  data = {
+            from: `Merge App <app@${process.env.MG_DOMAIN}>`,
+            to: c.email,
+            subject: 'String Interpolation Integrated',
+            html: `${messageHtml}`
+          }
+          mailgun.messages().send(data, function (error, body) {
+            console.log(body);
+          });
+        })
+      })
+    }
+
+    sendEmail();
 
 
     function updateTitle() {
