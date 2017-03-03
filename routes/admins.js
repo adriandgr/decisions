@@ -29,6 +29,7 @@ module.exports = (knex) => {
       .where('admin_uuid', '=', id)
       .then(function(rows) {
         response['polls'] = rows;
+        console.log(response);
         res.json(response);
       }).catch(err =>{throw err});
     }
