@@ -59,8 +59,8 @@
       <div class="p-2"><button id="create-poll" class="btn-nofill btn-center">CREATE</button></div>
     </div>
   </section>
-
-  <section id="create-view">
+<div class="row">
+  <div id="create-view col-12 col-md-5">
 
     <form id="create-form" class="merge-form" action="/tweets" method="POST">
       <div class="form-group row"> <!-- (len - len) -->
@@ -69,7 +69,7 @@
 
       <div class="form-group row no-wrap"> <!-- (len - 2 index to insert) -->
         <label class="col-1 " for="choice-1">
-          <i id="x1" class="delete-choice fa fa-times" aria-hidden="true"></i>
+
         </label>
         <input class="col-11 form-control" id="choice-1" type="text" placeholder="enter first choice">
       </div>
@@ -83,15 +83,15 @@
       </div>
       <div class="row"> <!-- (len) submit -->
         <div class="col-8"></div>
-        <button id="capture-emails" type="submit" class="col-4 btn-nofill btn-center">NEXT</button>
+        <button id="capture-emails" type="submit" class="col-4 btn-nofill btn-center hidden-lg-up">NEXT</button>
       </div>
     </form>
 
-  </section>
+  </div>
+<div class="clearfix hidden-sm-up"></div>
+  <div id="send-view col-12 col-md-6">
 
-  <section id="send-view">
-
-    <form id="create-form" class="merge-form" action="/tweets" method="POST">
+    <form id="send-form" class="merge-form" action="/tweets" method="POST">
       <div class="form-group row"> <!-- (len - len) -->
         <input type="text" class="col-7 xl-input form-control" id="creator-email" placeholder="enter your email">
         <div class="col-1 plus-space"><i class="fa fa-plus" aria-hidden="true"></i> </div>
@@ -102,14 +102,14 @@
         <label class="col-1 " for="choice-1">
 
         </label>
-        <input class="col-11 form-control" id="choice-1" type="text" placeholder="enter a friend's email">
+        <input class="col-11 form-control" id="choice-1" type="text" placeholder="enter a friend's email or phone number">
       </div>
 
       <div class="row"> <!-- (len - 1) add choice -->
         <div class="col-1">
         </div>
         <div class="col-11">
-          <a class="btn add-choice-btn btn-nofill" href=""><i class="fa fa-plus" aria-hidden="true"></i> add a friend</a>
+          <a class="btn add-friend-btn btn-nofill" href=""><i class="fa fa-plus" aria-hidden="true"></i> add a friend</a>
         </div>
       </div>
       <div class="row"> <!-- (len) submit -->
@@ -118,7 +118,39 @@
       </div>
     </form>
 
-  </section>
+  </div>
+
+  <div id="results-view col-12 col-md-12">
+
+    <form id="results-form" class="merge-form" action="/tweets" method="POST">
+      <div class="form-group row"> <!-- (len - len) -->
+        <input type="text" class="col-7 xl-input form-control" id="creator-email" placeholder="results...">
+        <div class="col-1 plus-space"><i class="fa fa-plus" aria-hidden="true"></i> </div>
+        <input type="text" class="col-4 xl-input form-control " id="creator-name" placeholder="your name">
+      </div>
+
+      <div class="form-group row no-wrap"> <!-- (len - 2 index to insert) -->
+        <label class="col-1 " for="choice-1">
+
+        </label>
+        <input class="col-11 form-control" id="choice-1" type="text" placeholder="enter a friend's email or phone number">
+      </div>
+
+      <div class="row"> <!-- (len - 1) add choice -->
+        <div class="col-1">
+        </div>
+        <div class="col-11">
+          <a class="btn add-friend-btn btn-nofill" href=""><i class="fa fa-plus" aria-hidden="true"></i> add a friend</a>
+        </div>
+      </div>
+      <div class="row"> <!-- (len) submit -->
+        <div class="col-8"></div>
+        <button id="capture-emails" type="submit" class="col-4 btn-nofill btn-center"><i class="fa fa-paper-plane-o" aria-hidden="true"></i> END</button>
+      </div>
+    </form>
+
+  </div>
+  </div>
 
 
 

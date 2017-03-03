@@ -12,25 +12,25 @@ function neverCalled() {
 
 }
 
-function ordinalWord(num) {
+function ordinalWord(num, word) {
   switch (num) {
   case 1:
-    return 'enter first choice';
+    return `enter first ${word}`;
   case 2:
-    return 'enter second choice';
+    return `enter second ${word}`;
   case 3:
-    return 'enter third choice';
+    return `enter third ${word}`;
   case 4:
-    return 'enter fourth choice';
+    return `enter fourth ${word}`;
   case 5:
-    return 'enter fifth choice';
+    return `enter fifth ${word}`;
   default:
-    return `enter choice ${num}`;
+    return `enter ${word} ${num}`;
   }
 }
 
-function addChoiceInput() {
-  let len = $('#create-form > div').length;
+function addInput(targetId, word) {
+  let len = $(`${targetId} > div`).length;
 
   let $div = $("<div>").addClass('form-group row').attr('id', `node-${len - 2}`);
   let $label = $("<label>").addClass('col-1').attr( 'for', `choice-${len - 2}`);
@@ -39,18 +39,12 @@ function addChoiceInput() {
   $("<input>").addClass('col-11 form-control').attr({
     id: `choice-${len - 2}`,
     type: 'text',
-    placeholder: ordinalWord(len - 2)
+    placeholder: ordinalWord(len - 2, word)
   }).appendTo($div);
-  $( $div ).insertAfter( `#create-form > div:nth-child(${len - 2})` );
+  console.log('div to add', $div)
+  $( $div ).insertAfter( `${targetId} > div:nth-child(${len - 2})` );
 }
 
-function removeChoiceById(id) {
-  let len = $('#create-form > div').length;
-  if (len < 4) {
-    return;
-  }
-  $(`#${id}`).closest('div').remove();
-}
 
 $(document).ready(()=> {
 
@@ -60,11 +54,21 @@ $(document).ready(()=> {
 
   $('.add-choice-btn').on('click', (event)=> {
     event.preventDefault();
-    addChoiceInput();
+    addInput('#create-form', 'choice');
   });
+
+  $('.add-friend-btn').on('click', (event)=> {
+    event.preventDefault();
+    addInput('#send-form', 'friend');
+  });
+
   $(document).on('click', '.delete-choice', (event)=> {
     event.preventDefault();
-    removeChoiceById($(event.target).attr('id'));
+    let len = $('#create-form > div').length;
+    if (len < 4) {
+      return;
+    }
+    $(event.target).closest('div').remove();
   });
 
   $('#nav-control').on('click', ()=> {
