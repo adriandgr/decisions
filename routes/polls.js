@@ -3,7 +3,7 @@
 const express = require('express');
 const route = express.Router();
 
-module.exports = db => {
+module.exports = (db, knex) => {
 
   route.get('/', (req, res) => {
     res.send('');
@@ -17,7 +17,7 @@ module.exports = db => {
 
     db.insert.pollRow(req.body)
       .then(poll => {
-        return db.insert.choices(poll[0])[0];
+        return db.insert.choices(poll[0]);
       })
       .then(poll => {
         return db.insert.voters(poll.id, req.body);
@@ -78,20 +78,27 @@ module.exports = db => {
     let meaning = 'This route is reponsible for receiving vote data, inserting this data into the database';
     meaning += ' meaningfully, and then returning updated vote counts';
 
-    function getVoterAndChoicesIds() {
-      knex('voters')
-        .select('voters.id as voter_id', 'choices.id as choices_id')
-        .join('polls', 'voters.poll_id', 'polls.id')
-        .join('choices', 'polls.id', 'choices.poll_id')
-        .where('voter_uuid', req.params.uuid)
-        .then(rows => {
-          console.log();
-        })
-        .catch(err => {
-          console.log(err);
-        });
-    }
+    // db.retrieve.voterAndChoices(req.params.uuid)
 
+    // function getVoterAndChoicesIds() {
+    //   knex('voters')
+    //     .select('voters.id as voter_id', 'choices.id as choice_id')
+    //     .join('polls', 'voters.poll_id', 'polls.id')
+    //     .join('choices', 'polls.id', 'choices.poll_id')
+    //     .where('voter_uuid', req.params.uuid)
+    //     .then(rows => {
+    //       console.log('Retrieved voter_id and associated choice_ids =>');
+    //       console.log('  => voter_id:', rows[0].voter_id);
+    //       rows.forEach(r => {
+    //         console.log('    => choice_id:', r.choice_id);
+    //       });
+    //     })
+    //     .catch(err => {
+    //       console.log(err);
+    //     });
+    // }
+    getVoterAndChoicesIds();
+   // First requires POST from request to complete the gap in data here
     function createVotes() {
       let rows = [
         { voter_id: 62, choice_id: 1, rank: 3 },
