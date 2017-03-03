@@ -7,6 +7,7 @@ const ENV         = process.env.ENV || 'development';
 const express     = require('express');
 const bodyParser  = require('body-parser');
 const sass        = require('node-sass-middleware');
+const fs          = require('fs');
 const path        = require('path');
 const app         = express();
 
@@ -22,13 +23,20 @@ const db          = require('./db/lib/helpers.js')(knex);
 const pollsRoutes = require('./routes/polls');
 const adminsRoutes = require('./routes/admins');
 
+winston.level = process.env.LOG_LEVEL || 'debug';
+
+// create a write stream (in append mode)
+var accessLogStream = fs.createWriteStream(path.join(__dirname, 'morgan.log'), {flags: 'a'});
+
+// setup the logger
+app.use(morgan('[:status] :date[clf] - :method :url HTTP :http-version :response-time', {stream: accessLogStream}));
 
 
 if (ENV === 'development') {
   // Load the logger first so all (static) HTTP requests are logged to STDOUT
   // 'dev' = Concise output colored by response status for development use.
   //         The :status token will be colored red for server error codes, yellow for client error codes, cyan for redirection codes, and uncolored for all other codes.
-  app.use(morgan('dev'));
+  //app.use(morgan('dev'));
   // Log knex SQL queries to STDOUT as well
   app.use(knexLogger(knex));
 }
