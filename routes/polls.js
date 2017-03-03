@@ -15,67 +15,16 @@ module.exports = db => {
 
     let response = {};
 
-    // function createVoters(column) {
-    //   [
-    //     { name: 'Donald', email: 'geddes.3574', voter_uuid: 'asdf' },
-    //     { name: 'Richard', email: 'an@email.com', voter_uuid: 'fdsa' },
-    //     { name: 'Adrian', email: 'another@email.com', voter_uuid: 'afsd' }
-    //     // { name: req.body.created_by, email: req.creator_email,  voter_uuid: column.admin_uuid }
-    //   ].forEach(v => {
-    //     let query = [{
-    //       name: v.name,
-    //       email: v.email,
-    //       poll_id: column.poll_id,
-    //       voter_uuid: v.voter_uuid
-    //     }];
-    //     knex('voters')
-    //       .insert(query)
-    //       .returning('id')
-    //       .then(id => {
-    //         console.log('    Created voter => ', v.name, '=> id: ', id);
-    //       }).catch(err => {
-    //         console.error('Error:', err);
-    //       });
-    //   });
-    // };
-
-    // choice creation
-    // .then(id => {
-    //   console.log('  Created choice => id:', id, '\n  => name:', c);
-    // }).catch(err => {
-    //   console.error('Error:', err);
-    // });
-
     db.insert.pollRow(req.body)
       .then(poll => {
-        console.log(poll);
-        return db.insert.choices(poll[0]);
+        return db.insert.choices(poll[0])[0];
       })
-      .then(results => {
-        console.log(results);
+      .then(poll => {
+        return db.insert.voters(poll.id, req.body);
       })
-      // .catch(err => {
-      //   console.error(err);
-      // })
-      // .then(poll => {
-      //   db.create.voters(poll, req.body);
-      // })
       .catch(err => {
         console.error('Error:', err);
       });
-    // // poll creation
-    // .then(column => {
-    //   console.log('Created poll => id:', column[0].id);
-    //   createChoices(column[0].id);
-    //   return column[0];
-    // })
-    // .then(column => {
-    //   createVoters(column);
-    //   res.json({success: 'true'});
-    // })
-    // .catch(err => {
-    //   console.log('Error: ', err);
-    // });
 
   });
 
