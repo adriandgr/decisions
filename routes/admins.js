@@ -10,77 +10,57 @@ module.exports = (knex) => {
 
     const response = {};
     //Receive all polls information & send to page
-    //Still have to get status of poll (true/false)
-    //Returns Whole Polls Table
-    function pollsTable() {
+    function gettingChoicesNameRankTable() {
+      knex('polls')
+      .join('choices','polls.id','choices.poll_id')
+      .join('votes', 'votes.choice_id', 'choices.id')
+      .where('polls.admin_uuid', id)
+      .select('choices.id','choices.name','rank')
+      .then(function(rows) {
+        response['rankTable'] = rows;
+      }).catch(err =>{throw err});
+    }
+
+    gettingChoicesNameRankTable();
+
+// Returns the full poll table
+    function gettingPollsTable() {
       knex.select('*').from('polls')
       .where('admin_uuid', '=', id)
       .then(function(rows) {
-        response['poll'] = rows[0];
-        let poll_id = rows[0].id
-        choicesTable(poll_id)
-      });
+        response['polls'] = rows;
+        res.json(response);
+      }).catch(err =>{throw err});
     }
 
-    //Total choices relating to the poll
-    function choicesTable (pollingid){
-      knex.select('*').from('choices').where('poll_id', '=', pollingid)
+    gettingPollsTable();
+
+    });
+
+  route.post('/:admin_uuid', (req, res) =>{
+    let id = req.params.admin_uuid
+
+    //Needs to include Mailgun chain here upon submission, informing users polls have ended
+    function checkActive () {
+      knex('polls').where('polls.admin_uuid', '=', id).update('active',false)
+    }
+    checkActive();
+
+
+
+    function updateTitle() {
+      //Change the name of the question to req.body
+      knex('polls').where('polls.admin_uuid', '=', id).update('name',"Where do you want to eat")
       .then(function(rows) {
-        response['choices'] = rows;
-        let totalChoices = rows;
-        votesTableForRanks(totalChoices);
+        res.json({success: true});
       });
     }
 
-    //Getting the ranking of the poll
-    function votesTableForRanks (totalChoices){
-      for (let choice of totalChoices) {
-        // knex.select('*').from('votes').where('choice_id', '=', choice.id)
-        // .then(function(rows) {
-        //   response['ranks'] = rows;
-        // });
-        console.log(choice);
-      }
-      // console.log(response);
-    }
 
-    pollsTable();
+    updateTitle()
+  })
 
 
-// Show ranks
-
-  });
-
-  route.put('/admin_uuid'), (req, res) =>{
-// POST /admins/admin_id - updating/ending a poll
-// End (Update active field to false)
-// Title (Update title to what’s desired)
-
-
-  }
   return route;
 };
 
-
-// knex.select("*").from("depts").asCallback(function(err, values) {
-//   if(err) {
-//     console.log(err);
-//   } else {
-//     console.log(values);
-//   }
-//   knex.destroy();
-// });
-
-
-
-// Datahelpers
-// Random uuid generator for Admin/Voter
-// Helper functions for GET/Admins Page
-// Find Poll_ID
-// Using poll_id find choices
-// Helper function for POST/Admins Page
-// Find poll_id
-// If creator ends poll?
-// Update poll status to false
-// If creator changes title
-// Update poll name
