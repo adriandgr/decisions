@@ -48,8 +48,33 @@ function addInput(targetId, word) {
 
 $(document).ready(()=> {
 
+
+  $('#toggle-create-view').on('click', () => {
+    $('#create-view').toggle();
+    $('#send-view').hide();
+    $('#results-view').hide();
+    $('#home-view').hide();
+    $('#main-nav').hide();
+  });
+
+  $('#toggle-send-view').on('click', () => {
+    $('#send-view').toggle();
+    $('#home-view').hide();
+    $('#create-view').hide();
+    $('#results-view').hide();
+    $('#main-nav').hide();
+  });
+
+  $('#toggle-results-view').on('click', () => {
+    $('#results-view').toggle();
+    $('#home-view').hide();
+    $('#create-view').hide();
+    $('#send-view').hide();
+    $('#main-nav').hide();
+  });
+
   $('#close-menu').on('click', () => {
-    $('#main-nav').toggle();
+    $('#main-nav').hide();
   });
 
   $('.add-choice-btn').on('click', (event)=> {

@@ -24,16 +24,19 @@
   <nav id="main-nav">
     <ul class="nav flex-column">
       <li class="nav-item">
-        <a class="nav-link active" href="#">Active</a>
+        <h2>Helper Menu</h2>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="#">Link</a>
+        <a id="toggle-create-view" class="nav-link" href="#">Toggle Create View</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="#">Link</a>
+        <a id="toggle-send-view" class="nav-link" href="#">Toggle Send View</a>
       </li>
       <li class="nav-item">
-        <a id="close-menu" class="nav-link" href="#">close menu</a>
+        <a id="toggle-results-view" class="nav-link" href="#">Toggle results View</a>
+      </li>
+      <li class="nav-item">
+        <a id="close-menu" class="nav-link" href="#">close this menu</a>
       </li>
     </ul>
   </nav>
@@ -59,8 +62,8 @@
       <div class="p-2"><button id="create-poll" class="btn-nofill btn-center">CREATE</button></div>
     </div>
   </section>
-<div class="row">
-  <div id="create-view col-12 col-md-5">
+
+  <section id="create-view">
 
     <form id="create-form" class="merge-form" action="/tweets" method="POST">
       <div class="form-group row"> <!-- (len - len) -->
@@ -87,9 +90,9 @@
       </div>
     </form>
 
-  </div>
-<div class="clearfix hidden-sm-up"></div>
-  <div id="send-view col-12 col-md-6">
+  </section>
+
+  <section id="send-view">
 
     <form id="send-form" class="merge-form" action="/tweets" method="POST">
       <div class="form-group row"> <!-- (len - len) -->
@@ -118,9 +121,9 @@
       </div>
     </form>
 
-  </div>
+  </section>
 
-  <div id="results-view col-12 col-md-12">
+  <section id="results-view">
 
     <form id="results-form" class="merge-form" action="/tweets" method="POST">
       <div class="form-group row"> <!-- (len - len) -->
@@ -149,8 +152,8 @@
       </div>
     </form>
 
-  </div>
-  </div>
+  </section>
+
 
 
 
