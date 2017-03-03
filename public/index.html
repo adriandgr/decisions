@@ -11,6 +11,7 @@
 
 </head>
 <body class="container">
+<div class="app-wrap">
   <!--[if lte IE 9]>
       <div class="browserupgrade">
       <p >You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p></div>
@@ -60,10 +61,35 @@
   </section>
 
   <section id="create-view">
-    <form>
 
+    <form id="create-form" class="merge-form" action="/tweets" method="POST">
+      <div class="form-group row"> <!-- (len - len) -->
+        <input type="text" class="col-12 xl-input form-control" id="poll-name" placeholder="enter a question">
+      </div>
+
+      <div class="form-group row no-wrap"> <!-- (len - 2 index to insert) -->
+        <label class="col-1 " for="choice-1">
+          <i class="delete-choice fa fa-times" aria-hidden="true"></i>
+        </label>
+        <input class="col-11 form-control" id="choice-1" type="text" placeholder="enter first choice">
+      </div>
+
+      <div class="row"> <!-- (len - 1) add choice -->
+        <div class="col-1">
+        </div>
+        <div class="col-11">
+          <a class="btn add-choice-btn btn-nofill" href=""><i class="fa fa-plus" aria-hidden="true"></i> add a choice</a>
+        </div>
+      </div>
+      <div class="row"> <!-- (len) submit -->
+        <div class="col-8"></div>
+        <button type="submit" class="col-4 btn-nofill btn-center">Submit</button>
+      </div>
     </form>
+
   </section>
+
+
 
 
   <!-- jQuery first, then Tether, then Bootstrap JS. -->
@@ -72,5 +98,6 @@
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
   <script src="https://use.fontawesome.com/dd8e55528e.js"></script>
   <script src="/scripts/app.js"></script>
+  </div>
 </body>
 </html>

@@ -22,7 +22,7 @@ a:hover {
 
 .btn-nofill {
   color: $main-light;
-  font-size: 2em;
+  font-size: 1em;
   background-color: Transparent;
   background-repeat:no-repeat;
   border: solid $main-light 4px;
@@ -31,6 +31,28 @@ a:hover {
   cursor:pointer;
   overflow: hidden;
 
+  @media (min-width: $tablet-breakpoint){
+    font-size: 1.5em;
+  }
+
+  @media (min-width: $desktop-breakpoint){
+    font-size: 2em;
+  }
+
+}
+
+.no-wrap{
+  display: flex;
+  flex-wrap: nowrap;
+}
+
+.app-wrap {
+  max-width: 600px;
+  margin: auto;
+  padding: 0 20px;
+  @media (min-width: $desktop-breakpoint){
+    padding: 0px;
+  }
 }
 
 .btn-nofill:hover {

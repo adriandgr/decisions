@@ -1,0 +1,48 @@
+.merge-form input[type="text"] {
+  color: $main-text;
+  border: solid $main-light 4px;
+  background-color: transparent;
+
+
+}
+.xl-input {
+    font-size: 2em;
+}
+
+.merge-form input[type="text"]:focus {
+  border: solid $main-text 4px;
+  background-color: transparent;
+  /* Other stuff: font-weight, font-size */
+}
+
+
+/* Overrides bootstrap style */
+.form-control::-webkit-input-placeholder { /* Chrome */
+color: $main-light;
+}
+.form-control:-ms-input-placeholder { /* IE 10+ */
+  color: $main-light;
+}
+.form-control::-moz-placeholder { /* Firefox 19+ */
+  color: $main-light;
+  opacity: 1;
+}
+.form-control:-moz-placeholder { /* Firefox 4 - 18 */
+  color: $main-light;
+  opacity: 1;
+}
+
+.add-choice-btn {
+  margin:0;
+  color: $main-light;
+  font-size: 1em;
+}
+.add-choice-btn:hover {
+  color: $main-text;
+}
+.add-choice-btn:focus {
+  color: $main-text;
+}
+.add-choice-btn:active {
+  color: $main-dark;
+}
