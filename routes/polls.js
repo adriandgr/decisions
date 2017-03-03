@@ -30,7 +30,7 @@ module.exports = knex => {
           .insert(query)
           .returning('id')
           .then(id => {
-            console.log('    Created voter => ', v.name);
+            console.log('    Created voter => ', v.name, '(id = ', id);
           }).catch(err => {
             console.error('Error:', err);
           });
@@ -71,6 +71,7 @@ module.exports = knex => {
         })
         .then(id => {
           createVoters(id[0]);
+          res.json({Success: 'true'});
         })
         .catch(err => {
           console.log('Error: ', err);
@@ -81,13 +82,46 @@ module.exports = knex => {
 
   route.get('/:uuid', (req, res) => {
     let meaning = 'This route is responsible for a given voter\'s view of a poll';
+
     res.send(meaning);
   });
 
   route.post('/:uuid', (req, res) => {
     let meaning = 'This route is reponsible for receiving vote data, inserting this data into the database';
     meaning += ' meaningfully, and then returning updated vote counts';
-    res.send(meaning);
+
+    function getVoterAndChoicesIds() {
+       knex('voters')
+        .select('voters.id as voter_id', 'choices.id as choices_id')
+        .join('polls', 'voters.poll_id', 'polls.id')
+        .join('choices', 'polls.id', 'choices.poll_id')
+        .where('voter_uuid', req.params.uuid)
+        .then(rows => {
+          console.log();
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    }
+
+    function createVotes() {
+      let rows = [
+        { voter_id: 62, choice_id: 1, rank: 3 },
+        { voter_id: 62, choice_id: 2, rank: 1 },
+        { voter_id: 62, choice_id: 3, rank: 2 }
+      ];
+      rows.forEach(row => {
+        knex('votes')
+          .insert(row)
+          .returning('id')
+          .then(id => {
+            console.log('  Created vote => id:', id[0]);
+          })
+          .catch(err => {
+            console.error(err);
+          }
+      });
+    }
   });
 
   return route;
