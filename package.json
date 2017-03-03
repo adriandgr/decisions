@@ -22,7 +22,8 @@
     "morgan": "^1.7.0",
     "node-sass-middleware": "^0.9.8",
     "path": "^0.12.7",
-    "pg": "^6.0.2"
+    "pg": "^6.0.2",
+    "y": "^0.3.2"
   },
   "devDependencies": {
     "nodemon": "^1.9.2",
