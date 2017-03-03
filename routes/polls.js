@@ -3,7 +3,7 @@
 const express = require('express');
 const route = express.Router();
 
-module.exports = knex => {
+module.exports = db => {
 
   route.get('/', (req, res) => {
     res.send('');
@@ -15,71 +15,68 @@ module.exports = knex => {
 
     let response = {};
 
-    function createVoters(column) {
-      [
-        { name: 'Donald', email: 'geddes.3574', voter_uuid: 'asdf' },
-        { name: 'Richard', email: 'an@email.com', voter_uuid: 'fdsa' },
-        { name: 'Adrian', email: 'another@email.com', voter_uuid: 'afsd' }
-        // { name: req.body.created_by, email: req.creator_email,  voter_uuid: column.admin_uuid }
-      ].forEach(v => {
-        let query = [{
-          name: v.name,
-          email: v.email,
-          poll_id: column.poll_id,
-          voter_uuid: v.voter_uuid
-        }];
-        knex('voters')
-          .insert(query)
-          .returning('id')
-          .then(id => {
-            console.log('    Created voter => ', v.name, '=> id: ', id);
-          }).catch(err => {
-            console.error('Error:', err);
-          });
-      });
-    };
+    // function createVoters(column) {
+    //   [
+    //     { name: 'Donald', email: 'geddes.3574', voter_uuid: 'asdf' },
+    //     { name: 'Richard', email: 'an@email.com', voter_uuid: 'fdsa' },
+    //     { name: 'Adrian', email: 'another@email.com', voter_uuid: 'afsd' }
+    //     // { name: req.body.created_by, email: req.creator_email,  voter_uuid: column.admin_uuid }
+    //   ].forEach(v => {
+    //     let query = [{
+    //       name: v.name,
+    //       email: v.email,
+    //       poll_id: column.poll_id,
+    //       voter_uuid: v.voter_uuid
+    //     }];
+    //     knex('voters')
+    //       .insert(query)
+    //       .returning('id')
+    //       .then(id => {
+    //         console.log('    Created voter => ', v.name, '=> id: ', id);
+    //       }).catch(err => {
+    //         console.error('Error:', err);
+    //       });
+    //   });
+    // };
 
-    function createChoices(poll_id) {
-      ['basketball', 'hockey', 'c'].forEach(c => {
-        let query = [{
-          name: c,
-          poll_id: poll_id
-        }];
-        knex('choices')
-          .insert(query)
-          .returning('id')
-          .then(id => {
-            console.log('  Created choice => id:', id, '\n  => name:', c);
-          }).catch(err => {
-            console.error('Error:', err);
-          } );
-      });
-    }
+    // choice creation
+    // .then(id => {
+    //   console.log('  Created choice => id:', id, '\n  => name:', c);
+    // }).catch(err => {
+    //   console.error('Error:', err);
+    // });
 
-    function createPoll() {
-      let query = [{
-        name: req.body.name,
-        created_by: req.body.created_by,
-        creator_email: req.body.creator_email,
-        admin_uuid: 'asdfasdfasdf'
-      }];
-      knex('polls')
-        .insert(query)
-        .returning(['id', 'admin_uuid '])
-        .then(column => {
-          console.log('Created poll => id:', column[0].id);
-          createChoices(column[0].id);
-          return column[0];
-        })
-        .then(column => {
-          createVoters(column);
-          res.json({success: 'true'});
-        })
-        .catch(err => {
-          console.log('Error: ', err);
-        });
-    }
-    createPoll();
+    db.insert.pollRow(req.body)
+      .then(poll => {
+        console.log(poll);
+        return db.insert.choices(poll[0]);
+      })
+      .then(results => {
+        console.log(results);
+      })
+      // .catch(err => {
+      //   console.error(err);
+      // })
+      // .then(poll => {
+      //   db.create.voters(poll, req.body);
+      // })
+      .catch(err => {
+        console.error('Error:', err);
+      });
+    // // poll creation
+    // .then(column => {
+    //   console.log('Created poll => id:', column[0].id);
+    //   createChoices(column[0].id);
+    //   return column[0];
+    // })
+    // .then(column => {
+    //   createVoters(column);
+    //   res.json({success: 'true'});
+    // })
+    // .catch(err => {
+    //   console.log('Error: ', err);
+    // });
+
   });
 
   route.get('/:uuid', (req, res) => {
