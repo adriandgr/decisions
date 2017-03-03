@@ -31,23 +31,52 @@ function ordinalWord(num, word) {
 
 function addInput(targetId, word) {
   let len = $(`${targetId} > div`).length;
+  let colWidth, $plusSpace, $input2;
+  if (word === 'choice') {
+    colWidth = 11;
+  } else {
+    $plusSpace = $('<div>').addClass('col-1 plus-space-sm');
+    $('<i>').addClass('fa fa-plus').attr('aria-hidden', 'true').appendTo($plusSpace);
+
+    $input2 = $('<input>').addClass('col-4 form-control friend').attr({
+      id: `friend-name-${len - 2}`,
+      type: 'text',
+      placeholder: 'their name'
+    });
+    colWidth = 6;
+  }
+
+
+
 
   let $div = $("<div>").addClass('form-group row').attr('id', `node-${len - 2}`);
-  let $label = $("<label>").addClass('col-1').attr( 'for', `choice-${len - 2}`);
-  $("<i>").addClass('delete-choice fa fa-times').attr('id', `x${len - 2}`).appendTo($label);
+  let $label = $("<label>").addClass('col-1').attr( 'for', `${word}-${len - 2}`);
+  $("<i>").addClass('delete-choice fa fa-times').attr({ id: `x${len - 2}`, 'aria-hidden': 'true' }).appendTo($label);
   $label.appendTo($div);
-  $("<input>").addClass('col-11 form-control').attr({
-    id: `choice-${len - 2}`,
+  $("<input>").addClass(`col-${colWidth} form-control ${word}`).attr({
+    id: `${word}-${len - 2}`,
     type: 'text',
     placeholder: ordinalWord(len - 2, word)
   }).appendTo($div);
-  console.log('div to add', $div)
+  if (word === 'friend'){
+    $plusSpace.appendTo($div);
+    $input2.appendTo($div);
+  }
+
+  console.log('div to add', $div);
   $( $div ).insertAfter( `${targetId} > div:nth-child(${len - 2})` );
 }
 
 
 $(document).ready(()=> {
 
+  $('#toggle-home-view').on('click', (e) => {
+    $('#create-view').hide();
+    $('#send-view').hide();
+    $('#results-view').hide();
+    $('#main-nav').hide();
+    $('#home-view').toggle();
+  });
 
   $('#toggle-create-view').on('click', () => {
     $('#create-view').toggle();
@@ -111,5 +140,54 @@ $(document).ready(()=> {
     $('#send-view').toggle();
   });
 
+  $('#submit-form').on('click', (event)=> {
+    event.preventDefault();
+    let choices = [];
+    for ( choice of $('.choice')){
+      choices.push(choice.value);
+    }
+
+    let data = {
+      name: $('#poll-name')[0].value,
+      created_by: $('#creator-name')[0].value,
+      creator_email: $('#creator-email')[0].value,
+      choices: choices
+      // send_to: [
+      //   {
+      //     name:
+      //     email:
+      //   },
+      //   {
+      //     name:
+      //     email:
+      //   },
+      //   {
+      //     name:
+      //     email:
+      //   }
+      // ],
+      // creator_vote: [
+      //   {
+      //     choice_name: name
+      //     rank:
+      //   },
+      //   {
+      //     choice_name: name
+      //     rank:
+      //   }
+      // ]
+    }
+
+    // $.ajax({
+    //   type: 'POST',
+    //   url: '/polls',
+    //   data:
+    // });
+
+
+    console.log (data);
+    $('#send-view').toggle();
+    $('#results-view').toggle();
+  });
 
 });

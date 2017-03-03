@@ -27,6 +27,9 @@
         <h2>Helper Menu</h2>
       </li>
       <li class="nav-item">
+        <a id="toggle-home-view" class="nav-link" href="#">Toggle Home View</a>
+      </li>
+      <li class="nav-item">
         <a id="toggle-create-view" class="nav-link" href="#">Toggle Create View</a>
       </li>
       <li class="nav-item">
@@ -74,7 +77,7 @@
         <label class="col-1 " for="choice-1">
 
         </label>
-        <input class="col-11 form-control" id="choice-1" type="text" placeholder="enter first choice">
+        <input class="col-11 form-control choice" id="choice-1" type="text" placeholder="enter first choice">
       </div>
 
       <div class="row"> <!-- (len - 1) add choice -->
@@ -102,10 +105,11 @@
       </div>
 
       <div class="form-group row no-wrap"> <!-- (len - 2 index to insert) -->
-        <label class="col-1 " for="choice-1">
-
+        <label class="col-1 " for="friend-1">
         </label>
-        <input class="col-11 form-control" id="choice-1" type="text" placeholder="enter a friend's email or phone number">
+        <input class="col-6 form-control friend" id="friend-1" type="text" placeholder="enter a friend's email or phone number">
+        <div class="col-1 plus-space-sm"><i class="fa fa-plus" aria-hidden="true"></i> </div>
+        <input class="col-4 form-control friend" id="friend-name-1" type="text" placeholder="their name">
       </div>
 
       <div class="row"> <!-- (len - 1) add choice -->
@@ -117,7 +121,7 @@
       </div>
       <div class="row"> <!-- (len) submit -->
         <div class="col-8"></div>
-        <button id="capture-emails" type="submit" class="col-4 btn-nofill btn-center"><i class="fa fa-paper-plane-o" aria-hidden="true"></i> SEND</button>
+        <button id="submit-form" type="submit" class="col-4 btn-nofill btn-center"><i class="fa fa-paper-plane-o" aria-hidden="true"></i> SEND</button>
       </div>
     </form>
 
