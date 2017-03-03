@@ -40,8 +40,8 @@ app.use(express.static("public"));
 
 
 // Mount all resource routes
-app.use('/polls', pollsRoutes(knex));
-app.use('/admins', adminsRoutes(knex));
+app.use('/polls', pollsRoutes(db));
+app.use('/admins', adminsRoutes(db));
 // Home page
 app.get("/", (req, res) => {
   res.render("index");
