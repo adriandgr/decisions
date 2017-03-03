@@ -39,20 +39,6 @@ app.use("/styles", sass({
 app.use(express.static("public"));
 
 
-
-var data = {
-  from: `Merge App <app@${process.env.MG_DOMAIN}>`,
-  to: `${process.env.MG_TEST_TO}`,
-  subject: 'Hello world',
-  text: 'Testing some Mailgun awesomness from node!',
-  html: 'hey node'
-};
-// SAMPLE mailgun send process:
-mailgun.messages().send(data, function (error, body) {
-  console.log(body);
-});
-
-
 // Mount all resource routes
 app.use('/polls', pollsRoutes(knex));
 app.use('/admins', adminsRoutes(knex));
