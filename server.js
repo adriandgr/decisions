@@ -20,17 +20,29 @@ const mailgun     = require('mailgun-js')({
   domain: process.env.MG_DOMAIN
 });
 
+let poll_name = 'Where to have lunch?';
+let poll_creator = "Donald";
+let voter_url = "http://www.google.com/";
+
 var data = {
   from: `Merge App <app@${process.env.MG_DOMAIN}>`,
   to: `${process.env.MG_TEST_TO}`,
-  subject: 'Hello world',
+  subject: 'String Interpolation2',
   text: 'Testing some Mailgun awesomness from node!',
-  html: 'hey node'
+  html: `${process.env.MG_INVITE_A}
+  ${poll_name}
+  ${process.env.MG_INVITE_B}
+  ${poll_creator}
+  ${process.env.MG_INVITE_C}
+  ${voter_url}
+  ${process.env.MG_INVITE_D}
+  ${poll_creator}
+  ${process.env.MG_INVITE_E}`
 };
 // SAMPLE mailgun send process:
-// mailgun.messages().send(data, function (error, body) {
-//   console.log(body);
-// });
+mailgun.messages().send(data, function (error, body) {
+  console.log(body);
+});
 
 
 // Seperated Routes for each Resource
