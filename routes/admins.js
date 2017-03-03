@@ -38,43 +38,25 @@ module.exports = (knex) => {
   route.post('/:admin_uuid', (req, res) =>{
     let id = req.params.admin_uuid
     function checkActive (){
-      knex('polls').where('admin_uuid', '=', id).update({active:'t'})
+      knex('polls').where('polls.admin_uuid', '=', id).update('active',true)
       .then(function(rows){
           console.log(rows)
-          res.json({success: true});
       });
     }
     checkActive();
 
-    // res.send('hello');
-// POST /admins/admin_id - updating/ending a poll
-// End (Update active field to false)
+    function upDateTitle(){
+      knex('polls').where('polls.admin_uuid', '=', id).update('name',"Where do you want to eat")
+      .then(function(rows){
+          console.log(rows)
+      res.json({success: true});
+      });
+    }
+
+    upDateTitle()
   })
 
 
   return route;
 };
 
-
-// knex.select("*").from("depts").asCallback(function(err, values) {
-//   if(err) {
-//     console.log(err);
-//   } else {
-//     console.log(values);
-//   }
-//   knex.destroy();
-// });
-
-
-
-// Datahelpers
-// Random uuid generator for Admin/Voter
-// Helper functions for GET/Admins Page
-// Find Poll_ID
-// Using poll_id find choices
-// Helper function for POST/Admins Page
-// Find poll_id
-// If creator ends poll?
-// Update poll status to false
-// If creator changes title
-// Update poll name
