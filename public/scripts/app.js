@@ -38,7 +38,7 @@ function addInput(targetId, word) {
     $plusSpace = $('<div>').addClass('col-1 plus-space-sm');
     $('<i>').addClass('fa fa-plus').attr('aria-hidden', 'true').appendTo($plusSpace);
 
-    $input2 = $('<input>').addClass('col-4 form-control friend').attr({
+    $input2 = $('<input>').addClass('col-4 form-control friend-name').attr({
       id: `friend-name-${len - 2}`,
       type: 'text',
       placeholder: 'their name'
@@ -46,14 +46,11 @@ function addInput(targetId, word) {
     colWidth = 6;
   }
 
-
-
-
   let $div = $("<div>").addClass('form-group row').attr('id', `node-${len - 2}`);
   let $label = $("<label>").addClass('col-1').attr( 'for', `${word}-${len - 2}`);
   $("<i>").addClass('delete-choice fa fa-times').attr({ id: `x${len - 2}`, 'aria-hidden': 'true' }).appendTo($label);
   $label.appendTo($div);
-  $("<input>").addClass(`col-${colWidth} form-control ${word}`).attr({
+  $("<input>").addClass(`col-${colWidth} form-control ${ word === 'choice' ? word : 'friend-email' }`).attr({
     id: `${word}-${len - 2}`,
     type: 'text',
     placeholder: ordinalWord(len - 2, word)
@@ -63,19 +60,130 @@ function addInput(targetId, word) {
     $input2.appendTo($div);
   }
 
-  console.log('div to add', $div);
   $( $div ).insertAfter( `${targetId} > div:nth-child(${len - 2})` );
+}
+
+function composeObject(arr1, arr2, keys) {
+  let sendObject = arr1.reduce((a, b, c) => {
+    let obj = {};
+    obj[keys[0]] = b;
+    obj[keys[1]] = arr2[c];
+    a.push(obj);
+    return a;
+  }, []);
+  return sendObject;
+}
+
+// creator_vote: [
+    //   {
+    //     choice_name: name
+    //     rank:
+    //   },
+    //   {
+    //     choice_name: name
+    //     rank:
+    //   }
+    // ]
+
+function dataComposer() {
+  let choices = [];
+  for ( let choice of $('.choice')){
+    choices.push(choice.value);
+  }
+
+  let friends = [];
+  for ( let friend of $('.friend-name')){
+    friends.push(friend.value);
+  }
+
+  let emails = [];
+  for ( let email of $('.friend-email')){
+    emails.push(email.value);
+  }
+
+  let data = {
+    name: $('#poll-name')[0].value,
+    created_by: $('#creator-name')[0].value,
+    creator_email: $('#creator-email')[0].value,
+    choices: choices,
+    send_to: composeObject(friends, emails, ['name', 'email'])
+  };
+  return data;
 }
 
 
 $(document).ready(()=> {
 
-  $('#toggle-home-view').on('click', (e) => {
+
+  $('.add-choice-btn').on('click', (event)=> {
+    event.preventDefault();
+    addInput('#create-form', 'choice');
+  });
+
+  $('.add-friend-btn').on('click', (event)=> {
+    event.preventDefault();
+    addInput('#send-form', 'friend');
+  });
+
+  $(document).on('click', '.delete-choice', (event)=> {
+    event.preventDefault();
+    let len = $('#create-form > div').length;
+    if (len < 4) {
+      return;
+    }
+    $(event.target).closest('div').remove();
+  });
+
+  $('#nav-control').on('click', ()=> {
+    $('#main-nav').toggle();
+  });
+
+  $('#create-poll').on('click', ()=> {
+    $('#home-view').fadeToggle('fast',()=>{
+      $('#create-view').fadeToggle('slow');
+    });
+
+  });
+
+  $('#capture-emails').on('click', (event)=> {
+    event.preventDefault();
+    $('#create-view').toggle();
+    $('#send-view').toggle();
+  });
+
+  $('#submit-form').on('click', (event)=> {
+    event.preventDefault();
+
+    $.ajax({
+      type: 'POST',
+      url: '/polls',
+      data: dataComposer(),
+      dataType: 'json'
+    }).then(res=>{
+      console.log('success', res);
+    }).catch(res=>{
+      console.log('fail', res);
+    });
+
+    // $.ajax({
+    //     type: 'DELETE',
+    //     url: '/users/session'
+    // }).then((res) => {
+    // });
+
+    // $('#send-view').toggle();
+    // $('#results-view').toggle();
+  });
+
+
+  // helper menu
+  $('#toggle-home-view').on('click', () => {
     $('#create-view').hide();
     $('#send-view').hide();
     $('#results-view').hide();
-    $('#main-nav').hide();
-    $('#home-view').toggle();
+    $('#home-view').show();
+    $('#main-nav').fadeToggle();
+
   });
 
   $('#toggle-create-view').on('click', () => {
@@ -105,89 +213,4 @@ $(document).ready(()=> {
   $('#close-menu').on('click', () => {
     $('#main-nav').hide();
   });
-
-  $('.add-choice-btn').on('click', (event)=> {
-    event.preventDefault();
-    addInput('#create-form', 'choice');
-  });
-
-  $('.add-friend-btn').on('click', (event)=> {
-    event.preventDefault();
-    addInput('#send-form', 'friend');
-  });
-
-  $(document).on('click', '.delete-choice', (event)=> {
-    event.preventDefault();
-    let len = $('#create-form > div').length;
-    if (len < 4) {
-      return;
-    }
-    $(event.target).closest('div').remove();
-  });
-
-  $('#nav-control').on('click', ()=> {
-    $('#main-nav').toggle();
-  });
-
-  $('#create-poll').on('click', ()=> {
-    $('#home-view').toggle();
-    $('#create-view').toggle();
-  });
-
-  $('#capture-emails').on('click', (event)=> {
-    event.preventDefault();
-    $('#create-view').toggle();
-    $('#send-view').toggle();
-  });
-
-  $('#submit-form').on('click', (event)=> {
-    event.preventDefault();
-    let choices = [];
-    for ( choice of $('.choice')){
-      choices.push(choice.value);
-    }
-
-    let data = {
-      name: $('#poll-name')[0].value,
-      created_by: $('#creator-name')[0].value,
-      creator_email: $('#creator-email')[0].value,
-      choices: choices
-      // send_to: [
-      //   {
-      //     name:
-      //     email:
-      //   },
-      //   {
-      //     name:
-      //     email:
-      //   },
-      //   {
-      //     name:
-      //     email:
-      //   }
-      // ],
-      // creator_vote: [
-      //   {
-      //     choice_name: name
-      //     rank:
-      //   },
-      //   {
-      //     choice_name: name
-      //     rank:
-      //   }
-      // ]
-    }
-
-    // $.ajax({
-    //   type: 'POST',
-    //   url: '/polls',
-    //   data:
-    // });
-
-
-    console.log (data);
-    $('#send-view').toggle();
-    $('#results-view').toggle();
-  });
-
 });
