@@ -48,9 +48,9 @@ var data = {
   html: 'hey node'
 };
 // SAMPLE mailgun send process:
-// mailgun.messages().send(data, function (error, body) {
-//   console.log(body);
-// });
+mailgun.messages().send(data, function (error, body) {
+  console.log(body);
+});
 
 
 // Mount all resource routes

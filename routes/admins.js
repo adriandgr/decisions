@@ -5,20 +5,23 @@ const route = express.Router();
 
 module.exports = (knex) => {
   route.get('/:admin_uuid', (req, res) => {
-    let id = req.params.admin_uuid
+    let id = req.params.admin_uuid;
 
 
     const response = {};
     //Receive all polls information & send to page
     function gettingChoicesNameRankTable() {
       knex('polls')
-      .join('choices','polls.id','choices.poll_id')
+      .join('choices', 'polls.id', 'choices.poll_id')
       .join('votes', 'votes.choice_id', 'choices.id')
       .where('polls.admin_uuid', id)
-      .select('choices.id','choices.name','rank')
+      .select('choices.id', 'choices.name', 'rank')
       .then(function(rows) {
         response['rankTable'] = rows;
-      }).catch(err =>{throw err});
+      })
+      .catch(err => {
+        throw err;
+      });
     }
 
     gettingChoicesNameRankTable();
@@ -31,19 +34,22 @@ module.exports = (knex) => {
         response['polls'] = rows;
         console.log(response);
         res.json(response);
-      }).catch(err =>{throw err});
+      })
+      .catch(err => {
+        throw err;
+      });
     }
 
     gettingPollsTable();
 
-    });
+  });
 
   route.post('/:admin_uuid', (req, res) =>{
-    let id = req.params.admin_uuid
+    let id = req.params.admin_uuid;
 
     //Needs to include Mailgun chain here upon submission, informing users polls have ended
     function checkActive () {
-      knex('polls').where('polls.admin_uuid', '=', id).update('active',false)
+      knex('polls').where('polls.admin_uuid', '=', id).update('active', false);
     }
     checkActive();
 
@@ -51,15 +57,15 @@ module.exports = (knex) => {
 
     function updateTitle() {
       //Change the name of the question to req.body
-      knex('polls').where('polls.admin_uuid', '=', id).update('name',"Where do you want to eat")
+      knex('polls').where('polls.admin_uuid', '=', id).update('name', "Where do you want to eat")
       .then(function(rows) {
         res.json({success: true});
       });
     }
 
 
-    updateTitle()
-  })
+    updateTitle();
+  });
 
 
   return route;
