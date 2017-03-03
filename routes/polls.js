@@ -91,7 +91,7 @@ module.exports = knex => {
     meaning += ' meaningfully, and then returning updated vote counts';
 
     function getVoterAndChoicesIds() {
-       knex('voters')
+      knex('voters')
         .select('voters.id as voter_id', 'choices.id as choices_id')
         .join('polls', 'voters.poll_id', 'polls.id')
         .join('choices', 'polls.id', 'choices.poll_id')
@@ -119,7 +119,7 @@ module.exports = knex => {
           })
           .catch(err => {
             console.error(err);
-          }
+          });
       });
     }
   });
