@@ -66,7 +66,7 @@ module.exports = (db, knex) => {
       .then(queryData => {
         // Run function to combine data from query and post data here
         response['choices'] =  queryData;
-        console.log(response);
+        // console.log('Response object: ', response); // DONE: This logs the response 100% correctly
       })
       .catch(err => {
         console.error(err);
@@ -76,11 +76,11 @@ module.exports = (db, knex) => {
 
 /*
     USES VOTER_UUID FROM URL TO RETRIEVE VOTER DATA AND ASSOCIATED CHOICE DATA
-    USES RETREIEVED DATA TO APPROPRIATELY APPEND RANK TO REQ.BODY LIST OF CHOICE OBJECTS:
-      RESPONSE
-        []
-          { VOTER_ID, CHOICE_ID, RANK_ID }
-        ]
+      USESSRETREIEVED DATA TO APPROPRIATELY APPEND RANK TO REQ.BODY LIST OF CHOICE OBJECTS:
+        RESPONSE
+          []
+            { VOTER_ID, CHOICE_ID, RANK_ID }
+          ]
  */
   route.post('/:uuid', (req, res) => {
     let meaning = 'This route is reponsible for receiving vote data, inserting this data into the database';
@@ -98,6 +98,7 @@ module.exports = (db, knex) => {
       return dbData;
     }
 
+    // overrides actual req.body.choices for now
     req.body.choices = [
       { choice_id: 1, rank: 3 },
       { choice_id: 2, rank: 1 },
@@ -114,33 +115,10 @@ module.exports = (db, knex) => {
       .then(results => {
         console.log(results);
       })
-      // .then(success => {
-      //   setInterval(() => { 'hello' }, 3000);
-      // })
       .catch(err => {
         console.error(err);
       });
-    // overrides reqs for now
 
-
-    // function createVotes() {
-    //   let rows = [
-    //     { voter_id: 62, choice_id: 1, rank: 3 },
-    //     { voter_id: 62, choice_id: 2, rank: 1 },
-    //     { voter_id: 62, choice_id: 3, rank: 2 }
-    //   ];
-    //   rows.forEach(row => {
-    //     knex('votes')
-    //       .insert(row)
-    //       .returning('id')
-    //       .then(id => {
-    //         console.log('  Created vote => id:', id[0]);
-    //       })
-    //       .catch(err => {
-    //         console.error(err);
-    //       });
-    //   });
-    // }
   });
 
   return route;
