@@ -115,7 +115,7 @@ module.exports = knex => {
 
     retrieve: {
 
-      choices:
+      voterAndChoices:
         uuid => {
           return knex('voters')
                   .select('voters.id as voter_id', 'choices.id as choice_id')
@@ -138,10 +138,12 @@ module.exports = knex => {
 
       poll:
         uuid => {
+          console.log('Finding poll from uuid:', uuid);
           return knex('voters')
-                  .select('polls.id', 'polls.name', 'created_at')
+                  .select('*')
                   .join('polls', 'polls.id', 'voters.poll_id')
                   .where('voters.voter_uuid', uuid)
+                  .orWhere('polls.admin_uuid', uuid)
                   .then(row => {
                     return row[0];
                   })
@@ -153,21 +155,26 @@ module.exports = knex => {
       choicesAndRanks:
         poll_id => {
           return knex('choices')
-                  .select('choices.id', 'choices.name')
+                  .select('choices.id', 'choices.name', 'rank')
                   .join('votes', 'votes.choice_id', 'choices.id')
                   .where('choices.poll_id', poll_id)
                   .sum('votes.rank as borda_rank')
-                  .groupBy('name', 'choices.id')
-                  .then(results => {
-                    return results;
+                  .groupBy('name', 'choices.id', 'rank')
+                  .then(rows => {
+                    return rows;
                   })
                   .catch(err => {
                     console.error(err);
                   });
-       } // closes choicesAndRanks
+        }
+        // closes choicesAndRanks
+    },
 
-
-// three closing curly-braces for module.exports, function passing knex, and return
+    poll: {
+      active:
+        () => {
+          return;
+        }
     }
   };
 };
