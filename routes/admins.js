@@ -4,7 +4,7 @@ const express = require('express');
 const route = express.Router();
 const ejs         = require('ejs')
                     , fs = require('fs')
-                    , str = fs.readFileSync('emailTemplatePollEnd.ejs', 'utf8');
+                    , str = fs.readFileSync('./routes/emailTemplatePollEnd.ejs', 'utf8');
 const mailgun     = require('mailgun-js')({
   apiKey: process.env.MG_KEY,
   domain: process.env.MG_DOMAIN
@@ -65,14 +65,15 @@ module.exports = (knex) => {
       knex('polls')
       .join('voters', 'polls.id', 'voters.poll_id')
       .where('polls.admin_uuid', id)
-      .select('polls.name','voters.name', 'voters.email', 'polls.admin_uuid')
-      .returning(['polls.name', 'voters.name', 'voters.email', 'polls.admin_uuid'])
+      .select('polls.name','polls.created_by', 'voters.email', 'voters.voter_uuid')
+      .returning(['polls.name', 'polls.created_by','voters.email', 'voters.voter_uuid'])
       .then(function(column) {
-        const messageHtml = ejs.render(str, {pollInfo:column});
-        column.forEach(c => {
+        column.forEach(pollInfo => {
+          let messageHtml = ejs.render(str, pollInfo);
+          console.log(messageHtml);
           let  data = {
             from: `Merge App <app@${process.env.MG_DOMAIN}>`,
-            to: c.email,
+            to: pollInfo.email,
             subject: 'String Interpolation Integrated',
             html: `${messageHtml}`
           }

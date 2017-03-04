@@ -3,7 +3,7 @@
 <head>
 <meta name="viewport" content="width=device-width" />
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<title>Voting has ended!</title>
+<title>You have a merge request!</title>
 
 
 <style type="text/css">
@@ -69,7 +69,7 @@ background-color: #f6f6f6;
         <img src="http://adriandgr.github.io/decisions/img/email-square.png" style="display: inline-block;">
       </td>
       <td>
-        <h1 style="color: #3b3b3b;">Take a look at the results!</h1>
+        <h1 style="color: #3b3b3b;">You have a merge request!</h1>
       </td>
     </tr>
   </table>
@@ -81,7 +81,7 @@ background-color: #f6f6f6;
 
 
           <h2>
-          <%= pollInfo.poll_name %>
+          <%= poll_name %>
           <!-- Where should we go for lunch? -->
 
           </h2>
@@ -92,20 +92,20 @@ background-color: #f6f6f6;
 
 
                     <em><%= pollInfo.poll_creator%>
-                    <!-- $poll_creator --></em> has ended the poll resolts. Find out the most popular preference.
+                    <!-- $poll_creator --></em> has invited you to merge on a question by ranking possible choices in your order of preference.
                   </td>
                 </tr>
                 <tr style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;"><td class="content-block" itemprop="handler" itemscope itemtype="http://schema.org/HttpActionHandler" style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; margin: 0; padding: 0 0 20px;" valign="top">
               <!-- Add email here -->
-                    <a href='<%pollInfo.voter_url%>' class="btn-primary" itemprop="url" style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; color: #FFF; text-decoration: none; line-height: 2em; font-weight: bold; text-align: center; cursor: pointer; display: inline-block; border-radius: 5px; background-color: #348eda; margin: 0; border-color: #348eda; border-style: solid; border-width: 10px 20px;">click here to view results</a>
+                    <a href='<%pollInfo.voter_url%>' class="btn-primary" itemprop="url" style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; color: #FFF; text-decoration: none; line-height: 2em; font-weight: bold; text-align: center; cursor: pointer; display: inline-block; border-radius: 5px; background-color: #348eda; margin: 0; border-color: #348eda; border-style: solid; border-width: 10px 20px;">click to join this merge</a>
                   </td>
                 </tr>
                 <tr style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;"><td class="content-block" style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; margin: 0; padding: 0 0 20px;" valign="top">
-                    <em>
+                    Once <em>
                     <%= pollInfo.poll_creator %>
                     <!-- $poll_creator -->
 
-                    </em> has ended this merge. Thank you for merging!.
+                    </em> closes this merge, you will be notified with the most popular choice.
 
 
 
