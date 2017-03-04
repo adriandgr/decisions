@@ -6,49 +6,44 @@ const route = express.Router();
 module.exports = (db, knex) => {
 
 
-  route.get('/:admin_uuid', (req, res) => {
-    let id = req.params.admin_uuid;
 
+/*
+    GET /admins/:uuid
+ */
+  route.get('/:uuid', (req, res) => {
 
     const response = {};
-    //Receive all polls information & send to page
-    function gettingChoicesNameRankTable() {
-      knex('polls')
-      .join('choices', 'polls.id', 'choices.poll_id')
-      .join('votes', 'votes.choice_id', 'choices.id')
-      .where('polls.admin_uuid', id)
-      .select('choices.id', 'choices.name', 'rank')
-      .then(function(rows) {
-        console.log('Rows from gettingChoicesNameRankTable: ', rows);
-        response['rankTable'] = rows;
-      })
-      .catch(err => {
-        throw err;
-      });
-    }
 
-    gettingChoicesNameRankTable();
-
-// Returns the full poll table
-    function gettingPollsTable() {
-      knex.select('*').from('polls')
-      .where('admin_uuid', '=', id)
+    db.retrieve.poll(req.params.uuid)
       .then(poll => {
-        response['polls'] = poll;
-        console.log('Rows from gettingPollsTable: ', poll);
+        response['poll'] = poll;
+        console.log('Row from retrieving poll', poll);
+        return poll.id
+      })
+      .then(poll_id => {
+        return db.retrieve.choicesAndRanks(poll_id);
+      })
+      .then(results => {
+        console.log('Choices and ranks:', results);
+        response['choices'] = results;
         res.json(response);
       })
       .catch(err => {
-        throw err;
+        console.error('Error retrieving poll:', err);
       });
-    }
 
-    gettingPollsTable();
 
   });
 
-  route.post('/:admin_uuid', (req, res) =>{
-    let id = req.params.admin_uuid;
+
+
+/*
+    POST /admins/:uuid
+
+      Responsible for ending poll or updating poll title
+ */
+  route.post('/uuid', (req, res) =>{
+
 
     //Needs to include Mailgun chain here upon submission, informing users polls have ended
     function checkActive () {
