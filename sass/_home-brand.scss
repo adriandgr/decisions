@@ -17,15 +17,17 @@
 }
 
 .brand-line {
+  width: 300px;
   font-size: .8em;
   padding:0;
-  transform: translate(-30px, -15px);
+  transform: translate(-70px, -10px);
   @media (min-width: $tablet-breakpoint){
     transform: translate(-45px, -5px);
     font-size: .9em;
   }
   @media (min-width: $desktop-breakpoint){
     transform: translate(-45px, -10px);
+    width: 350px;
     font-size: 1.1em;
   }
 }
@@ -44,7 +46,12 @@
 
 .logo-sm {
   position: relative;
-  float: right;
+  top: -45px;
+  left: 260px;
   max-height: 100px;
 
+  @media (min-width: $tablet-breakpoint){
+    top: -35px;
+    left: 270px;
+  }
 }
