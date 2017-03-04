@@ -63,13 +63,13 @@ module.exports = knex => {
         },
 
       pollRow:
-        req => {
+        (req, uuid) => {
 
           let query = [{
             name: req.name,
             created_by: req.created_by,
             creator_email: req.creator_email,
-            admin_uuid: 'asdfasdfasdf'
+            admin_uuid: uuid
           }];
 
           return knex('polls')
