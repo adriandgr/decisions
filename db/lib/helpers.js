@@ -1,4 +1,6 @@
 module.exports = knex => {
+
+
   return {
 
     insert: {
@@ -165,9 +167,7 @@ module.exports = knex => {
        } // closes choicesAndRanks
 
 
-
+// three closing curly-braces for module.exports, function passing knex, and return
     }
-
-
   };
 };
