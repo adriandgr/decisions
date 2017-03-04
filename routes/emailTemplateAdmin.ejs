@@ -3,7 +3,7 @@
 <head>
 <meta name="viewport" content="width=device-width" />
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<title>Voting has ended!</title>
+<title>Thank you for your Merge!</title>
 
 
 <style type="text/css">
@@ -69,7 +69,7 @@ background-color: #f6f6f6;
         <img src="http://adriandgr.github.io/decisions/img/email-square.png" style="display: inline-block;">
       </td>
       <td>
-        <h1 style="color: #3b3b3b;">Take a look at the results!</h1>
+        <h1 style="color: #3b3b3b;">This is your merge request!</h1>
       </td>
     </tr>
   </table>
@@ -81,8 +81,7 @@ background-color: #f6f6f6;
 
 
           <h2>
-          <%= name %>
-
+          <%= poll_name %>
           <!-- Where should we go for lunch? -->
 
           </h2>
@@ -92,22 +91,17 @@ background-color: #f6f6f6;
 
 
 
-                    <em><%= created_by%>
-                    <!-- $poll_creator --></em> has ended the poll resolts. Find out the most popular preference.
+                    Thank you<em><%= pollInfo.poll_creator%>
+                    <!-- $poll_creator --></em> for your merge. Please click below for more information
+                    on your merge.
                   </td>
                 </tr>
                 <tr style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;"><td class="content-block" itemprop="handler" itemscope itemtype="http://schema.org/HttpActionHandler" style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; margin: 0; padding: 0 0 20px;" valign="top">
-
-
-
-              <!-- Add email here               -->
-                    <a href='https:localhost:8080/admins/<%=voter_uuid%>' class="btn-primary" itemprop="url" style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; color: #FFF; text-decoration: none; line-height: 2em; font-weight: bold; text-align: center; cursor: pointer; display: inline-block; border-radius: 5px; background-color: #348eda; margin: 0; border-color: #348eda; border-style: solid; border-width: 10px 20px;">click here to view results</a>
+              <!-- Add email here -->
+                    <a href='https://localhost:8080/<%=admin_uuid%>' class="btn-primary" itemprop="url" style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; color: #FFF; text-decoration: none; line-height: 2em; font-weight: bold; text-align: center; cursor: pointer; display: inline-block; border-radius: 5px; background-color: #348eda; margin: 0; border-color: #348eda; border-style: solid; border-width: 10px 20px;">click to join this merge</a>
                   </td>
                 </tr>
                 <tr style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;"><td class="content-block" style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; margin: 0; padding: 0 0 20px;" valign="top">
-                    <em>
-
-                    </em>Thank you for merging!
 
 
 
@@ -119,5 +113,4 @@ background-color: #f6f6f6;
                   </td>
                 </tr></table></td>
           </tr></table></body>
-
 </html>
