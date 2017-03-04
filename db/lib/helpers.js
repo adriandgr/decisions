@@ -1,3 +1,5 @@
+const uuid = require('./../../routes/util/uuid-generator');
+
 module.exports = knex => {
 
 
@@ -20,7 +22,7 @@ module.exports = knex => {
                 name: v.name,
                 email: v.email,
                 poll_id: poll_id,
-                voter_uuid: uuids[0]
+                voter_uuid: uuid()
 
               }];
               knex('voters')

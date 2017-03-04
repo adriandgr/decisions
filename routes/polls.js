@@ -25,14 +25,14 @@ module.exports = (db, knex) => {
     meaning += ' and then querying the database to eventually return a response containing relevant data';
 
     let response = {};
-    let uuids = [uuid(), uuid()];
 
-    db.insert.pollRow(req.body, uuids[1])
+
+    db.insert.pollRow(req.body, uuid())
       .then(poll => {
         return db.insert.choices(poll[0].id, req.body.choices);
       })
       .then(poll_id => {
-        return db.insert.voters(poll_id, req.body, uuids);
+        return db.insert.voters(poll_id, req.body);
       })
       .then(() => {
         res.json({success: true});
@@ -40,6 +40,8 @@ module.exports = (db, knex) => {
       .catch(err => {
         console.error('Error:', err);
       });
+
+      mailgun.sendPoll(req.body.name, req.body.created_by, req.body.send_to);
 
   });
 
