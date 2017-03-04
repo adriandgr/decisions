@@ -60,7 +60,7 @@ module.exports = (db, knex) => {
 
     let response = {};
 
-    db.retrieve.poll()
+    db.retrieve.poll(req.params.uuid)
       .then(poll => {
         response['poll'] = poll;
         return poll.id;

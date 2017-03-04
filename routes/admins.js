@@ -10,97 +10,69 @@ const mailgun     = require('mailgun-js')({
 });
 
 
+module.exports = (db, knex) => {
 
 
-module.exports = (db, knex, ejs) => {
-  route.get('/:admin_uuid', (req, res) => {
-    let id = req.params.admin_uuid;
 
+
+/*
+    GET /admins/:uuid
+ */
+  route.get('/:uuid', (req, res) => {
 
     const response = {};
-    //Receive all polls information & send to page
-    function gettingChoicesNameRankTable() {
-      knex('polls')
-      .join('choices', 'polls.id', 'choices.poll_id')
-      .join('votes', 'votes.choice_id', 'choices.id')
-      .where('polls.admin_uuid', id)
-      .select('choices.id', 'choices.name', 'rank')
-      .then(function(rows) {
-        response['rankTable'] = rows;
+
+    db.retrieve.poll(req.params.uuid)
+      .then(poll => {
+        response['poll'] = poll;
+        console.log('Row from retrieving poll', poll);
+        return poll.id
       })
-      .catch(err => {
-        throw err;
-      });
-    }
-
-    gettingChoicesNameRankTable();
-
-// Returns the full poll table
-    function gettingPollsTable() {
-      knex.select('*').from('polls')
-      .where('admin_uuid', '=', id)
-      .then(function(rows) {
-        response['polls'] = rows;
-        console.log(response);
+      .then(poll_id => {
+        return db.retrieve.choicesAndRanks(poll_id);
+      })
+      .then(results => {
+        console.log('Choices and ranks:', results);
+        response['choices'] = results;
         res.json(response);
       })
       .catch(err => {
-        throw err;
+        console.error('Error retrieving poll:', err);
       });
-    }
 
-    gettingPollsTable();
 
   });
 
-  route.post('/:admin_uuid', (req, res) =>{
-    let id = req.params.admin_uuid;
-
-    //Needs to include Mailgun chain here upon submission, informing users polls have ended
-    function checkActive () {
-      knex('polls').where('polls.admin_uuid', '=', id).update('active', false);
-    }
-    checkActive();
-
-    //Send emails to existing voters
-    function sendEmail (){
-      knex('polls')
-      .join('voters', 'polls.id', 'voters.poll_id')
-      .where('polls.admin_uuid', id)
-      .select('polls.name','polls.created_by', 'voters.email', 'voters.voter_uuid')
-      .returning(['polls.name', 'polls.created_by','voters.email', 'voters.voter_uuid'])
-      .then(function(column) {
-        column.forEach(pollInfo => {
 
 
-          let messageHtml = ejs.render(str, pollInfo);
-          console.log(messageHtml);
-          let  data = {
-            from: `Merge App <app@${process.env.MG_DOMAIN}>`,
-            to: pollInfo.email,
-            subject: 'String Interpolation Integrated',
-            html: `${messageHtml}`
-          }
-          mailgun.messages().send(data, function (error, body) {
-            console.log(body);
-          });
-        })
-      })
-    }
 
-    sendEmail();
+/*
+    POST /admins/:uuid
+>>>>>>> c4a7c3d1325af3408c1659d0bcee07cc6c070d99
 
+      Responsible for ending poll or updating poll title
+ */
+  route.post('/:uuid', (req, res) =>{
 
-    function updateTitle() {
-      //Change the name of the question to req.body
-      knex('polls').where('polls.admin_uuid', '=', id).update('name', "Where do you want to eat")
-      .then(function(rows) {
-        res.json({success: true});
-      });
+    if(req.body.method === 'end') {
+      db.poll.end(req.params.uuid);
+    } else if (req.body.method === 'update') {
+      return;
     }
 
 
-    updateTitle();
+
+
+    // function updateTitle() {
+    //   //Change the name of the question to req.body
+    //   knex('polls').where('polls.admin_uuid', '=', id).update('name', "Where do you want to eat")
+    //   .then(function(rows) {
+    //     res.json({success: true});
+    //   });
+    // }
+
+
+    // updateTitle();
   });
 
 

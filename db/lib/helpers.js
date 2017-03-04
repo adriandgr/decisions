@@ -142,7 +142,7 @@ module.exports = knex => {
 
     retrieve: {
 
-      choices:
+      voterAndChoices:
         uuid => {
           return knex('voters')
                   .select('voters.id as voter_id', 'choices.id as choice_id')
@@ -164,37 +164,53 @@ module.exports = knex => {
         }, // closes voterAndChoices
 
       poll:
-        () => {
+        uuid => {
+          console.log('Finding poll from uuid:', uuid);
           return knex('voters')
-                  .select('polls.id', 'polls.name', 'created_at')
+                  .select('*')
                   .join('polls', 'polls.id', 'voters.poll_id')
-                  .where('voters.voter_uuid', 'sf4ffvc')
+                  .where('voters.voter_uuid', uuid)
+                  .orWhere('polls.admin_uuid', uuid)
                   .then(row => {
                     return row[0];
                   })
                   .catch(err => {
                     console.error(err);
                   });
-        }, // closes pollNameAndID
+        }, // closes poll()
 
       choicesAndRanks:
         poll_id => {
           return knex('choices')
-                  .select('choices.id', 'choices.name')
+                  .select('choices.id', 'choices.name', 'rank')
                   .join('votes', 'votes.choice_id', 'choices.id')
                   .where('choices.poll_id', poll_id)
                   .sum('votes.rank as borda_rank')
-                  .groupBy('name', 'choices.id')
-                  .then(results => {
-                    return results;
+                  .groupBy('name', 'choices.id', 'rank')
+                  .then(rows => {
+                    return rows;
                   })
                   .catch(err => {
                     console.error(err);
                   });
-       } // closes choicesAndRanks
+        }
+        // closes choicesAndRanks
+    },
 
-
-// three closing curly-braces for module.exports, function passing knex, and return
+    poll: {
+      end:
+        uuid => {
+          console.log('uuid:', uuid);
+          return knex('polls')
+                  .where('polls.admin_uuid', '=', uuid)
+                  .update('active', false)
+                  .then(() => {
+                    console.log('Updated poll for admin_uuid = ', req.params.uuid, 'to active = false');
+                  })
+                  .catch(err => {
+                    console.error('Error: failed to deactive poll for admin_uuid = ', uuid);
+                  });
+        }
     }
   };
 };
