@@ -1,0 +1,73 @@
+.merge-form input[type="text"] {
+  color: $main-text;
+  border: solid $main-light 4px;
+  background-color: transparent;
+
+
+}
+.xl-input {
+    font-size: 2em;
+}
+
+.merge-form input[type="text"]:focus {
+  border: solid $main-text 4px;
+  background-color: transparent;
+  /* Other stuff: font-weight, font-size */
+}
+
+.plus-space {
+  font-size: 2em;
+  color: $main-light;
+  line-height: 2em;
+
+}
+.plus-space:hover, .plus-space-sm:hover {
+  color: $main-text;
+}
+
+
+.plus-space-sm {
+  font-size: 1.8em;
+  color: $main-light;
+
+
+  i {
+    line-height: 1em;
+    padding: 5px, 0;
+  }
+}
+
+
+
+
+
+/* Overrides bootstrap style */
+.form-control::-webkit-input-placeholder { /* Chrome */
+color: $main-light;
+}
+.form-control:-ms-input-placeholder { /* IE 10+ */
+  color: $main-light;
+}
+.form-control::-moz-placeholder { /* Firefox 19+ */
+  color: $main-light;
+  opacity: 1;
+}
+.form-control:-moz-placeholder { /* Firefox 4 - 18 */
+  color: $main-light;
+  opacity: 1;
+}
+
+.add-choice-btn, .add-friend-btn {
+  margin:0;
+  color: $main-light;
+  font-size: 1em;
+}
+.add-choice-btn:hover, .add-friend-btn:hover {
+  color: $main-text;
+}
+.add-choice-btn:focus {
+  color: $main-text;
+}
+.add-choice-btn:active {
+  color: $main-dark;
+}

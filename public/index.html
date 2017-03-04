@@ -11,6 +11,7 @@
 
 </head>
 <body class="container">
+<div class="app-wrap">
   <!--[if lte IE 9]>
       <div class="browserupgrade">
       <p >You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p></div>
@@ -19,20 +20,26 @@
   <!-- Add your site or application content here -->
 
 
-  <div id="nav-control"><i class="fa fa-bars" aria-hidden="true"></i></div>
+  <div id="nav-control"><i class="fa fa-sliders" aria-hidden="true"></i></div>
   <nav id="main-nav">
     <ul class="nav flex-column">
       <li class="nav-item">
-        <a class="nav-link active" href="#">Active</a>
+        <h2>Helper Menu</h2>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="#">Link</a>
+        <a id="toggle-home-view" class="nav-link" href="#">Toggle Home View</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="#">Link</a>
+        <a id="toggle-create-view" class="nav-link" href="#">Toggle Create View</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link disabled" href="#">Disabled</a>
+        <a id="toggle-send-view" class="nav-link" href="#">Toggle Send View</a>
+      </li>
+      <li class="nav-item">
+        <a id="toggle-results-view" class="nav-link" href="#">Toggle results View</a>
+      </li>
+      <li class="nav-item">
+        <a id="close-menu" class="nav-link" href="#">close this menu</a>
       </li>
     </ul>
   </nav>
@@ -47,10 +54,11 @@
 
   <section id="home-view">
     <header class="d-flex justify-content-center">
-      <img class="logo" src="/img/merge-logo.png">
+      <img class="logo hidden-xs-down" src="/img/merge-logo.png">
+      <img class="logo-sm hidden-sm-up" src="/img/sm-merge.png">
       <div class="flex-column">
       <h1 class="home-brand">merge</h1>
-      <p class="brand-line"> make quick decisions amongst your friends</p>
+      <p class="brand-line"> get quick decisions amongst your friends</p>
       </div>
     </header>
 
@@ -60,17 +68,131 @@
   </section>
 
   <section id="create-view">
-    <form>
 
+    <form id="create-form" class="merge-form" action="/tweets" method="POST">
+      <div class="form-group row"> <!-- (len - len) -->
+        <input type="text" class="col-12 xl-input form-control" id="poll-name" placeholder="enter a question">
+      </div>
+
+      <div class="form-group row no-wrap"> <!-- (len - 2 index to insert) -->
+        <label class="col-1 " for="choice-1">
+
+        </label>
+        <input class="col-11 form-control choice" id="choice-1" type="text" placeholder="enter first choice">
+      </div>
+
+      <div class="row"> <!-- (len - 1) add choice -->
+        <div class="col-1">
+        </div>
+        <div class="col-11">
+          <a class="btn add-choice-btn btn-nofill" href=""><i class="fa fa-plus" aria-hidden="true"></i> add a choice</a>
+        </div>
+      </div>
+      <div class="row"> <!-- (len) submit -->
+        <div class="col-8"></div>
+        <button id="capture-emails" type="submit" class="col-4 btn-nofill btn-center hidden-lg-up">NEXT</button>
+      </div>
     </form>
+
+  </section>
+
+  <section id="send-view">
+
+    <form id="send-form" class="merge-form" action="/tweets" method="POST">
+      <div class="form-group row"> <!-- (len - len) -->
+        <input type="text" class="col-7 xl-input form-control" id="creator-email" placeholder="enter your email">
+        <div class="col-1 plus-space"><i class="fa fa-plus" aria-hidden="true"></i> </div>
+        <input type="text" class="col-4 xl-input form-control " id="creator-name" placeholder="your name">
+      </div>
+
+      <div class="form-group row no-wrap"> <!-- (len - 2 index to insert) -->
+        <label class="col-1 " for="friend-1">
+        </label>
+        <input class="col-6 form-control friend-email" id="friend-1" type="text" placeholder="enter a friend's email or phone number">
+        <div class="col-1 plus-space-sm"><i class="fa fa-plus" aria-hidden="true"></i> </div>
+        <input class="col-4 form-control friend-name" id="friend-name-1" type="text" placeholder="their name">
+      </div>
+
+      <div class="row"> <!-- (len - 1) add choice -->
+        <div class="col-1">
+        </div>
+        <div class="col-11">
+          <a class="btn add-friend-btn btn-nofill" href=""><i class="fa fa-plus" aria-hidden="true"></i> add a friend</a>
+        </div>
+      </div>
+      <div class="row"> <!-- (len) submit -->
+        <div class="col-8"></div>
+        <button id="submit-form" type="submit" class="col-4 btn-nofill btn-center"><i class="fa fa-paper-plane-o" aria-hidden="true"></i> SEND</button>
+      </div>
+    </form>
+
+  </section>
+
+  <section>
+
+  <section id="results-view">
+  <div class="row" id="no-results">
+    <div class="col-1 offset-2 offset-sm-3">
+      <i class="fa fa-eye-slash" aria-hidden="true"></i>
+    </div>
+    <div class="col-9 col-sm-8">
+      No results to show.
+    </div>
+    <div class="col-9 col-sm-8 offset-3 offset-sm-4 no-results-info">
+      <p>Perhaps you would like to create a new merge?</p>
+    </div>
+  </div>
+  <div id="display-results">
+
+    <ul id="foo">
+      <li>
+        <span class="drag-handle">
+          <i class="fa fa-bars" aria-hidden="true"></i>
+        </span>
+        one
+      </li>
+      <li>
+        <span class="drag-handle">
+          <i class="fa fa-bars" aria-hidden="true"></i>
+        </span>
+        two
+      </li>
+      <li>
+        <span class="drag-handle">
+          <i class="fa fa-bars" aria-hidden="true"></i>
+        </span>
+        three
+      </li>
+      <li>
+        <span class="drag-handle">
+          <i class="fa fa-bars" aria-hidden="true"></i>
+        </span>
+        four
+      </li>
+      <li>
+        <span class="drag-handle">
+          <i class="fa fa-bars" aria-hidden="true"></i>
+        </span>
+        five
+      </li>
+    </ul>
+
+    <button id="capture-emails" type="submit" class="col-4 btn-nofill btn-center"><i class="fa fa-check-square-o" aria-hidden="true"></i> SUBMIT</button>
+  </div>
+
   </section>
 
 
+
+
   <!-- jQuery first, then Tether, then Bootstrap JS. -->
-  <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
   <script src="https://use.fontawesome.com/dd8e55528e.js"></script>
+  <!-- Sortable.js -->
+  <script src="//rubaxa.github.io/Sortable/Sortable.js"></script>
   <script src="/scripts/app.js"></script>
+  </div>
 </body>
 </html>
