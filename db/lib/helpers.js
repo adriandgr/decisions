@@ -171,19 +171,41 @@ module.exports = knex => {
     },
 
     poll: {
+
+
       end:
         uuid => {
-          console.log('uuid:', uuid);
           return knex('polls')
                   .where('polls.admin_uuid', '=', uuid)
                   .update('active', false)
                   .then(() => {
-                    console.log('Updated poll for admin_uuid = ', req.params.uuid, 'to active = false');
+                    console.log('Updated poll for admin_uuid =', uuid, 'to active = false');
+                    return true;
                   })
                   .catch(err => {
-                    console.error('Error: failed to deactive poll for admin_uuid = ', uuid);
+                    console.error(err);
+                    return false;
+                  });
+        },
+
+      update:
+        (uuid, title) => {
+          console.log(uuid);
+          console.log(title);
+          return knex('polls')
+                  .where('polls.admin_uuid', '=', uuid)
+                  .update('name', title)
+                  .then(() => {
+                    console.log('Updated poll for admin_uuid =', uuid, 'to title = ', title);
+                    return true;
+                  })
+                  .catch(err => {
+                    console.error(err);
+                    return false;
                   });
         }
+
+
     }
   };
 };
