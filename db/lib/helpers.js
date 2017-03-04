@@ -21,6 +21,7 @@ module.exports = knex => {
                 email: v.email,
                 poll_id: poll_id,
                 voter_uuid: uuids[0]
+
               }];
               knex('voters')
                 .insert(query)
@@ -44,7 +45,8 @@ module.exports = knex => {
           inserts = new Promise((resolve, reject) => {
             choices.forEach(c => {
               query = [{
-                name: c,
+                name: c.name,
+                description: c.description,
                 poll_id: poll_id
               }];
               knex('choices')
