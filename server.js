@@ -2,13 +2,14 @@
 
 require('dotenv').config();
 
-const PORT        = process.env.PORT || 5000;
-const ENV         = process.env.ENV || 'development';
-const express     = require('express');
-const bodyParser  = require('body-parser');
-const sass        = require('node-sass-middleware');
-const fs          = require('fs');
-const path        = require('path');
+
+
+const PORT        = process.env.PORT || 8080;
+const ENV         = process.env.ENV || "development";
+const express     = require("express");
+const bodyParser  = require("body-parser");
+const sass        = require("node-sass-middleware");
+
 const app         = express();
 
 const knexConfig  = require('./knexfile');
@@ -16,24 +17,6 @@ const knex        = require('knex')(knexConfig[ENV]);
 const winston     = require('winston');
 const morgan      = require('morgan');
 const knexLogger  = require('knex-logger');
-
-
-// const mailgun     = require('mailgun-js')({
-//   apiKey: process.env.MG_KEY,
-//   domain: process.env.MG_DOMAIN
-// });
-
-// var data = {
-//   from: `Merge App <app@${process.env.MG_DOMAIN}>`,
-//   to: `${process.env.MG_TEST_TO}`,
-//   subject: 'Hello world',
-//   text: 'Testing some Mailgun awesomness from node!',
-//   html: 'hey node'
-// };
-// // SAMPLE mailgun send process:
-// // mailgun.messages().send(data, function (error, body) {
-// //   console.log(body);
-// // });
 
 
 const db          = require('./db/lib/helpers.js')(knex);
@@ -63,37 +46,31 @@ if (ENV === 'development') {
 
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(sass({
-  src: path.join(__dirname, '/sass'),
-  dest: path.join(__dirname, '/public/styles'),
+app.use("/styles", sass({
+  src: __dirname + "/styles",
+  dest: __dirname + "/public/styles",
   debug: true,
-  outputStyle: 'expanded',
-  prefix: '/styles'
+  outputStyle: 'expanded'
 }));
 app.use(express.static('public'));
+
+
 
 // Mount all resource routes
 app.use('/polls', pollsRoutes(db, knex));
 app.use('/admins', adminsRoutes(db, knex));
 // Home page
+
 // app.get('/', (req, res) => {
 //   res.render('index');
 // });
 
-app.get('/polls/:id', (req, res) => {
-  //logic here to find poll with :id
-  if(req.params.id === '1'){
-    res.send('okay!');
-  } else {
-    res.status(404);
-  }
-  // res.status(200).json({poll: {
-  //   name:
-  //   created:
-  //   ...
-  // } })
-})
+
+app.get("/", (req, res) => {
+  res.render("index");
+});
 
 app.listen(PORT, () => {
-  winston.info('Example app listening on port ' + PORT);
+  console.log("Example app listening on port " + PORT);
 });
+
