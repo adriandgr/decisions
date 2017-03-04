@@ -44,25 +44,25 @@ module.exports = (db, knex) => {
  */
   route.post('/:uuid', (req, res) =>{
 
-
-    //Needs to include Mailgun chain here upon submission, informing users polls have ended
-    function checkActive () {
-      knex('polls').where('polls.admin_uuid', '=', uuid).update('active', false);
-    }
-    checkActive();
-
-
-
-    function updateTitle() {
-      //Change the name of the question to req.body
-      knex('polls').where('polls.admin_uuid', '=', id).update('name', "Where do you want to eat")
-      .then(function(rows) {
-        res.json({success: true});
-      });
+    if(req.body.method === 'end') {
+      db.poll.end(req.params.uuid);
+    } else if (req.body.method === 'update') {
+      return;
     }
 
 
-    updateTitle();
+
+
+    // function updateTitle() {
+    //   //Change the name of the question to req.body
+    //   knex('polls').where('polls.admin_uuid', '=', id).update('name', "Where do you want to eat")
+    //   .then(function(rows) {
+    //     res.json({success: true});
+    //   });
+    // }
+
+
+    // updateTitle();
   });
 
 
