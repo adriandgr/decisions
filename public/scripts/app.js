@@ -73,34 +73,46 @@ function ordinalWord(num, word) {
 
 function addInput(targetId, word) {
   let len = $(`${targetId} > div`).length;
-  let colWidth, $plusSpace, $input2;
-  if (word === 'choice') {
-    colWidth = 11;
-  } else {
-    $plusSpace = $('<div>').addClass('col-1 plus-space-sm');
-    $('<i>').addClass('fa fa-plus').attr('aria-hidden', 'true').appendTo($plusSpace);
 
-    $input2 = $('<input>').addClass('col-4 form-control friend-name').attr({
-      id: `friend-name-${len - 2}`,
+  let $div = $("<div>")
+    .addClass('form-group row')
+    .attr('id', `node-${len - 2}`);
+
+  let $label = $("<label>")
+    .addClass('col-1')
+    .attr( 'for', `${word}-${len - 2}`);
+
+  $("<i>")
+    .addClass('delete-choice fa fa-trash-o')
+    .attr({ id: `x${len - 2}`, 'aria-hidden': 'true' })
+    .appendTo( $label );
+
+  $label.appendTo( $div );
+
+  $("<input>")
+    .addClass(`col-10 col-md-6 form-control op1 ${ word === 'choice' ? word : 'friend-email' }`)
+    .attr({
+      id: `${word}-${len - 2}`,
       type: 'text',
-      placeholder: 'their name'
-    });
-    colWidth = 6;
-  }
+      placeholder: ordinalWord(len - 2, word)
+    }).appendTo( $div );
 
-  let $div = $("<div>").addClass('form-group row').attr('id', `node-${len - 2}`);
-  let $label = $("<label>").addClass('col-1').attr( 'for', `${word}-${len - 2}`);
-  $("<i>").addClass('delete-choice fa fa-times').attr({ id: `x${len - 2}`, 'aria-hidden': 'true' }).appendTo($label);
-  $label.appendTo($div);
-  $("<input>").addClass(`col-${colWidth} form-control ${ word === 'choice' ? word : 'friend-email' }`).attr({
-    id: `${word}-${len - 2}`,
-    type: 'text',
-    placeholder: ordinalWord(len - 2, word)
-  }).appendTo($div);
-  if (word === 'friend'){
-    $plusSpace.appendTo($div);
-    $input2.appendTo($div);
-  }
+  let $plusSpace = $('<div>')
+    .addClass('col-1 offset-md-0 plus-space-sm');
+
+  $('<i>')
+    .addClass('fa fa-plus show-option')
+    .attr('aria-hidden', 'true')
+    .appendTo( $plusSpace );
+  $plusSpace.appendTo( $div );
+
+  $('<input>')
+    .addClass(`hidden-sm-down col-md-4 form-control op2 ${ word === 'choice' ? 'description' : 'friend-name' }`)
+    .attr({
+      id: `${ word === 'choice' ? 'description' : 'friend-name' }-${len - 2}`,
+      type: 'text',
+      placeholder: `${ word === 'choice' ? 'optional description' : 'their name' }`
+    }).appendTo( $div );
 
   $( $div ).insertAfter( `${targetId} > div:nth-child(${len - 2})` );
 }
@@ -132,6 +144,12 @@ function dataComposer() {
   for ( let choice of $('.choice')){
     choices.push(choice.value);
   }
+
+  let choices_descriptions = [];
+  for ( let description of $('.description')){
+    choices.push(description.value);
+  }
+
 
   let friends = [];
   for ( let friend of $('.friend-name')){
@@ -190,6 +208,20 @@ $(document).ready(()=> {
     $(event.target).closest('div').remove();
   });
 
+  $(document).on('click', '.show-option', (event)=> {
+    event.preventDefault();
+    $(event.target)
+      .toggleClass('fa-plus fa-minus');
+    $(event.target)
+      .closest('div').toggleClass('offset-1');
+    $(event.target)
+      .closest('div').siblings('.op1')
+      .toggleClass('col-10 col-11');
+    $(event.target)
+      .closest('div').siblings('.op2')
+      .toggleClass('hidden-sm-down col-10');
+  });
+
   $('#nav-control').on('click', ()=> {
     $('#main-nav').toggle();
   });
@@ -203,14 +235,15 @@ $(document).ready(()=> {
 
   $('#capture-emails').on('click', (event)=> {
     event.preventDefault();
-    $('#create-view').toggle();
-    $('#send-view').toggle();
+    $('#create-view').fadeToggle('fast',()=>{
+      $('#send-view').fadeToggle('slow');
+    });
   });
   let data = dataComposer();
   genSortableList(data);
   $('#submit-form').on('click', (event)=> {
     event.preventDefault();
-    console.log(dataComposer())
+    console.log(dataComposer());
     $.ajax({
       type: 'POST',
       url: '/polls',

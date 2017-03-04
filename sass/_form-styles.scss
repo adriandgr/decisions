@@ -1,9 +1,15 @@
+.merge-form input {
+  margin-bottom: 5px;
+  padding-right: 10px;
+  @media (min-width: $tablet-breakpoint){
+    padding: inherit 5px;
+  }
+}
+
 .merge-form input[type="text"] {
   color: $main-text;
   border: solid $main-light 4px;
   background-color: transparent;
-
-
 }
 .xl-input {
     font-size: 2em;
@@ -21,22 +27,42 @@
   line-height: 2em;
 
 }
-.plus-space:hover, .plus-space-sm:hover {
+.plus-space:hover, .plus-space-sm i:hover {
   color: $main-text;
 }
 
+.fa.delete-choice, .plus-space-sm i {
+  position: relative;
+  padding: 8px 0;
+  font-size: 1.5em;
+  @media (min-width: $tablet-breakpoint){
+    padding: 6px 0;
+    font-size: 1.8em;
+  }
+}
+.show-option.fa-minus {
+  position: relative;
+  left: -10px;
+  @media (min-width: $tablet-breakpoint){
+    left: 0;
+  }
 
-.plus-space-sm {
-  font-size: 1.8em;
+}
+.plus-space-sm i{
   color: $main-light;
-
-
-  i {
-    line-height: 1em;
-    padding: 5px, 0;
+}
+.fa.delete-choice{
+  color: $main-warn;
+  left: -10px;
+  @media (min-width: $tablet-breakpoint){
+    color: $main-text;
+    left: 0;
   }
 }
 
+.delete-choice:hover {
+  color: $main-warn;
+}
 
 
 
