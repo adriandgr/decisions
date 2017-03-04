@@ -2,18 +2,10 @@
 
 const express = require('express');
 const route = express.Router();
-const fs          = require('fs');
-const str         = fs.readFileSync('./routes/emailTemplatePollEnd.ejs', 'utf8');
-const mailgun     = require('mailgun-js')({
-  apiKey: process.env.MG_KEY,
-  domain: process.env.MG_DOMAIN
-});
-
-
-module.exports = (db, knex) => {
 
 
 
+module.exports = (db, knex, mailgun) => {
 
 /*
     GET /admins/:uuid
@@ -48,19 +40,21 @@ module.exports = (db, knex) => {
 
 /*
     POST /admins/:uuid
->>>>>>> c4a7c3d1325af3408c1659d0bcee07cc6c070d99
+
 
       Responsible for ending poll or updating poll title
  */
   route.post('/:uuid', (req, res) =>{
-
+    console.log(req.body);
     if(req.body.method === 'end') {
       db.poll.end(req.params.uuid)
         .then(success => {
           if(success) {
+            mailgun.sendResult(req.params.uuid);
             res.json({end: true});
+          } else {
+            res.json({end: false});
           }
-          res.json({end: false});
         });
     } else {
       db.poll.update(req.params.uuid, req.body.title)
