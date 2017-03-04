@@ -27,9 +27,11 @@ module.exports = (db, knex) => {
 
     db.insert.pollRow(req.body)
       .then(poll => {
+        console.log('POOOOOOOLL!', poll[0])
         return db.insert.choices(poll[0]);
       })
       .then(poll => {
+        console.log('poll.id', req.body)
         return db.insert.voters(poll.id, req.body);
       })
       .catch(err => {

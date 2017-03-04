@@ -153,7 +153,19 @@ function dataComposer() {
   return data;
 }
 
+function genSortableList(data) {
+  console.log(data)
+  data.choices.forEach((a,b) =>{
+    console.log('a', a);
+    console.log('b', b);
+  });
 
+  let $li = $('<li>')
+  let $span = $('<i>').addClass('fa fa-bars').attr('aria-hidden', 'true')
+    .appendTo($('<span>').addClass('drag-handle'))
+    .appendTo($li).text('hoots');
+
+}
 
 
 $(document).ready(()=> {
@@ -194,22 +206,23 @@ $(document).ready(()=> {
     $('#create-view').toggle();
     $('#send-view').toggle();
   });
-
+  let data = dataComposer();
+  genSortableList(data);
   $('#submit-form').on('click', (event)=> {
     event.preventDefault();
-
+    console.log(dataComposer())
     $.ajax({
       type: 'POST',
       url: '/polls',
-      data: dataComposer(),
+      data: data,
       dataType: 'json'
-    }).then(res=>{
+    }).then(res=> {
       console.log('success', res);
       Sortable.create(byId('foo'), {
-    handle: '.drag-handle',
-    animation: 150
-  });
-
+        handle: '.drag-handle',
+        animation: 150
+      });
+      genSortableList(data);
       $('#send-view').fadeToggle('fast',()=> {
         $('#no-results').hide();
         $('#display-results').show();

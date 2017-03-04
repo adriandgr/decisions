@@ -19,7 +19,7 @@ module.exports = knex => {
               let query = [{
                 name: v.name,
                 email: v.email,
-                poll_id: poll.poll_id,
+                poll_id: pollId.poll_id,
                 voter_uuid: v.voter_uuid
               }];
               knex('voters')
