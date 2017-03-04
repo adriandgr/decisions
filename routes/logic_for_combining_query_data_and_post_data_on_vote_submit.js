@@ -10,13 +10,13 @@ let dataFromPost = [
   {choice_id: 3, rank: 2}
 ];
 
-dataFromQuery.map(rowA => {
-  dataFromPost.forEach(rowB => {
-    if(rowA.choice_id === rowB.choice_id) {
-      return rowA.row = rowB.rank;
+dataFromQuery.map(dbData => {
+  dataFromPost.forEach(postData => {
+    if(dbData.choice_id === postData.choice_id) {
+      return dbData.row = postData.rank;
     }
   });
-  return rowA;
+  return dbData;
 });
 
 console.log(dataFromQuery);

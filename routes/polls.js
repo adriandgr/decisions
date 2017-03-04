@@ -3,12 +3,22 @@
 const express = require('express');
 const route = express.Router();
 
-module.exports = db => {
+module.exports = (db, knex) => {
 
   route.get('/', (req, res) => {
     res.send('');
   });
 
+
+
+/*
+    RECEIVES POST DATA FROM SUBMISSION OF NEW POLL
+      RESONSE
+        {
+          SUCCESS: TRUE/FALSE,
+          (ADMIN_UUID: <UUID>)
+        }
+ */
   route.post('/', (req, res) => {
     let meaning = 'This route is responsible for receiving the POST data from the "Create a New Poll" form';
     meaning += ' and then querying the database to eventually return a response containing relevant data';
@@ -17,7 +27,7 @@ module.exports = db => {
 
     db.insert.pollRow(req.body)
       .then(poll => {
-        return db.insert.choices(poll[0])[0];
+        return db.insert.choices(poll[0]);
       })
       .then(poll => {
         return db.insert.voters(poll.id, req.body);
@@ -28,88 +38,87 @@ module.exports = db => {
 
   });
 
+
+
+
+/*
+    USES VOTER_UUID FROM URL TO RETRIEVE POLL DATA AS WELL AS CHOICES AND ASSOCIATED RANKS
+      RESPONSE:
+        {
+          POLL ID,
+          POLL NAME,
+          [CHOICE ID - RANK] * n
+        }
+ */
   route.get('/:uuid', (req, res) => {
     let meaning = 'This route is responsible for a given voter\'s view of a poll';
 
     let response = {};
-    // select choices.id, choices.name, votes.rank from choices inner join votes on votes.choice_id = choices.id where choices.poll_id = 1;
-    function getChoicesAndRanks(poll_id) {
-      knex('choices')
-        .select('choices.id', 'choices.name')
-        .join('votes', 'votes.choice_id', 'choices.id')
-        .where('choices.poll_id', poll_id)
-        .sum('votes.rank as borda_rank')
-        .groupBy('name', 'choices.id')
-        .then(results => {
-          // console.log(results);
-          response['choices'] = results;
-          console.log(response);
-          res.json(response);
-        })
-        .catch(err => {
-          console.error(err);
-        })
-    }
 
-    function pollEssentials() {
-      knex('voters')
-        .select('polls.id', 'polls.name', 'created_at')
-        .join('polls', 'polls.id', 'voters.poll_id')
-        .where('voters.voter_uuid', 'sf4ffvc')
-        .then(results => {
-          response['poll'] = results;
-          return results[0].id;
-        })
-        .then(poll_id => {
-          console.log(poll_id);
-          getChoicesAndRanks(poll_id);
-
-        })
-        .catch(err => {
-          console.error(err);
-        });
-    }
-    pollEssentials();
-
-    // res.send(meaning);
+    db.retrieve.poll()
+      .then(poll => {
+        response['poll'] = poll;
+        return poll.id;
+      })
+      .then(poll_id => {
+        return db.retrieve.choicesAndRanks(poll_id);
+      })
+      .then(queryData => {
+        // Run function to combine data from query and post data here
+        response['choices'] =  queryData;
+        // console.log('Response object: ', response); // DONE: This logs the response 100% correctly
+      })
+      .catch(err => {
+        console.error(err);
+      });
   });
 
+
+/*
+    USES VOTER_UUID FROM URL TO RETRIEVE VOTER DATA AND ASSOCIATED CHOICE DATA
+      USESSRETREIEVED DATA TO APPROPRIATELY APPEND RANK TO REQ.BODY LIST OF CHOICE OBJECTS:
+        RESPONSE
+          []
+            { VOTER_ID, CHOICE_ID, RANK_ID }
+          ]
+ */
   route.post('/:uuid', (req, res) => {
     let meaning = 'This route is reponsible for receiving vote data, inserting this data into the database';
     meaning += ' meaningfully, and then returning updated vote counts';
 
-    function getVoterAndChoicesIds() {
-      knex('voters')
-        .select('voters.id as voter_id', 'choices.id as choices_id')
-        .join('polls', 'voters.poll_id', 'polls.id')
-        .join('choices', 'polls.id', 'choices.poll_id')
-        .where('voter_uuid', req.params.uuid)
-        .then(rows => {
-          console.log();
-        })
-        .catch(err => {
-          console.log(err);
+    function mergeData(dbData, requestData) {
+      dbData.map(dbData => {
+        requestData.forEach(requestData => {
+          if(dbData.choice_id === requestData.choice_id) {
+            return dbData.rank = requestData.rank;
+          }
         });
+        return dbData;
+      });
+      return dbData;
     }
 
-    function createVotes() {
-      let rows = [
-        { voter_id: 62, choice_id: 1, rank: 3 },
-        { voter_id: 62, choice_id: 2, rank: 1 },
-        { voter_id: 62, choice_id: 3, rank: 2 }
-      ];
-      rows.forEach(row => {
-        knex('votes')
-          .insert(row)
-          .returning('id')
-          .then(id => {
-            console.log('  Created vote => id:', id[0]);
-          })
-          .catch(err => {
-            console.error(err);
-          });
+    // overrides actual req.body.choices for now
+    req.body.choices = [
+      { choice_id: 1, rank: 3 },
+      { choice_id: 2, rank: 1 },
+      { choice_id: 3, rank: 2 }
+    ];
+
+    db.retrieve.choices(req.params.uuid)
+      .then(dbData => {
+        return mergeData(dbData, req.body.choices);
+      })
+      .then(mergedData => {
+        return db.insert.votes('3');
+      })
+      .then(results => {
+        console.log(results);
+      })
+      .catch(err => {
+        console.error(err);
       });
-    }
+
   });
 
   return route;
