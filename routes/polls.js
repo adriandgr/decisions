@@ -2,6 +2,7 @@
 
 const express = require('express');
 const route = express.Router();
+const uuid = require('./util/uuid-generator');
 
 module.exports = (db, knex) => {
 
@@ -24,15 +25,17 @@ module.exports = (db, knex) => {
     meaning += ' and then querying the database to eventually return a response containing relevant data';
 
     let response = {};
+    let uuids = [uuid(), uuid()];
 
-    db.insert.pollRow(req.body)
+    db.insert.pollRow(req.body, uuids[1])
       .then(poll => {
-        console.log('POOOOOOOLL!', poll[0])
-        return db.insert.choices(poll[0]);
+        return db.insert.choices(poll[0].id, req.body.choices);
       })
-      .then(poll => {
-        console.log('poll.id', req.body)
-        return db.insert.voters(poll.id, req.body);
+      .then(poll_id => {
+        return db.insert.voters(poll_id, req.body, uuids);
+      })
+      .then(() => {
+        res.json({success: true});
       })
       .catch(err => {
         console.error('Error:', err);
@@ -80,7 +83,7 @@ module.exports = (db, knex) => {
     USES VOTER_UUID FROM URL TO RETRIEVE VOTER DATA AND ASSOCIATED CHOICE DATA
       USESSRETREIEVED DATA TO APPROPRIATELY APPEND RANK TO REQ.BODY LIST OF CHOICE OBJECTS:
         RESPONSE
-          []
+          [
             { VOTER_ID, CHOICE_ID, RANK_ID }
           ]
  */
@@ -112,10 +115,10 @@ module.exports = (db, knex) => {
         return mergeData(dbData, req.body.choices);
       })
       .then(mergedData => {
-        return db.insert.votes('3');
+        return db.insert.votes({success: trues});
       })
       .then(results => {
-        console.log(results);
+        res.json(results);
       })
       .catch(err => {
         console.error(err);
