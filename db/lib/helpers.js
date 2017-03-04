@@ -7,8 +7,8 @@ module.exports = knex => {
         (poll, req) => {
           let voters = [
             { name: 'Donald', email: 'geddes.3574', voter_uuid: 'asdf', poll_id: 1},
-            { name: 'Richard', email: 'an@email.com', voter_uuid: 'fdsa', poll_id: 2 },
-            { name: 'Adrian', email: 'another@email.com', voter_uuid: 'afsd', poll_id: 2 }
+            { name: 'Richard', email: 'an@email.com', voter_uuid: 'fdsa', poll_id: 1 },
+            { name: 'Adrian', email: 'another@email.com', voter_uuid: 'afsd', poll_id: 1 }
             // { name: req.body.created_by, email: req.creator_email,  voter_uuid: column.admin_uuid }
           ];
           let promises = voters;
