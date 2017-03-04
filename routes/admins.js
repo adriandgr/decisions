@@ -55,24 +55,23 @@ module.exports = (db, knex) => {
   route.post('/:uuid', (req, res) =>{
 
     if(req.body.method === 'end') {
-      db.poll.end(req.params.uuid);
-    } else if (req.body.method === 'update') {
-      return;
+      db.poll.end(req.params.uuid)
+        .then(success => {
+          if(success) {
+            res.json({end: true});
+          }
+          res.json({end: false});
+        });
+    } else {
+      db.poll.update(req.params.uuid, req.body.title)
+        .then(success => {
+          if(success) {
+            res.json({update: true});
+          }
+          res.json({update: false});
+        });
     }
 
-
-
-
-    // function updateTitle() {
-    //   //Change the name of the question to req.body
-    //   knex('polls').where('polls.admin_uuid', '=', id).update('name', "Where do you want to eat")
-    //   .then(function(rows) {
-    //     res.json({success: true});
-    //   });
-    // }
-
-
-    // updateTitle();
   });
 
 
