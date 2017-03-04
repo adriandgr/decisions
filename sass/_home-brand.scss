@@ -1,8 +1,15 @@
 .home-brand {
   color: $main-text;
-  font-size: 5em;
-  transform: translate(-60px, 0px);
-
+  font-size: 3.5em;
+  transform: translate(-35px, -10px);
+  @media (min-width: $tablet-breakpoint){
+    transform: translate(-50px, 0px);
+    font-size: 4em;
+  }
+  @media (min-width: $desktop-breakpoint){
+    transform: translate(-50px, -5px);
+    font-size: 5em;
+  }
 }
 
 #small-brand {
@@ -12,13 +19,32 @@
 .brand-line {
   font-size: .8em;
   padding:0;
-  transform: translate(-55px, -5px);
+  transform: translate(-30px, -15px);
   @media (min-width: $tablet-breakpoint){
+    transform: translate(-45px, -5px);
     font-size: .9em;
+  }
+  @media (min-width: $desktop-breakpoint){
+    transform: translate(-45px, -10px);
+    font-size: 1.1em;
   }
 }
 
 .logo {
-    max-height: 300px;
+  max-height: 200px;
 
+  @media (min-width: $tablet-breakpoint){
+    max-height: 250px;
   }
+
+  @media (min-width: $desktop-breakpoint){
+    max-height: 300px;
+  }
+}
+
+.logo-sm {
+  position: relative;
+  float: right;
+  max-height: 100px;
+
+}

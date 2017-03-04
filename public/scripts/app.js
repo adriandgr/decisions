@@ -1,4 +1,46 @@
-let choiceInput = 0;
+var byId = function (id) { return document.getElementById(id); },
+
+    loadScripts = function (desc, callback) {
+      var deps = [], key, idx = 0;
+
+      for (key in desc) {
+        deps.push(key);
+      }
+
+      (function _next() {
+        var pid,
+          name = deps[idx],
+          script = document.createElement('script');
+
+        script.type = 'text/javascript';
+        script.src = desc[deps[idx]];
+
+        pid = setInterval(function () {
+          if (window[name]) {
+            clearTimeout(pid);
+
+            deps[idx++] = window[name];
+
+            if (deps[idx]) {
+              _next();
+            } else {
+              callback.apply(null, deps);
+            }
+          }
+        }, 30);
+
+        document.getElementsByTagName('head')[0].appendChild(script);
+      })()
+    },
+
+    console = window.console;
+
+
+  if (!console.log) {
+    console.log = function () {
+      alert([].join.apply(arguments, ' '));
+    };
+  }
 
 function neverCalled() {
   $("p").addClass('col-md-6').text("blaha").appendTo("#main");
@@ -112,6 +154,8 @@ function dataComposer() {
 }
 
 
+
+
 $(document).ready(()=> {
 
 
@@ -161,6 +205,16 @@ $(document).ready(()=> {
       dataType: 'json'
     }).then(res=>{
       console.log('success', res);
+      Sortable.create(byId('foo'), {
+    handle: '.drag-handle',
+    animation: 150
+  });
+
+      $('#send-view').fadeToggle('fast',()=> {
+        $('#no-results').hide();
+        $('#display-results').show();
+        $('#results-view').fadeToggle('slow');
+      });
     }).catch(res=>{
       console.log('fail', res);
     });
@@ -171,8 +225,27 @@ $(document).ready(()=> {
     // }).then((res) => {
     // });
 
-    // $('#send-view').toggle();
-    // $('#results-view').toggle();
+
+  });
+
+
+  let isDragging = false;
+
+  $('#display-results li > .drag-handle').mousedown(function() {
+    isDragging = false;
+  })
+  .mousemove(function() {
+      isDragging = true;
+   })
+  .mouseup(function() {
+      var wasDragging = isDragging;
+      isDragging = false;
+      if (!wasDragging) {
+        console.log('did not drag!')
+          $("#throbble").toggle();
+      } else {
+        console.log('you\'re such a drag!')
+      }
   });
 
 
@@ -213,4 +286,7 @@ $(document).ready(()=> {
   $('#close-menu').on('click', () => {
     $('#main-nav').hide();
   });
+
+
+
 });
