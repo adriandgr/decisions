@@ -3,7 +3,9 @@
 const express = require('express');
 const route = express.Router();
 
-module.exports = (knex) => {
+module.exports = (db, knex) => {
+
+
   route.get('/:admin_uuid', (req, res) => {
     let id = req.params.admin_uuid;
 
@@ -17,6 +19,7 @@ module.exports = (knex) => {
       .where('polls.admin_uuid', id)
       .select('choices.id', 'choices.name', 'rank')
       .then(function(rows) {
+        console.log('Rows from gettingChoicesNameRankTable: ', rows);
         response['rankTable'] = rows;
       })
       .catch(err => {
@@ -30,9 +33,9 @@ module.exports = (knex) => {
     function gettingPollsTable() {
       knex.select('*').from('polls')
       .where('admin_uuid', '=', id)
-      .then(function(rows) {
-        response['polls'] = rows;
-        console.log(response);
+      .then(poll => {
+        response['polls'] = poll;
+        console.log('Rows from gettingPollsTable: ', poll);
         res.json(response);
       })
       .catch(err => {

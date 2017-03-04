@@ -137,18 +137,18 @@ module.exports = knex => {
         }, // closes voterAndChoices
 
       poll:
-        () => {
+        uuid => {
           return knex('voters')
                   .select('polls.id', 'polls.name', 'created_at')
                   .join('polls', 'polls.id', 'voters.poll_id')
-                  .where('voters.voter_uuid', 'sf4ffvc')
+                  .where('voters.voter_uuid', uuid)
                   .then(row => {
                     return row[0];
                   })
                   .catch(err => {
                     console.error(err);
                   });
-        }, // closes pollNameAndID
+        }, // closes poll()
 
       choicesAndRanks:
         poll_id => {
