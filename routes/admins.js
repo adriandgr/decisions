@@ -2,15 +2,17 @@
 
 const express = require('express');
 const route = express.Router();
-const ejs         = require('ejs')
-                    , fs = require('fs')
-                    , str = fs.readFileSync('./routes/emailTemplatePollEnd.ejs', 'utf8');
+const fs          = require('fs');
+const str         = fs.readFileSync('./routes/emailTemplatePollEnd.ejs', 'utf8');
 const mailgun     = require('mailgun-js')({
   apiKey: process.env.MG_KEY,
   domain: process.env.MG_DOMAIN
 });
 
-module.exports = (knex) => {
+
+
+
+module.exports = (db, knex, ejs) => {
   route.get('/:admin_uuid', (req, res) => {
     let id = req.params.admin_uuid;
 
@@ -69,6 +71,8 @@ module.exports = (knex) => {
       .returning(['polls.name', 'polls.created_by','voters.email', 'voters.voter_uuid'])
       .then(function(column) {
         column.forEach(pollInfo => {
+
+
           let messageHtml = ejs.render(str, pollInfo);
           console.log(messageHtml);
           let  data = {
