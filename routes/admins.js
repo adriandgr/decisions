@@ -42,12 +42,12 @@ module.exports = (db, knex) => {
 
       Responsible for ending poll or updating poll title
  */
-  route.post('/uuid', (req, res) =>{
+  route.post('/:uuid', (req, res) =>{
 
 
     //Needs to include Mailgun chain here upon submission, informing users polls have ended
     function checkActive () {
-      knex('polls').where('polls.admin_uuid', '=', id).update('active', false);
+      knex('polls').where('polls.admin_uuid', '=', uuid).update('active', false);
     }
     checkActive();
 
