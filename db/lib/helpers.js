@@ -81,38 +81,39 @@ module.exports = knex => {
                   });
         },
 
-    //   votes:
-    //     () => {
-    //       let votes = [
-    //         { voter_id: 62, choice_id: 1, rank: 3 },
-    //         { voter_id: 62, choice_id: 2, rank: 1 },
-    //         { voter_id: 62, choice_id: 3, rank: 2 }
-    //       ];
-    //       inserts = new Promise((resolve, reject) => {
-    //         votes.forEach(v => {
-    //           let query = [
-    //             v
-    //           ];
-    //           knex('choices')
-    //             .insert(query)
-    //             .returning('id')
-    //             .then(id => {
-    //               console.log('  Created vote => id:', id);
-    //             })
-    //             .catch(err => {
-    //               reject('Error: One of the knex inserts has failed => \n' + err);
-    //             });
-    //         });
-    //         resolve({success: true})
-    //       });
-    //       return inserts;
-    //     }
+      votes:
+        poll => {
+          let votes = [
+            { voter_id: 3, choice_id: 1, rank: 3 },
+            { voter_id: 3, choice_id: 2, rank: 1 },
+            { voter_id: 3, choice_id: 3, rank: 2 }
+          ];
+          let inserts = new Promise((resolve, reject) => {
+            votes.forEach(v => {
+              let query = [
+                v
+              ];
+              console.log(query);
+              knex('votes')
+                .insert(query)
+                .returning('id')
+                .then(id => {
+                  console.log('  Created vote => id:', id);
+                })
+                .catch(err => {
+                  reject('Error: One of the knex inserts has failed => \n' + err);
+                });
+            });
+            resolve(poll);
+          });
+          return inserts;
+        }
 
-    // },
+    },
 
     retrieve: {
 
-      voterAndChoices:
+      choices:
         uuid => {
           return knex('voters')
                   .select('voters.id as voter_id', 'choices.id as choice_id')
@@ -133,7 +134,7 @@ module.exports = knex => {
 
         }, // closes voterAndChoices
 
-      pollNameAndID:
+      poll:
         () => {
           return knex('voters')
                   .select('polls.id', 'polls.name', 'created_at')
