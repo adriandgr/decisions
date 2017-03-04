@@ -110,7 +110,7 @@ module.exports = (db, knex) => {
       { choice_id: 3, rank: 2 }
     ];
 
-    db.retrieve.choices(req.params.uuid)
+    db.retrieve.voterAndChoices(req.params.uuid)
       .then(dbData => {
         return mergeData(dbData, req.body.choices);
       })
