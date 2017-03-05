@@ -96,6 +96,7 @@ module.exports = (db, knex) => {
     db.retrieve.voter(req.params.uuid)
       .then(voter_id => {
         db.insert.votes(voter_id, req.body.ballot);
+        res.send('OK');
       });
 
 

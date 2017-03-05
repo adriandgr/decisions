@@ -158,6 +158,7 @@ module.exports = knex => {
                   .sum('votes.rank as borda_rank')
                   .groupBy('name', 'choices.id', 'rank')
                   .then(rows => {
+                    console.log(rows);
                     return rows;
                   })
                   .catch(err => {

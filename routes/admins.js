@@ -17,19 +17,40 @@ module.exports = (db, knex, mailgun) => {
     db.retrieve.poll(req.params.uuid)
       .then(poll => {
         response['poll'] = poll;
-        console.log('Row from retrieving poll', poll);
+        return poll.id;
       })
       .then(poll_id => {
-        console.log('PollID:', poll_id);
-        return db.retrieve.choicesAndRanks(poll_id);
+        return db.retrieve.ranks(poll_id);
       })
-      .then(results => {
-        console.log('Choices and ranks:', results);
-        response['choices'] = results;
-        res.json(response);
+      .then(ranks => {
+        if(ranks) {
+          return db.retrieve.choicesAndRanks(ranks.poll_id);
+        } else {
+          return db.retrieve.choices(poll_id);
+        }
       })
+      // .then(ranks => {
+      //   return db.retrieve.choices(poll_id);
+      // })
+      //     return db.retrieve.choices(poll_id);
+      //   } else {
+      //     return false;
+      //   }
+      // })
+      // .then(choices => {
+      //   if(choices) {
+      //     response.choices = choices;
+      //     res.json(response);
+      //   } else {
+      //     response.choices = { default: 'empty' };
+      //     res.json(response);
+      //   }
+      //   // response['choices'] = results;
+      //   // console.log(results);
+      //   res.json(response);
+      // })
       .catch(err => {
-        console.error('Error retrieving poll:', err);
+        res.json({Error: 'Encountered an error while attempting to render this page'});
       });
 
 
