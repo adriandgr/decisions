@@ -1,0 +1,27 @@
+#home-view {
+  padding: 150px 0 0 0;
+}
+
+
+
+#create-view, #send-view, #results-view {
+  padding: 100px 0 0 0;
+}
+
+#create-view, #send-view, #results-view {
+  display:none;
+}
+
+.list-choice {
+  position: relative;
+  left: 20px;
+  display: inline-block;
+}
+
+.list-description {
+  position: relative;
+  top: -10px;
+  left: 50px;
+  color: $main-light;
+  font-size: 0.75em;
+}

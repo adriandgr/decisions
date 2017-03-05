@@ -3,48 +3,48 @@
 require('dotenv').config();
 
 const PORT        = process.env.PORT || 5000;
-const ENV         = process.env.ENV || "development";
-const express     = require("express");
-const bodyParser  = require("body-parser");
-const sass        = require("node-sass-middleware");
+const ENV         = process.env.ENV || 'development';
+const express     = require('express');
+const bodyParser  = require('body-parser');
+const sass        = require('node-sass-middleware');
+const fs          = require('fs');
 const path        = require('path');
 const app         = express();
 
-const knexConfig  = require("./knexfile");
-const knex        = require("knex")(knexConfig[ENV]);
+const knexConfig  = require('./knexfile');
+const knex        = require('knex')(knexConfig[ENV]);
+const winston     = require('winston');
 const morgan      = require('morgan');
 const knexLogger  = require('knex-logger');
 
-const mailgun     = require('mailgun-js')({
-  apiKey: process.env.MG_KEY,
-  domain: process.env.MG_DOMAIN
-});
 
-var data = {
-  from: `Merge App <app@${process.env.MG_DOMAIN}>`,
-  to: `${process.env.MG_TEST_TO}`,
-  subject: 'Hello world',
-  text: 'Testing some Mailgun awesomness from node!',
-  html: 'hey node'
-};
-// SAMPLE mailgun send process:
-// mailgun.messages().send(data, function (error, body) {
-//   console.log(body);
-// });
-
+const db          = require('./db/lib/helpers.js')(knex);
+const mailgun     = require('./routes/util/email')(knex);
 
 // Seperated Routes for each Resource
-const usersRoutes = require("./routes/users");
+const pollsRoutes = require('./routes/polls');
+const adminsRoutes = require('./routes/admins');
 
-// Load the logger first so all (static) HTTP requests are logged to STDOUT
-// 'dev' = Concise output colored by response status for development use.
-//         The :status token will be colored red for server error codes, yellow for client error codes, cyan for redirection codes, and uncolored for all other codes.
-app.use(morgan('dev'));
+winston.level = process.env.LOG_LEVEL || 'debug';
 
-// Log knex SQL queries to STDOUT as well
-app.use(knexLogger(knex));
+// create a write stream (in append mode)
+var accessLogStream = fs.createWriteStream(path.join(__dirname, 'morgan.log'), {flags: 'a'});
 
-app.set("view engine", "ejs");
+// setup the logger
+app.use(morgan('[:status] :date[clf] - :method :url HTTP :http-version :response-time', {stream: accessLogStream}));
+
+
+if (ENV === 'development') {
+  // Load the logger first so all (static) HTTP requests are logged to STDOUT
+  // 'dev' = Concise output colored by response status for development use.
+  //         The :status token will be colored red for server error codes, yellow for client error codes, cyan for redirection codes, and uncolored for all other codes.
+  //app.use(morgan('dev'));
+  // Log knex SQL queries to STDOUT as well
+  app.use(knexLogger(knex));
+}
+
+
+app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(sass({
   src: path.join(__dirname, '/sass'),
@@ -53,15 +53,12 @@ app.use(sass({
   outputStyle: 'expanded',
   prefix: '/styles'
 }));
-app.use(express.static("public"));
+app.use(express.static('public'));
 
 // Mount all resource routes
-app.use("/api/users", usersRoutes(knex));
+app.use('/polls', pollsRoutes(db, knex));
+app.use('/admins', adminsRoutes(db, knex, mailgun));
 
-// Home page
-// app.get("/", (req, res) => {
-//   res.render("index");
-// });
 
 app.get('/polls/:id', (req, res) => {
   //logic here to find poll with :id
@@ -78,5 +75,5 @@ app.get('/polls/:id', (req, res) => {
 })
 
 app.listen(PORT, () => {
-  console.log("Example app listening on port " + PORT);
+  winston.info('Example app listening on port ' + PORT);
 });
