@@ -54,7 +54,7 @@ module.exports = (db, knex) => {
           [CHOICE ID - RANK] * n
         }
  */
-  route.get('/:uuid', (req, res) => {
+  route.get('/:uuid', (req, res, next) => {
     let meaning = 'This route is responsible for a given voter\'s view of a poll';
 
     let response = {};
@@ -75,6 +75,7 @@ module.exports = (db, knex) => {
           response.poll.creator_email = 'hidden';
         }
         res.json(response);
+        next();
       })
       .catch(err => {
         console.error(err);

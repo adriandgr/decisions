@@ -42,17 +42,7 @@ var byId = function (id) { return document.getElementById(id); },
     };
   }
 
-function neverCalled() {
-  $("p").addClass('col-md-6').text("blaha").appendTo("#main");
-  $("#main").append("<p> class='col</p>"); // do not do this
 
-  //alternate
-  let p = $("p").addClass('col-md-6');
-  if (true) {
-    p.text("blaha").appendTo("#main");
-  }
-
-}
 
 function ordinalWord(num, word) {
   switch (num) {
@@ -70,3 +60,25 @@ function ordinalWord(num, word) {
     return `enter ${word} ${num}`;
   }
 }
+
+
+$.extend({
+  getQueryKeys: function(){
+    const vars = [];
+    let hash;
+    let hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+    if(hashes[0] === window.location.href) {
+      return;
+    }
+    for(let i = 0; i < hashes.length; i++)
+    {
+      hash = hashes[i].split('=');
+      vars.push(hash[0]);
+      vars[hash[0]] = hash[1];
+    }
+    return vars;
+  },
+  getQueryKey: function(name){
+    return $.getQueryKeys()[name];
+  }
+});

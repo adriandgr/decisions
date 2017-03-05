@@ -62,6 +62,7 @@ app.use('/admins', adminsRoutes(db, knex, mailgun));
 
 app.get('/polls/:id', (req, res) => {
   //logic here to find poll with :id
+  console.log('GOT HERE!!!!')
   if(req.params.id === '1'){
     res.send('okay!');
   } else {

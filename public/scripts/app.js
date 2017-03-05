@@ -1,13 +1,13 @@
 
 $(document).ready(()=> {
 
-  if ($('body').data('uuid')){
-    console.log("hey! I know you!");
-
+  if($.getQueryKeys() ? $.getQueryKey('key') : false ){
+    console.log('GET /polls/' + $.getQueryKey('key'));
     $.ajax({
       type: 'GET',
-      url: `/polls/${$('body').data('uuid')}`
+      url: `/polls/${$.getQueryKey('key')}`
     }).then(res=> {
+      console.log(res)
       renderAdminView(res);
 
       $('#no-results-admin').hide();
@@ -17,7 +17,6 @@ $(document).ready(()=> {
     }).catch(res=>{
       console.log('fail', res);
     });
-
   } else {
     $('#home-view').fadeToggle('slow');
   }
