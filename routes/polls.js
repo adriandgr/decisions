@@ -26,6 +26,7 @@ module.exports = (db, knex) => {
 
     let response = {};
     let uuids = [uuid(), uuid()];
+    console.log('locals', req.locals)
 
     db.insert.pollRow(req.body, uuids[1])
       .then(poll => {
