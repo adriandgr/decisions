@@ -18,6 +18,7 @@ module.exports = (db, knex) => {
         {
           SUCCESS: TRUE/FALSE,
           (ADMIN_UUID: <UUID>)
+          CHOICE_DATA
         }
  */
   route.post('/', (req, res) => {
@@ -33,12 +34,15 @@ module.exports = (db, knex) => {
       .then(poll => {
         return db.insert.choices(poll[0].id, req.body.choices);
       })
-      .then((poll_id, choiceData) => {
-        console.log('choooiiii', choiceData);
-        return db.insert.voters(poll_id, req.body);
-      })
-      .then(() => {
-        res.json({success: true, admin_uuid: adminUUID, choiceData: req.locals});
+
+      .then(promises => {
+        let ids = [];
+        promises.forEach(promise => {
+          ids.push(promise);
+        });
+        let pollId = ids.shift();
+        db.insert.voters(promises, req.body);
+        res.json({success: true, pollId: pollId, ids: ids});
       })
       .catch(err => {
         console.error('Error:', err);
