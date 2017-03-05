@@ -8,7 +8,7 @@ module.exports = knex => {
     insert: {
 
       voters:
-        (poll_id, voters, uuids) => {
+        (poll_id, voters) => {
           // let body.sent_to = [
           //   { name: 'Donald', email: 'geddes.3574', voter_uuid: 'asdf', poll_id: 1},
           //   { name: 'Richard', email: 'an@email.com', voter_uuid: 'fdsa', poll_id: 1 },
@@ -51,17 +51,19 @@ module.exports = knex => {
                 description: c.description,
                 poll_id: poll_id
               }];
+              choiceData = []
               knex('choices')
                 .insert(query)
-                .returning('id')
+                .returning('id', 'name')
                 .then(id => {
                   console.log('  Created choice => id:', id, '\n  => name:', c);
+                  choiceData.push({id, name});
                 })
                 .catch(err => {
                   reject('Error: One of the knex inserts has failed => \n' + err);
                 });
             });
-            resolve(poll_id);
+            resolve(poll_id, choiceData);
           });
           return inserts;
         },

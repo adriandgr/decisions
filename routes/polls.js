@@ -25,17 +25,18 @@ module.exports = (db, knex) => {
     meaning += ' and then querying the database to eventually return a response containing relevant data';
 
     let response = {};
-    let uuids = [uuid(), uuid()];
+    let adminUUID = uuid();
 
-    db.insert.pollRow(req.body, uuids[1])
+    db.insert.pollRow(req.body, adminUUID)
       .then(poll => {
         return db.insert.choices(poll[0].id, req.body.choices);
       })
-      .then(poll_id => {
-        return db.insert.voters(poll_id, req.body, uuids);
+      .then((poll_id, choiceData) => {
+        req.locals.choiceData = choiceData;
+        return db.insert.voters(poll_id, req.body);
       })
       .then(() => {
-        res.json({success: true});
+        res.json({success: true, admin_uuid: adminUUID, choiceData: req.locals});
       })
       .catch(err => {
         console.error('Error:', err);
