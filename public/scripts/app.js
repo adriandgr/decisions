@@ -1,6 +1,29 @@
 
 $(document).ready(()=> {
 
+  if($.getQueryKeys() ? $.getQueryKey('key') : false ){
+    console.log('GET /polls/' + $.getQueryKey('key'));
+    $.ajax({
+      type: 'GET',
+      url: `/polls/${$.getQueryKey('key')}`,
+      headers: {
+        "X-Source": "merge_app"
+      }
+    }).then(res=> {
+
+      renderAdminView(res);
+
+      $('#no-results-admin').hide();
+      $('#display-results-admin').show();
+
+      $('#admin-view').fadeToggle('slow');
+    }).catch(res=>{
+      console.log('fail', res);
+    });
+  } else {
+    $('#home-view').fadeToggle('slow');
+  }
+
   $('.add-choice-btn').on('click', (event)=> {
     event.preventDefault();
     addInput('#create-form', 'choice');
@@ -111,6 +134,7 @@ $(document).ready(()=> {
        },
       dataType: 'json'
     }).then(res=> {
+      console.log('hey');
       $('#results-view').fadeToggle('fast', ()=> {
         $('#admin-view').fadeToggle('slow');
       });

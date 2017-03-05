@@ -1,17 +1,191 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-  <head>
-    <title>Home Page</title>
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>merge</title>
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+  <link rel="stylesheet" href="/styles/merge.css">
 
-    <link rel="stylesheet" href="/vendor/normalize-4.1.1.css" type="text/css" />
-    <link rel="stylesheet" href="/vendor/border-box.css" type="text/css" />
-    <link rel="stylesheet" href="/styles/layout.css" type="text/css" />
+</head>
+<body class="container"<%if (poll) {%> data-uuid="<%= poll.voter_uuid %>"<%}%>>
+<div class="app-wrap">
+  <!--[if lte IE 9]>
+      <div class="browserupgrade">
+      <p >You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p></div>
+  <![endif]-->
 
-    <script type="text/javascript" src="/vendor/jquery-3.0.0.js"></script>
-    <script type="text/javascript" src="/scripts/app.js"></script>
-  </head>
+  <!-- Add your site or application content here -->
 
-  <body>
-    <h1>Hello World!</h1>
-  </body>
+
+  <div id="nav-control"><i class="fa fa-sliders" aria-hidden="true"></i></div>
+  <nav id="main-nav">
+    <ul class="nav flex-column">
+      <li class="nav-item">
+        <h2>Helper Menu</h2>
+      </li>
+      <li class="nav-item">
+        <a id="toggle-home-view" class="nav-link" href="#">Toggle Home View</a>
+      </li>
+      <li class="nav-item">
+        <a id="toggle-create-view" class="nav-link" href="#">Toggle Create View</a>
+      </li>
+      <li class="nav-item">
+        <a id="toggle-send-view" class="nav-link" href="#">Toggle Send View</a>
+      </li>
+      <li class="nav-item">
+        <a id="toggle-results-view" class="nav-link" href="#">Toggle results View</a>
+      </li>
+      <li class="nav-item">
+        <a id="close-menu" class="nav-link" href="#">close this menu</a>
+      </li>
+    </ul>
+  </nav>
+
+  <!-- <header id="small-brand" class="d-flex justify-content-center">
+      <img class="logo" src="/img/merge-logo.png">
+      <div class="flex-column">
+      <h1 class="home-brand">merge</h1>
+      <p class="brand-line"> make quick decisions amongst your friends</p>
+      </div>
+  </header> -->
+
+  <section id="home-view">
+    <header class="d-flex justify-content-center">
+      <img class="logo hidden-xs-down" src="/img/merge-logo.png">
+      <img class="logo-sm hidden-sm-up" src="/img/sm-merge.png">
+      <div class="flex-column">
+      <h1 class="home-brand">merge</h1>
+      <p class="brand-line"> get quick decisions amongst your friends</p>
+      </div>
+    </header>
+
+    <div class="d-flex justify-content-center">
+      <div class="p-2"><button id="create-poll" class="btn-nofill btn-center">CREATE</button></div>
+    </div>
+  </section>
+
+  <section id="create-view">
+
+    <form id="create-form" class="merge-form" action="/tweets" method="POST">
+      <div class="form-group row"> <!-- (len - len) -->
+        <input type="text" class="col-12 xl-input form-control" id="poll-name" placeholder="enter a question">
+      </div>
+
+      <div class="form-group row"> <!-- (len - 2 index to insert) -->
+        <label class="col-1" for="choice-1">
+        <!-- close button not shown on first choice -->
+        </label>
+        <input class="col-10 col-md-6 form-control op1 choice" id="choice-1" type="text" placeholder="enter first choice">
+        <div class="col-1 offset-md-0 plus-space-sm"><i class="fa fa-plus show-option" aria-hidden="true"></i></div>
+        <input class="hidden-sm-down col-md-4 form-control op2 description" id="description-1" type="text" placeholder="optional description">
+      </div>
+
+      <div class="row"> <!-- (len - 1) add choice -->
+        <div class="col-1">
+        </div>
+        <div class="col-11">
+          <a class="btn add-choice-btn btn-nofill" href=""><i class="fa fa-plus" aria-hidden="true"></i> add a choice</a>
+        </div>
+      </div>
+      <div class="row"> <!-- (len) submit -->
+        <div class="col-8"></div>
+        <button id="capture-emails" type="submit" class="col-4 btn-nofill btn-center">NEXT</button>
+      </div>
+    </form>
+
+  </section>
+
+  <section id="send-view">
+
+    <form id="send-form" class="merge-form" action="/tweets" method="POST">
+      <div class="form-group row"> <!-- (len - len) -->
+        <input type="text" class="col-12 col-md-7 xl-input form-control" id="creator-email" placeholder="enter your email">
+        <div class="col-2 col-md-1 plus-space"><i class="fa fa-plus" aria-hidden="true"></i></div>
+        <input type="text" class="col-10 col-md-4 xl-input form-control " id="creator-name" placeholder="your name">
+      </div>
+
+      <div class="form-group row"> <!-- (len - 2 index to insert) -->
+        <label class="col-1 " for="friend-1">
+        <!-- close button not shown on first choice -->
+        </label>
+        <input class="col-10 col-md-6 form-control op1 friend-email" id="friend-1" type="text" placeholder="enter a friend's email or phone number">
+        <div class="col-1 offset-md-0 plus-space-sm"><i class="fa fa-plus show-option" aria-hidden="true"></i> </div>
+        <input class="hidden-sm-down col-md-4 form-control op2 friend-name" id="friend-name-1" type="text" placeholder="their name">
+      </div>
+
+      <div class="row"> <!-- (len - 1) add choice -->
+        <div class="col-1">
+        </div>
+        <div class="col-11">
+          <a class="btn add-friend-btn btn-nofill" href=""><i class="fa fa-plus" aria-hidden="true"></i> add a friend</a>
+        </div>
+      </div>
+      <div class="row"> <!-- (len) submit -->
+        <div class="col-8"></div>
+        <button id="submit-form" type="submit" class="col-4 btn-nofill btn-center"><i class="fa fa-paper-plane-o" aria-hidden="true"></i> SEND</button>
+      </div>
+    </form>
+
+  </section>
+
+
+
+  <section id="results-view">
+  <div class="row" id="no-results">
+    <div class="col-1 offset-2 offset-sm-3">
+      <i class="fa fa-eye-slash" aria-hidden="true"></i>
+    </div>
+    <div class="col-9 col-sm-8">
+      No results to show.
+    </div>
+    <div class="col-9 col-sm-8 offset-3 offset-sm-4 no-results-info">
+      <p>Perhaps you would like to create a new merge?</p>
+    </div>
+  </div>
+  <div id="display-results">
+
+
+    <button id="submit-vote" type="submit" class="col-5 btn-nofill btn-center"><i class="fa fa-check-square-o" aria-hidden="true"></i> SUBMIT</button>
+  </div>
+
+  </section>
+
+  <section id="admin-view">
+  <div class="row" id="no-results-admin">
+      <div class="col-1 offset-2 offset-sm-3">
+        <i class="fa fa-eye-slash" aria-hidden="true"></i>
+      </div>
+      <div class="col-9 col-sm-8">
+        No results to show.
+      </div>
+      <div class="col-9 col-sm-8 offset-3 offset-sm-4 no-results-info">
+        <p>Perhaps you would like to create a new merge?</p>
+      </div>
+    </div>
+    <div id="display-results-admin">
+
+
+
+    </div>
+  </section>
+
+
+
+
+  <!-- jQuery first, then Tether, then Bootstrap JS. -->
+  <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+  <script src="https://use.fontawesome.com/bc065c89ec.js"></script>
+  <!-- Sortable.js -->
+  <script src="//rubaxa.github.io/Sortable/Sortable.js"></script>
+  <script src="/scripts/app-helpers.js"></script>
+  <script src="/scripts/app-dataComposer.js"></script>
+  <script src="/scripts/app-renderFunctions.js"></script>
+  <script src="/scripts/app.js"></script>
+  </div>
+</body>
 </html>

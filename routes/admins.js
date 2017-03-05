@@ -22,12 +22,19 @@ module.exports = (db, knex, mailgun) => {
       .then(poll_id => {
         return db.retrieve.ranks(poll_id);
       })
-      .then(ranks => {
-        if(ranks) {
-          return db.retrieve.choicesAndRanks(ranks.poll_id);
-        } else {
-          return db.retrieve.choices(poll_id);
-        }
+      .then(results => {
+        console.log('Choices and ranks:', results);
+        response['choices'] = results;
+        // if(req.xhr) {
+        return res.json(response);
+        // }
+        // res.status(401).render('status', {
+        //   status: {
+        //     code: '401 Unauthorized',
+        //     reason: 'You are not an authorized client.',
+        //     forgot: false
+        //   }
+        // });
       })
       // .then(ranks => {
       //   return db.retrieve.choices(poll_id);

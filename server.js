@@ -60,19 +60,12 @@ app.use('/polls', pollsRoutes(db, knex));
 app.use('/admins', adminsRoutes(db, knex, mailgun));
 
 
-app.get('/polls/:id', (req, res) => {
-  //logic here to find poll with :id
-  if(req.params.id === '1'){
-    res.send('okay!');
-  } else {
-    res.status(404);
-  }
-  // res.status(200).json({poll: {
-  //   name:
-  //   created:
-  //   ...
-  // } })
-})
+app.use(function (req, res, next) {
+  res.status(404).render('status', { status: {
+    code: '404 Not Found',
+    reason: `/${req._parsedUrl.path.substring(1)}`,
+    forgot: false }});
+});
 
 app.listen(PORT, () => {
   winston.info('Example app listening on port ' + PORT);
