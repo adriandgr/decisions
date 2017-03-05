@@ -3,6 +3,7 @@ const fs          = require('fs');
 var path          = require('path');
 const str         = fs.readFileSync(path.join(__dirname, 'email-templates/pollend.ejs'), 'utf8');
 const str_voters  = fs.readFileSync(path.join(__dirname, 'email-templates/createpollemail.ejs'), 'utf8');
+const str_creators= fs.readFileSync(path.join(__dirname, 'email-templates/creatoremail.ejs'), 'utf8');
 const mailgun     = require('mailgun-js')({
   apiKey: process.env.MG_KEY,
   domain: process.env.MG_DOMAIN
@@ -42,6 +43,7 @@ module.exports = knex => {
           .select('voters.voter_uuid')
           .returning(['voter_uuid'])
           .then(totalUuid => {
+            // console.log('Total UUID IN DATA ==>>>>>>',totalUuid)
             totalUuid.forEach(uuid => {
 
               let messageHtml = ejs.render(str_voters, {
@@ -59,11 +61,34 @@ module.exports = knex => {
               mailgun.messages().send(data, (error, body) => {
                 console.log(body);
               });
-              i++;
               console.log('emails====>', body.send_to[i])
               console.log(i);
+
+              i++;
+
             })
           })
+      },
+    toCreator:
+      (body) => {
+        console.log("This is the body!!!!",body)
+        let messageHtml = ejs.render(str_creators, {
+          title: body.name,
+          email: body.creator_email,
+          creator: body.created_by,
+          uuid: body.admin_uuid
+        })
+        let  data = {
+          from: `Merge App <app@${process.env.MG_DOMAIN}>`,
+          to: body.creator_email,
+          subject: 'String Interpolation Integrated',
+          html: `${messageHtml}`
+        };
+        mailgun.messages().send(data, (error, body) => {
+          console.log(body);
+        });
+        console.log(messageHtml)
       }
+
   }
 };
