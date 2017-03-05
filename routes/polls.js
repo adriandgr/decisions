@@ -35,7 +35,7 @@ module.exports = (db, knex, mailgun) => {
       })
       .then(poll_id => {
         mailgun.toAllVoters(req.body, poll_id);
-        mailgun.toCreator(req.body);
+        mailgun.toCreator(req.body, poll_id);
         res.json({success: true});
       })
       .catch(err => {

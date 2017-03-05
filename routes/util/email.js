@@ -35,7 +35,7 @@ module.exports = knex => {
           });
       },
     toAllVoters:
-      (body,poll_id) => {
+      (body, poll_id) => {
         let i = 0;
         knex('polls')
           .join('voters', 'polls.id', 'voters.poll_id')
@@ -43,14 +43,12 @@ module.exports = knex => {
           .select('voters.voter_uuid')
           .returning(['voter_uuid'])
           .then(totalUuid => {
-            // console.log('Total UUID IN DATA ==>>>>>>',totalUuid)
             totalUuid.forEach(uuid => {
-
               let messageHtml = ejs.render(str_voters, {
                 title: body.name,
                 creator: body.created_by,
                 voter: body.send_to[i],
-                uuid: uuid
+                uuid: uuid.voter_uuid
               })
               let  data = {
                 from: `Merge App <app@${process.env.MG_DOMAIN}>`,
@@ -58,36 +56,39 @@ module.exports = knex => {
                 subject: 'String Interpolation Integrated',
                 html: `${messageHtml}`
               };
-              mailgun.messages().send(data, (error, body) => {
-                console.log(body);
-              });
-              console.log('emails====>', body.send_to[i])
-              console.log(i);
-
+              // mailgun.messages().send(data, (error, body) => {
+              //   console.log(body);
+              // });
               i++;
 
             })
           })
       },
     toCreator:
-      (body) => {
-        console.log("This is the body!!!!",body)
-        let messageHtml = ejs.render(str_creators, {
-          title: body.name,
-          email: body.creator_email,
-          creator: body.created_by,
-          uuid: body.admin_uuid
-        })
-        let  data = {
-          from: `Merge App <app@${process.env.MG_DOMAIN}>`,
-          to: body.creator_email,
-          subject: 'String Interpolation Integrated',
-          html: `${messageHtml}`
-        };
-        mailgun.messages().send(data, (error, body) => {
-          console.log(body);
-        });
-        console.log(messageHtml)
+      (body, poll_id) => {
+        knex('polls')
+          .where('polls.id', poll_id)
+          .select('polls.admin_uuid')
+          .returning('polls.admin_uuid')
+          .then(uuid => {
+            console.log('This is UUID =========>',uuid)
+            let messageHtml = ejs.render(str_creators, {
+              title: body.name,
+              email: body.creator_email,
+              creator: body.created_by,
+              uuid: uuid[0].admin_uuid
+            })
+            let  data = {
+              from: `Merge App <app@${process.env.MG_DOMAIN}>`,
+              to: body.creator_email,
+              subject: 'String Interpolation Integrated',
+              html: `${messageHtml}`
+            };
+        // mailgun.messages().send(data, (error, body) => {
+        //   console.log(body);
+        // });
+            console.log(messageHtml)
+          })
       }
 
   }
