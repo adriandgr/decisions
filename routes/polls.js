@@ -4,7 +4,7 @@ const express = require('express');
 const route = express.Router();
 const uuid = require('./util/uuid-generator');
 
-module.exports = (db, knex) => {
+module.exports = (db, knex, mailgun) => {
 
   route.get('/', (req, res) => {
     res.send('');
@@ -26,7 +26,6 @@ module.exports = (db, knex) => {
 
     let response = {};
     let uuids = [uuid(), uuid()];
-
     db.insert.pollRow(req.body, uuids[1])
       .then(poll => {
         return db.insert.choices(poll[0].id, req.body.choices);
@@ -34,13 +33,13 @@ module.exports = (db, knex) => {
       .then(poll_id => {
         return db.insert.voters(poll_id, req.body, uuids);
       })
-      .then(() => {
+      .then(poll_id => {
+        mailgun.toAllVoters(req.body, poll_id);
         res.json({success: true});
       })
       .catch(err => {
         console.error('Error:', err);
       });
-
   });
 
 

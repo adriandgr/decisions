@@ -73,7 +73,7 @@ app.use(sass({
 app.use(express.static('public'));
 
 // Mount all resource routes
-app.use('/polls', pollsRoutes(db, knex));
+app.use('/polls', pollsRoutes(db, knex, mailgun));
 app.use('/admins', adminsRoutes(db, knex, mailgun));
 // Home page
 // app.get('/', (req, res) => {
