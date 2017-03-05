@@ -67,12 +67,12 @@ module.exports = (db, knex) => {
     let response = {};
 
     db.retrieve.poll(req.params.uuid)
-      .then(poll => {
+      .then((poll, err) => {
         if (poll) {
           response['poll'] = poll;
           return poll.id;
         } else {
-          res.status('404').json({ poll_id: null });
+          throw err;
         }
       })
       .then(poll_id => {
@@ -85,11 +85,6 @@ module.exports = (db, knex) => {
             response.poll.admin_uuid = 'hidden';
             response.poll.creator_email = 'hidden';
           }
-          winston.warn('IMPORTANT: You have not uncommented XHR guard in routes/polls.js');
-        // if(req.xhr) {
-          return res.json(response);
-        } else {
-          return db.retrieve.choices(response.poll.id);
         }
       })
       .then(choices => {
@@ -97,7 +92,7 @@ module.exports = (db, knex) => {
         res.json(response);
       })
       .catch(err => {
-        res.status('500').json({Error: 'Encountered an error while attempting to render this page'});
+        res.status('404').json({ poll_id: null });
       });
   });
 
