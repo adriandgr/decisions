@@ -1,3 +1,14 @@
+function composeObject(arr1, arr2, keys) {
+  let sendObject = arr1.reduce((a, b, c) => {
+    let obj = {};
+    obj[keys[0]] = b;
+    obj[keys[1]] = arr2[c];
+    a.push(obj);
+    return a;
+  }, []);
+  return sendObject;
+}
+
 function dataComposer() {
   let choices = [];
   for ( let choice of $('.choice')){
@@ -29,3 +40,15 @@ function dataComposer() {
   };
   return data;
 }
+
+// creator_vote: [
+    //   {
+    //     choice_name: name
+    //     rank:
+    //   },
+    //   {
+    //     choice_name: name
+    //     rank:
+    //   }
+    // ]
+
