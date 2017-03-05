@@ -5,7 +5,10 @@ $(document).ready(()=> {
     console.log('GET /polls/' + $.getQueryKey('key'));
     $.ajax({
       type: 'GET',
-      url: `/polls/${$.getQueryKey('key')}`
+      url: `/polls/${$.getQueryKey('key')}`,
+      headers: {
+        "X-Source": "merge_app"
+      }
     }).then(res=> {
 
       renderAdminView(res);

@@ -26,8 +26,16 @@ module.exports = (db, knex, mailgun) => {
       .then(results => {
         console.log('Choices and ranks:', results);
         response['choices'] = results;
-        console.log(response)
-        res.render('index', response);
+        // if(req.xhr) {
+          return res.json(response);
+        // }
+        // res.status(401).render('status', {
+        //   status: {
+        //     code: '401 Unauthorized',
+        //     reason: 'You are not an authorized client.',
+        //     forgot: false
+        //   }
+        // });
       })
       .catch(err => {
         console.error('Error retrieving poll:', err);
