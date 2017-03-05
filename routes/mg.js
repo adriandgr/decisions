@@ -8,8 +8,8 @@ const uuid     = require('./util/uuid-generator');
 module.exports = (db, knex, mailgun) => {
 
   route.post('/', (req, res) => {
-    // console.log("REQ BODY!!!!!!!!!", req.body)
-    if(req.body.create) {
+
+    if(req.body.method === 'create') {
           // replace with req.body.uuid
       db.retrieve.poll('an3k9tmdx3')
         .then(poll => {
@@ -17,12 +17,12 @@ module.exports = (db, knex, mailgun) => {
             mailgun.toAllVoters(poll);
             mailgun.toCreator(poll);
           }
-          return null;
+          return res.json( { succes: true } );
         })
         .catch(err => {
-          console.error(err);
+          return res.json( { success: false } );
         });
-    } else if (req.body.end) {
+    } else if (req.body.method === 'end') {
       //replace with req.body.uuid
       db.retrieve.poll('an3k9tmdx3')
         .then(poll => {
