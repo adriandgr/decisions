@@ -21,22 +21,24 @@ module.exports = (db, knex) => {
         }
  */
   route.post('/', (req, res) => {
-    let meaning = 'This route is responsible for receiving the POST data from the "Create a New Poll" form';
-    meaning += ' and then querying the database to eventually return a response containing relevant data';
+    // let meaning = 'This route is responsible for receiving the POST data from the "Create a New Poll" form';
+    // meaning += ' and then querying the database to eventually return a response containing relevant data';
 
     let response = {};
-    let uuids = [uuid(), uuid()];
-    console.log('locals', req.locals)
 
-    db.insert.pollRow(req.body, uuids[1])
+    let adminUUID = uuid();
+
+
+    db.insert.pollRow(req.body, adminUUID)
       .then(poll => {
         return db.insert.choices(poll[0].id, req.body.choices);
       })
-      .then(poll_id => {
-        return db.insert.voters(poll_id, req.body, uuids);
+      .then((poll_id, choiceData) => {
+        req.locals.choiceData = choiceData;
+        return db.insert.voters(poll_id, req.body);
       })
       .then(() => {
-        res.json({success: true});
+        res.json({success: true, admin_uuid: adminUUID, choiceData: req.locals});
       })
       .catch(err => {
         console.error('Error:', err);
