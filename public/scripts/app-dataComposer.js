@@ -35,7 +35,7 @@ function dataComposer() {
     name: $('#poll-name')[0].value,
     created_by: $('#creator-name')[0].value,
     creator_email: $('#creator-email')[0].value,
-    choices: composeObject(choices, descriptions, ['choice', 'description']),
+    choices: composeObject(choices, descriptions, ['name', 'description']),
     send_to: composeObject(friends, emails, ['name', 'email'])
   };
   return data;

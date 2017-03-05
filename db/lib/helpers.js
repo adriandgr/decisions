@@ -8,7 +8,7 @@ module.exports = knex => {
     insert: {
 
       voters:
-        (poll_id, voters) => {
+        (promises, voters) => {
           // let body.sent_to = [
           //   { name: 'Donald', email: 'geddes.3574', voter_uuid: 'asdf', poll_id: 1},
           //   { name: 'Richard', email: 'an@email.com', voter_uuid: 'fdsa', poll_id: 1 },
@@ -20,7 +20,7 @@ module.exports = knex => {
               let query = [{
                 name: v.name,
                 email: v.email,
-                poll_id: poll_id,
+                poll_id: promises[0],
                 voter_uuid: uuid()
 
               }];
@@ -34,7 +34,7 @@ module.exports = knex => {
                 .catch(err => {
                   reject('Error: One of the knex inserts has failed => \n' + err);
                 });
-              resolve(poll_id);
+              resolve(promises);
             });
           });
 
@@ -44,28 +44,30 @@ module.exports = knex => {
       choices:
         (poll_id, choices) => {
           let query;
-          inserts = new Promise((resolve, reject) => {
-            choices.forEach(c => {
-              query = [{
-                name: c.name,
-                description: c.description,
-                poll_id: poll_id
-              }];
-              choiceData = []
-              knex('choices')
-                .insert(query)
-                .returning('id', 'name')
-                .then(id => {
-                  console.log('  Created choice => id:', id, '\n  => name:', c);
-                  choiceData.push({id, name});
-                })
-                .catch(err => {
-                  reject('Error: One of the knex inserts has failed => \n' + err);
-                });
-            });
-            resolve(poll_id, choiceData);
+          let promises = [];
+          promises.push(poll_id);
+          choices.forEach(c => {
+            query = [{
+              name: c.name,
+              description: c.description,
+              poll_id: poll_id
+            }];
+            promises.push(
+              new Promise((resolve, reject) => {
+                knex('choices')
+                  .insert(query)
+                  .returning('id')
+                  .then((id, name) => {
+                    console.log('  Created choice => id:', id, '\n  => name:', c.name);
+                    resolve({id, name: c.name});
+                  })
+                  .catch(err => {
+                    reject('Error: One of the knex inserts has failed => \n' + err);
+                  });
+              })
+            );
           });
-          return inserts;
+          return Promise.all(promises);
         },
 
       pollRow:
