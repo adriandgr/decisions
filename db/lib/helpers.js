@@ -27,7 +27,7 @@ module.exports = knex => {
             .returning('id')
             .then(ids => {
               ids.forEach(id => {
-                console.log('    Created voter => id: ', id);
+                console.log('    Created voter => id:', id);
               });
               return poll_id;
             })
@@ -69,7 +69,7 @@ module.exports = knex => {
                   .insert(query)
                   .returning(['id', 'admin_uuid'])
                   .then(poll => {
-                    winston.debug('Created poll => id:', poll[0].id);
+                    console.log('Created poll => id:', poll[0].id, '=> admin_uuid:', poll[0].admin_uuid);
                     return poll[0].id;
                   });
         },
