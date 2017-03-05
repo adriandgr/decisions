@@ -17,8 +17,10 @@ const winston     = require('winston');
 const morgan      = require('morgan');
 const knexLogger  = require('knex-logger');
 
+
 const db          = require('./db/lib/helpers.js')(knex);
 const mailgun     = require('./routes/util/email')(knex);
+
 // Seperated Routes for each Resource
 const pollsRoutes = require('./routes/polls');
 const adminsRoutes = require('./routes/admins');
@@ -56,10 +58,7 @@ app.use(express.static('public'));
 // Mount all resource routes
 app.use('/polls', pollsRoutes(db, knex));
 app.use('/admins', adminsRoutes(db, knex, mailgun));
-// Home page
-// app.get('/', (req, res) => {
-//   res.render('index');
-// });
+
 
 app.get('/polls/:id', (req, res) => {
   //logic here to find poll with :id

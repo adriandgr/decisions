@@ -1,4 +1,5 @@
-const uuid = require('./../../routes/util/uuid-generator');
+const uuid     = require('./../../routes/util/uuid-generator');
+const winston  = require('winston');
 
 module.exports = knex => {
 
@@ -8,6 +9,7 @@ module.exports = knex => {
     insert: {
 
       voters:
+
         (poll_id, body, adminUUID) => {
           // Data for admin to be incuded in the voters table
           // console.log(req.send_to);
@@ -68,7 +70,7 @@ module.exports = knex => {
                   .insert(query)
                   .returning(['id', 'admin_uuid'])
                   .then(poll => {
-                    console.log('Created poll => id:', poll[0].id);
+                    winston.debug('Created poll => id:', poll[0].id);
                     return poll[0].id;
                   });
         },
@@ -85,12 +87,12 @@ module.exports = knex => {
               let query = [
                 v
               ];
-              console.log(query);
+              winston.debug(query);
               knex('votes')
                 .insert(query)
                 .returning('id')
                 .then(id => {
-                  console.log('  Created vote => id:', id);
+                  winston.debug('  Created vote => id:', id);
                 })
                 .catch(err => {
                   reject('Error: One of the knex inserts has failed => \n' + err);
@@ -113,10 +115,10 @@ module.exports = knex => {
                   .join('choices', 'polls.id', 'choices.poll_id')
                   .where('voter_uuid', uuid)
                   .then(rows => {
-                    console.log('Retrieved voter_id and associated choice_ids =>');
-                    console.log('  => voter_id:', rows[0].voter_id);
+                    winston.debug('Retrieved voter_id and associated choice_ids =>');
+                    winston.debug('  => voter_id:', rows[0].voter_id);
                     rows.forEach(r => {
-                      console.log('    => choice_id:', r.choice_id);
+                      winston.debug('    => choice_id:', r.choice_id);
                     });
                     return rows;
                   })
@@ -128,7 +130,7 @@ module.exports = knex => {
 
       poll:
         uuid => {
-          console.log('Finding poll from uuid:', uuid);
+          winston.debug('Finding poll from uuid:', uuid);
           return knex('voters')
                   .select('*')
                   .join('polls', 'polls.id', 'voters.poll_id')
@@ -169,7 +171,7 @@ module.exports = knex => {
                   .where('polls.admin_uuid', '=', uuid)
                   .update('active', false)
                   .then(() => {
-                    console.log('Updated poll for admin_uuid =', uuid, 'to active = false');
+                    winston.debug('Updated poll for admin_uuid =', uuid, 'to active = false');
                     return true;
                   })
                   .catch(err => {
@@ -180,13 +182,13 @@ module.exports = knex => {
 
       update:
         (uuid, title) => {
-          console.log(uuid);
-          console.log(title);
+          winston.debug(uuid);
+          winston.debug(title);
           return knex('polls')
                   .where('polls.admin_uuid', uuid)
                   .update('name', title)
                   .then(() => {
-                    console.log('Updated poll for admin_uuid =', uuid, 'to title = ', title);
+                    winston.debug('Updated poll for admin_uuid =', uuid, 'to title = ', title);
                     return true;
                   })
                   .catch(err => {

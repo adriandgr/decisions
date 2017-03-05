@@ -22,11 +22,13 @@ module.exports = (db, knex) => {
         }
  */
   route.post('/', (req, res) => {
-    let meaning = 'This route is responsible for receiving the POST data from the "Create a New Poll" form';
-    meaning += ' and then querying the database to eventually return a response containing relevant data';
+    // let meaning = 'This route is responsible for receiving the POST data from the "Create a New Poll" form';
+    // meaning += ' and then querying the database to eventually return a response containing relevant data';
 
     let response = {};
+
     let adminUUID = uuid();
+
 
     db.insert.pollRow(req.body, adminUUID)
       .then(poll_id => {

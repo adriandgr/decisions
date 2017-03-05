@@ -19,6 +19,7 @@
     "fs": "0.0.1-security",
     "knex": "^0.12.7",
     "knex-logger": "^0.1.0",
+    "mailgun-js": "^0.8.2",
     "morgan": "^1.7.0",
     "node-sass": "^4.5.0",
     "node-sass-middleware": "^0.9.8",
