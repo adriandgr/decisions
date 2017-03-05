@@ -1,8 +1,9 @@
 "use strict";
 
-const express = require('express');
-const route = express.Router();
-const uuid = require('./util/uuid-generator');
+const express  = require('express');
+const route    = express.Router();
+const winston  = require('winston');
+const uuid     = require('./util/uuid-generator');
 
 module.exports = (db, knex) => {
 
@@ -95,9 +96,10 @@ module.exports = (db, knex) => {
           ]
  */
   route.post('/:uuid', (req, res) => {
-    let meaning = 'This route is reponsible for receiving vote data, inserting this data into the database';
-    meaning += ' meaningfully, and then returning updated vote counts';
-
+    // This route is reponsible for receiving vote data,
+    // inserting this data into the database meaningfully,
+    // and then returning updated vote counts
+    winston.debug('Request', req.body.ballot, '\n\n\n\n');
     function mergeData(dbData, requestData) {
       dbData.map(dbData => {
         requestData.forEach(requestData => {
@@ -111,11 +113,11 @@ module.exports = (db, knex) => {
     }
 
     // overrides actual req.body.choices for now
-    req.body.choices = [
-      { choice_id: 1, rank: 3 },
-      { choice_id: 2, rank: 1 },
-      { choice_id: 3, rank: 2 }
-    ];
+    // req.body.choices = [
+    //   { choice_id: 1, rank: 3 },
+    //   { choice_id: 2, rank: 1 },
+    //   { choice_id: 3, rank: 2 }
+    // ];
 
     db.retrieve.choicesAndRanks(req.params.uuid)
       .then(dbData => {
