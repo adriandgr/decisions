@@ -85,6 +85,8 @@ module.exports = (db, knex) => {
             response.poll.admin_uuid = 'hidden';
             response.poll.creator_email = 'hidden';
           }
+        } else {
+          return db.retrieve.choices(response.poll.id);
         }
       })
       .then(choices => {
