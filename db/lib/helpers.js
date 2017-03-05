@@ -56,7 +56,7 @@ module.exports = knex => {
                 .insert(query)
                 .returning('id', 'name')
                 .then(id => {
-                  console.log('  Created choice => id:', id, '\n  => name:', c);
+                  console.log('  Created choice => id:', id, '\n  => name:', c.choice);
                   choiceData.push({id, name});
                 })
                 .catch(err => {

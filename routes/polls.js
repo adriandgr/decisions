@@ -34,7 +34,7 @@ module.exports = (db, knex) => {
         return db.insert.choices(poll[0].id, req.body.choices);
       })
       .then((poll_id, choiceData) => {
-        req.locals.choiceData = choiceData;
+        console.log('choooiiii', choiceData);
         return db.insert.voters(poll_id, req.body);
       })
       .then(() => {
