@@ -26,6 +26,7 @@ module.exports = (db, knex, mailgun) => {
       .then(results => {
         console.log('Choices and ranks:', results);
         response['choices'] = results;
+        winston.warn('IMPORTANT: You have not uncommented XHR guard in routes/admins.js');
         // if(req.xhr) {
           return res.json(response);
         // }
