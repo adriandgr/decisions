@@ -5,7 +5,7 @@ const route = express.Router();
 
 
 
-module.exports = (db, knex) => {
+module.exports = (db, knex, mailgun) => {
 
 /*
     GET /admins/:uuid
@@ -49,6 +49,7 @@ module.exports = (db, knex) => {
       db.poll.end(req.params.uuid)
         .then(success => {
           if(success) {
+            mailgun.sendResult(req.params.uuid);
             res.json({end: true});
           } else {
             res.json({end: false});
