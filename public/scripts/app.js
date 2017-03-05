@@ -92,7 +92,8 @@ $(document).ready(()=> {
         animation: 150
       });
 
-      $('#send-view').fadeToggle('fast',()=> {
+
+      $('#send-view').fadeToggle('fast', ()=> {
         $('#no-results').hide();
         $('#display-results').show();
         $('#results-view').fadeToggle('slow');
@@ -102,9 +103,10 @@ $(document).ready(()=> {
     });
 
     // $.ajax({
-    //     type: 'DELETE',
-    //     url: '/users/session'
+    //   type: 'DELETE',
+    //   url: '/users/session'
     // }).then((res) => {
+    //   console.log('res', res);
     // });
 
   });
