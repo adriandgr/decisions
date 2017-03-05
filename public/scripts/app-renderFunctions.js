@@ -6,12 +6,11 @@ function renderAdminView(res) {
   let $question = $('<h2>').addClass('poll-question').text(res.poll.name);
   res.choices.forEach((a, b) => {
     console.log(a)
-    let $span = $('<span>');
-    $('<i>')
-      .addClass('fa fa-bars')
-      .attr('aria-hidden', 'true')
-      .appendTo($span);
-    let $li = $('<li>').data( "choice-id", a.id );
+    let $span = $('<span>').addClass('choice-rank').text(`${a.borda_rank}`);
+    let $li = $('<li>').data( {
+      "choice-id": a.id,
+      "rank": a.borda_rank
+    });
     $span.appendTo($li);
 
     let $choice = $('<p>')
@@ -19,12 +18,29 @@ function renderAdminView(res) {
       .text(a.name);
     let $description = $('<p>')
       .addClass('list-description')
-      .text(`description... borda: ${a.borda_rank}`);
+      .text('description...');
 
     $choice.appendTo($li);
     $description.appendTo($li);
     $li.appendTo($list);
   });
+
+  $sortedList = $list.children('li');
+
+  $sortedList.sort(function(a,b){
+    let aRank = $(a).data('rank');
+    let bRank = $(b).data('rank');
+    if(aRank < bRank) {
+      return 1;
+    }
+    if(aRank > bRank) {
+      return -1;
+    }
+    return 0;
+  });
+  console.log("SORTED?", $sortedList)
+
+  $sortedList.detach().appendTo($list);
 
   $list.prependTo('#display-results-admin');
   $question.prependTo('#display-results-admin');
@@ -34,7 +50,7 @@ function renderAdminView(res) {
 
 
 function genSortableList(data, res) {
-   let $list = $('<ul>').attr('id', res.adminUUID);
+let $list = $('<ul>').attr('id', res.adminUUID);
   let $question = $('<h2>').addClass('poll-question').text(data.name);
   res.ids.forEach((a, b) => {
 
@@ -52,7 +68,6 @@ function genSortableList(data, res) {
     let $description = $('<p>')
       .addClass('list-description')
       .text(data.choices[b].description);
-
     $choice.appendTo($li);
     $description.appendTo($li);
     $li.appendTo($list);
@@ -60,7 +75,6 @@ function genSortableList(data, res) {
 
   $list.prependTo('#display-results');
   $question.prependTo('#display-results');
-
 }
 
 

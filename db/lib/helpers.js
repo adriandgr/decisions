@@ -56,7 +56,7 @@ module.exports = knex => {
             .returning('id')
             .then(ids => {
               ids.forEach(id => {
-                console.log('    Created voter => id: ', id);
+                console.log('    Created voter => id:', id);
               });
               return poll_id;
             })
@@ -98,7 +98,7 @@ module.exports = knex => {
                   .insert(query)
                   .returning(['id', 'admin_uuid'])
                   .then(poll => {
-                    winston.debug('Created poll => id:', poll[0].id);
+                    console.log('Created poll => id:', poll[0].id, '=> admin_uuid:', poll[0].admin_uuid);
                     return poll[0].id;
                   });
         },
@@ -164,30 +164,50 @@ module.exports = knex => {
 
       poll:
         uuid => {
-          winston.debug('Finding poll from uuid:', uuid);
+          console.log('Finding poll from uuid:', uuid);
           return knex('voters')
                   .select('*')
                   .join('polls', 'polls.id', 'voters.poll_id')
                   .where('voters.voter_uuid', uuid)
                   .orWhere('polls.admin_uuid', uuid)
-                  .then(row => {
-                    return row[0];
+                  .then(poll => {
+                    console.log('Retrieved poll => id:', poll[0].id);
+                    return poll[0];
                   })
                   .catch(err => {
-                    console.error(err);
+                    console.error('  Poll ID not found => returning 404');
                   });
         }, // closes poll()
 
       choicesAndRanks:
         poll_id => {
           return knex('choices')
-                  .select('choices.id', 'choices.name', 'rank')
+                  .select('choices.id', 'choices.name', 'choices.description', 'rank')
                   .join('votes', 'votes.choice_id', 'choices.id')
                   .where('choices.poll_id', poll_id)
                   .sum('votes.rank as borda_rank')
-                  .groupBy('name', 'choices.id', 'rank')
-                  .then(rows => {
-                    return rows;
+                  .groupBy('name', 'choices.id', 'choices.description', 'rank')
+                  .then(choices => {
+                    choices.forEach(c => {
+                      console.log('  Retrieved choice => id: ', c.id, 'description:', c.description);
+                    });
+                    return choices;
+                  })
+                  .catch(err => {
+                    console.error(err);
+                  });
+        },
+
+      choices:
+        poll_id => {
+          return knex('choices')
+                  .select('choices.id', 'choices.name', 'choices.description')
+                  .where('choices.poll_id', poll_id)
+                  .then(choices => {
+                    choices.forEach(c => {
+                      console.log('  Retrieved choice => id: ', c.id);
+                    });
+                    return choices;
                   })
                   .catch(err => {
                     console.error(err);
