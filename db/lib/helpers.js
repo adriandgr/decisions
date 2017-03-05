@@ -135,7 +135,7 @@ module.exports = knex => {
 
       poll:
         uuid => {
-          winston.debug('Finding poll from uuid:', uuid);
+          console.log('Finding poll from uuid:', uuid);
           return knex('voters')
                   .select('*')
                   .join('polls', 'polls.id', 'voters.poll_id')
@@ -146,7 +146,7 @@ module.exports = knex => {
                     return poll[0];
                   })
                   .catch(err => {
-                    console.error(err);
+                    console.error('  Poll ID not found => returning 404');
                   });
         }, // closes poll()
 
