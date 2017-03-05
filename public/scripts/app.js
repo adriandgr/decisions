@@ -7,7 +7,7 @@ $(document).ready(()=> {
       type: 'GET',
       url: `/polls/${$.getQueryKey('key')}`
     }).then(res=> {
-      console.log(res)
+
       renderAdminView(res);
 
       $('#no-results-admin').hide();

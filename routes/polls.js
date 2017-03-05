@@ -62,20 +62,29 @@ module.exports = (db, knex) => {
 
     db.retrieve.poll(req.params.uuid)
       .then(poll => {
-        response['poll'] = poll;
-        return poll.id;
+        // NOTE TO DEV TEAM:
+        // these guards are important to handle non-existing uuids in db
+        // if no key found, sends 404 status code to client.
+        if (poll) {
+          response['poll'] = poll;
+          return poll.id;
+        }
+        return null;
       })
       .then(poll_id => {
         return db.retrieve.choicesAndRanks(poll_id);
       })
       .then(queryData => {
-        response['choices'] =  queryData;
-
-        if(req.params.uuid !== response.poll.admin_uuid) {
-          response.poll.admin_uuid = 'hidden';
-          response.poll.creator_email = 'hidden';
+        if (queryData.length) {
+          response['choices'] =  queryData;
+          if(req.params.uuid !== response.poll.admin_uuid) {
+            response.poll.admin_uuid = 'hidden';
+            response.poll.creator_email = 'hidden';
+          }
+          return res.json(response);
         }
-        res.json(response);
+        winston.debug('sending 404');
+        res.status(404).json({mssg: 'Not Found'});
       })
       .catch(err => {
         console.error(err);
