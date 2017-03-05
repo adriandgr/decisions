@@ -44,28 +44,39 @@ module.exports = knex => {
       choices:
         (poll_id, choices) => {
           let query;
-          inserts = new Promise((resolve, reject) => {
-            choices.forEach(c => {
-              query = [{
-                name: c.name,
-                description: c.description,
+          let knexPromises = [];
+          choices.forEach(choice =>{
+            query = [{
+                name: choice.name,
+                description: choice.description,
                 poll_id: poll_id
               }];
-              choiceData = []
-              knex('choices')
-                .insert(query)
-                .returning('id', 'name')
-                .then(id => {
-                  console.log('  Created choice => id:', id, '\n  => name:', c.choice);
-                  choiceData.push({id, name});
-                })
-                .catch(err => {
-                  reject('Error: One of the knex inserts has failed => \n' + err);
-                });
-            });
-            resolve(poll_id, choiceData);
+            console.log('CHOIIIII', query);
+
+            knexPromises.push(knex('choices')
+              .insert(query)
+              .returning('id', 'name')
+              .then(id => {
+                console.log('  Created choice => id:', id, '\n  => name:', c.choice);
+                choiceData.push({id, name});
+                resolve(poll_id, choiceData);
+              })
+              .catch(err => {
+                throw err;
+              }));
           });
-          return inserts;
+          return Promise.all(knexPromises);
+          //
+          // choices.forEach(c => {
+          //   inserts = new Promise((resolve, reject) => {
+
+
+          //     choiceData = []
+          //
+          //   });
+
+          // });
+          // return inserts;
         },
 
       pollRow:
