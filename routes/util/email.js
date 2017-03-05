@@ -1,7 +1,6 @@
-console.log('asdf');
 const ejs         = require('ejs');
 const fs          = require('fs');
-const str   = fs.readFileSync('./routes/emailTemplatePollEnd.ejs', 'utf8');
+const str         = fs.readFileSync('./routes/emailTemplatePollEnd.ejs', 'utf8');
 const mailgun     = require('mailgun-js')({
   apiKey: process.env.MG_KEY,
   domain: process.env.MG_DOMAIN
@@ -12,8 +11,6 @@ module.exports = knex => {
 
     sendResult:
       id => {
-
-
         knex('polls')
           .join('voters', 'polls.id', 'voters.poll_id')
           .where('polls.admin_uuid', id)
