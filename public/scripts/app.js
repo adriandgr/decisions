@@ -139,43 +139,19 @@ function composeObject(arr1, arr2, keys) {
     //   }
     // ]
 
-function dataComposer() {
-  let choices = [];
-  for ( let choice of $('.choice')){
-    choices.push(choice.value);
-  }
-
-  let choices_descriptions = [];
-  for ( let description of $('.description')){
-    choices.push(description.value);
-  }
 
 
-  let friends = [];
-  for ( let friend of $('.friend-name')){
-    friends.push(friend.value);
-  }
+let string = '{"name":"question","created_by":"me","creator_email":"my@emai","choices":[{"choice":"choice1","description":"option1"},{"choice":"choice2","description":"option2"},{"choice":"choice3","description":"option3"}],"send_to":[{"name":"friend","email":"friend@email"}]}'
+let testData = JSON.parse(string);
 
-  let emails = [];
-  for ( let email of $('.friend-email')){
-    emails.push(email.value);
-  }
-
-  let data = {
-    name: $('#poll-name')[0].value,
-    created_by: $('#creator-name')[0].value,
-    creator_email: $('#creator-email')[0].value,
-    choices: choices,
-    send_to: composeObject(friends, emails, ['name', 'email'])
-  };
-  return data;
-}
-
-function genSortableList(data) {
+function genSortableList(data, uuid) {
+  let $list = $('ul').attr('id', uuid);
   console.log(data)
   data.choices.forEach((a,b) =>{
-    console.log('a', a);
-    console.log('b', b);
+
+
+    console.log('a', a); //the object
+    console.log('b', b); //the index
   });
 
   let $li = $('<li>')
@@ -184,6 +160,8 @@ function genSortableList(data) {
     .appendTo($li).text('hoots');
 
 }
+
+genSortableList(testData);
 
 
 $(document).ready(()=> {
@@ -239,11 +217,13 @@ $(document).ready(()=> {
       $('#send-view').fadeToggle('slow');
     });
   });
-  let data = dataComposer();
-  genSortableList(data);
+
+  // MAIN SUBMIT EVENT
   $('#submit-form').on('click', (event)=> {
+
     event.preventDefault();
-    console.log(dataComposer());
+    data = dataComposer();
+    console.log(JSON.stringify(data));
     $.ajax({
       type: 'POST',
       url: '/polls',
@@ -274,25 +254,6 @@ $(document).ready(()=> {
 
   });
 
-
-  let isDragging = false;
-
-  $('#display-results li > .drag-handle').mousedown(function() {
-    isDragging = false;
-  })
-  .mousemove(function() {
-      isDragging = true;
-   })
-  .mouseup(function() {
-      var wasDragging = isDragging;
-      isDragging = false;
-      if (!wasDragging) {
-        console.log('did not drag!')
-          $("#throbble").toggle();
-      } else {
-        console.log('you\'re such a drag!')
-      }
-  });
 
 
   // helper menu
