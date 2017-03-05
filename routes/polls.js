@@ -70,6 +70,10 @@ module.exports = (db, knex) => {
       .then((poll, err) => {
         if (poll) {
           response['poll'] = poll;
+          if(req.params.uuid !== response.poll.admin_uuid) {
+            response.poll.admin_uuid = 'hidden';
+            response.poll.creator_email = 'hidden';
+          }
           return poll.id;
         } else {
           throw err;
@@ -81,10 +85,6 @@ module.exports = (db, knex) => {
       .then(choicesAndRanks => {
         if (choicesAndRanks.length) {
           response['choices'] =  choicesAndRanks;
-          if(req.params.uuid !== response.poll.admin_uuid) {
-            response.poll.admin_uuid = 'hidden';
-            response.poll.creator_email = 'hidden';
-          }
         } else {
           return db.retrieve.choices(response.poll.id);
         }
