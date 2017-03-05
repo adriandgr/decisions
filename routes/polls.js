@@ -77,6 +77,8 @@ module.exports = (db, knex) => {
             response.poll.admin_uuid = 'hidden';
             response.poll.creator_email = 'hidden';
           }
+          winston.warn('IMPORTANT: You have not uncommented XHR guard in routes/polls.js');
+        // if(req.xhr) {
           return res.json(response);
         } else {
           return db.retrieve.choices(response.poll.id);
