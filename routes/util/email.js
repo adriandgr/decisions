@@ -22,8 +22,6 @@ module.exports = knex => {
           .then(column => {
             console.log('column======>',column)
             column.forEach(pollInfo => {
-              console.log('admin:', poll.admin_uuid);
-              console.log('voter:', pollInfo.voter_uuid);
               if(pollInfo.admin_uuid !== pollInfo.voter_uuid) {
                 let messageHtml = ejs.render(str, pollInfo);
                 let  data = {
@@ -32,9 +30,9 @@ module.exports = knex => {
                   subject: 'Merge has ended!',
                   html: `${messageHtml}`
                 };
-                // mailgun.messages().send(data, (error, body) => {
-                  // console.log(body);
-                // });
+                mailgun.messages().send(data, (error, body) => {
+                  console.log(body);
+                });
                 console.log(messageHtml)
               }
             });
@@ -42,7 +40,6 @@ module.exports = knex => {
       },
     toAllVoters:
       (poll) => {
-        console.log("POLL ID =========>", poll.id)
         let i = 0;
         knex('polls')
           .join('voters', 'polls.id', 'voters.poll_id')
@@ -50,24 +47,26 @@ module.exports = knex => {
           .select('voters.voter_uuid', 'voters.email')
           .returning(['voter_uuid', 'voters.email'])
           .then(totalUuid => {
-            totalUuid.forEach(uuid => {
-              console.log(uuid);
-              let messageHtml = ejs.render(str_voters, {
-                title: poll.name,
-                creator: poll.created_by,
-                voter: uuid.email,
-                uuid: uuid.voter_uuid
-              })
-              let  data = {
-                from: `Merge App <app@${process.env.MG_DOMAIN}>`,
-                to: poll.email,
-                subject: 'You have a Merge request!',
-                html: `${messageHtml}`
-              };
-              // mailgun.messages().send(data, (error, body) => {
-              //   console.log(body);
-              // });
-              i ++;
+            totalUuid.forEach(pollInfo => {
+
+              if(poll.admin_uuid !== pollInfo.voter_uuid) {
+                let messageHtml = ejs.render(str_voters, {
+                  title: poll.name,
+                  creator: poll.created_by,
+                  voter: pollInfo.email,
+                  uuid: pollInfo.voter_uuid
+                })
+                let  data = {
+                  from: `Merge App <app@${process.env.MG_DOMAIN}>`,
+                  to: pollInfo.email,
+                  subject: 'You have a Merge request!',
+                  html: `${messageHtml}`
+                };
+                mailgun.messages().send(data, (error, body) => {
+                  console.log(body);
+                });
+                console.log(i++)
+              }
             })
           })
       },
@@ -90,9 +89,9 @@ module.exports = knex => {
               subject: 'Thank you for creating this Merge!',
               html: `${messageHtml}`
             };
-            // mailgun.messages().send(data, (error, body) => {
-            //   console.log(body);
-            // });
+            mailgun.messages().send(data, (error, body) => {
+              console.log(body);
+            });
           })
       }
 

@@ -8,7 +8,7 @@ const uuid     = require('./util/uuid-generator');
 module.exports = (db, knex, mailgun) => {
 
   route.post('/', (req, res) => {
-    console.log("REQ BODY!!!!!!!!!", req.body)
+    // console.log("REQ BODY!!!!!!!!!", req.body)
     if(req.body.create) {
           // replace with req.body.uuid
       db.retrieve.poll('an3k9tmdx3')
