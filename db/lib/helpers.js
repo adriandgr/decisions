@@ -1,3 +1,5 @@
+const uuid = require('./../../routes/util/uuid-generator');
+
 module.exports = knex => {
 
 
@@ -20,7 +22,7 @@ module.exports = knex => {
                 name: v.name,
                 email: v.email,
                 poll_id: poll_id,
-                voter_uuid: uuids[0]
+                voter_uuid: uuid()
 
               }];
               knex('voters')
@@ -36,6 +38,7 @@ module.exports = knex => {
               resolve(poll_id);
             });
           });
+
           return result;
         },
 
@@ -115,7 +118,7 @@ module.exports = knex => {
 
     retrieve: {
 
-      choices:
+      voterAndChoices:
         uuid => {
           return knex('voters')
                   .select('voters.id as voter_id', 'choices.id as choice_id')
@@ -137,37 +140,75 @@ module.exports = knex => {
         }, // closes voterAndChoices
 
       poll:
-        () => {
+        uuid => {
+          console.log('Finding poll from uuid:', uuid);
           return knex('voters')
-                  .select('polls.id', 'polls.name', 'created_at')
+                  .select('*')
                   .join('polls', 'polls.id', 'voters.poll_id')
-                  .where('voters.voter_uuid', 'sf4ffvc')
+                  .where('voters.voter_uuid', uuid)
+                  .orWhere('polls.admin_uuid', uuid)
                   .then(row => {
                     return row[0];
                   })
                   .catch(err => {
                     console.error(err);
                   });
-        }, // closes pollNameAndID
+        }, // closes poll()
 
       choicesAndRanks:
         poll_id => {
           return knex('choices')
-                  .select('choices.id', 'choices.name')
+                  .select('choices.id', 'choices.name', 'rank')
                   .join('votes', 'votes.choice_id', 'choices.id')
                   .where('choices.poll_id', poll_id)
                   .sum('votes.rank as borda_rank')
-                  .groupBy('name', 'choices.id')
-                  .then(results => {
-                    return results;
+                  .groupBy('name', 'choices.id', 'rank')
+                  .then(rows => {
+                    return rows;
                   })
                   .catch(err => {
                     console.error(err);
                   });
-       } // closes choicesAndRanks
+        }
+        // closes choicesAndRanks
+    },
+
+    poll: {
 
 
-// three closing curly-braces for module.exports, function passing knex, and return
+      end:
+        uuid => {
+          return knex('polls')
+                  .where('polls.admin_uuid', '=', uuid)
+                  .update('active', false)
+                  .then(() => {
+                    console.log('Updated poll for admin_uuid =', uuid, 'to active = false');
+                    return true;
+                  })
+                  .catch(err => {
+                    console.error(err);
+                    return false;
+                  });
+        },
+
+      update:
+        (uuid, title) => {
+          console.log(uuid);
+          console.log(title);
+          return knex('polls')
+                  .where('polls.admin_uuid', uuid)
+                  .update('name', title)
+                  .then(() => {
+                    console.log('Updated poll for admin_uuid =', uuid, 'to title = ', title);
+                    return true;
+                  })
+                  .catch(err => {
+                    console.error(err);
+                    return false;
+                  });
+        }
+
+
     }
   };
 };

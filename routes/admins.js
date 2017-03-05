@@ -3,71 +3,70 @@
 const express = require('express');
 const route = express.Router();
 
-module.exports = (knex) => {
-  route.get('/:admin_uuid', (req, res) => {
-    let id = req.params.admin_uuid;
 
+
+module.exports = (db, knex) => {
+
+/*
+    GET /admins/:uuid
+ */
+  route.get('/:uuid', (req, res) => {
 
     const response = {};
-    //Receive all polls information & send to page
-    function gettingChoicesNameRankTable() {
-      knex('polls')
-      .join('choices', 'polls.id', 'choices.poll_id')
-      .join('votes', 'votes.choice_id', 'choices.id')
-      .where('polls.admin_uuid', id)
-      .select('choices.id', 'choices.name', 'rank')
-      .then(function(rows) {
-        response['rankTable'] = rows;
+
+    db.retrieve.poll(req.params.uuid)
+      .then(poll => {
+        response['poll'] = poll;
+        console.log('Row from retrieving poll', poll);
       })
-      .catch(err => {
-        throw err;
-      });
-    }
-
-    gettingChoicesNameRankTable();
-
-// Returns the full poll table
-    function gettingPollsTable() {
-      knex.select('*').from('polls')
-      .where('admin_uuid', '=', id)
-      .then(function(rows) {
-        response['polls'] = rows;
-        console.log(response);
+      .then(poll_id => {
+        return db.retrieve.choicesAndRanks(poll_id);
+      })
+      .then(results => {
+        console.log('Choices and ranks:', results);
+        response['choices'] = results;
         res.json(response);
       })
       .catch(err => {
-        throw err;
+        console.error('Error retrieving poll:', err);
       });
-    }
 
-    gettingPollsTable();
 
   });
 
-  route.post('/:admin_uuid', (req, res) =>{
-    let id = req.params.admin_uuid;
 
-    //Needs to include Mailgun chain here upon submission, informing users polls have ended
-    function checkActive () {
-      knex('polls').where('polls.admin_uuid', '=', id).update('active', false);
+
+
+/*
+    POST /admins/:uuid
+
+
+      Responsible for ending poll or updating poll title
+ */
+  route.post('/:uuid', (req, res) =>{
+    console.log(req.body);
+    if(req.body.method === 'end') {
+      db.poll.end(req.params.uuid)
+        .then(success => {
+          if(success) {
+            res.json({end: true});
+          } else {
+            res.json({end: false});
+          }
+        });
+    } else {
+      db.poll.update(req.params.uuid, req.body.title)
+        .then(success => {
+          if(success) {
+            res.json({update: true});
+          } else {
+            res.json({update: false});
+          }
+        });
     }
-    checkActive();
 
-
-
-    function updateTitle() {
-      //Change the name of the question to req.body
-      knex('polls').where('polls.admin_uuid', '=', id).update('name', "Where do you want to eat")
-      .then(function(rows) {
-        res.json({success: true});
-      });
-    }
-
-
-    updateTitle();
   });
 
 
   return route;
 };
-
