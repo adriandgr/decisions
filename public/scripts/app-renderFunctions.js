@@ -18,7 +18,7 @@ function renderAdminView(res) {
       .text(a.name);
     let $description = $('<p>')
       .addClass('list-description')
-      .text('description...');
+      .text(a.description);
 
     $choice.appendTo($li);
     $description.appendTo($li);
@@ -38,7 +38,6 @@ function renderAdminView(res) {
     }
     return 0;
   });
-  console.log("SORTED?", $sortedList)
 
   $sortedList.detach().appendTo($list);
 
@@ -47,6 +46,37 @@ function renderAdminView(res) {
 
 }
 
+function renderVoteView(res){
+  let $list = $('<ul>').attr('id', res.poll.admin_uuid);
+  let $question = $('<h2>').addClass('poll-question').text(res.poll.name);
+  res.choices.forEach((a, b) => {
+
+    let $span = $('<span>').addClass('drag-handle');
+    $('<i>')
+      .addClass('fa fa-bars')
+      .attr('aria-hidden', 'true')
+      .appendTo($span);
+    let $li = $('<li>').data({
+      "choice-id": a.id,
+      "rank": a.borda_rank
+    });
+    $span.appendTo($li);
+
+    let $choice = $('<p>')
+      .addClass('list-choice')
+      .text(a.name);
+    let $description = $('<p>')
+      .addClass('list-description')
+      .text(a.description);
+
+    $choice.appendTo($li);
+    $description.appendTo($li);
+    $li.appendTo($list);
+  });
+
+  $list.prependTo('#display-results');
+  $question.prependTo('#display-results');
+}
 
 
 function genSortableList(data, res) {

@@ -2,24 +2,36 @@
 $(document).ready(()=> {
 
   if($.getQueryKeys() ? $.getQueryKey('key') : false ){
-    console.log('GET /polls/' + $.getQueryKey('key'));
-    $.ajax({
-      type: 'GET',
-      url: `/polls/${$.getQueryKey('key')}`,
-      headers: {
-        "X-Source": "merge_app"
-      }
-    }).then(res=> {
+    if($.getQueryKey('view') === 'man') {
+      $.ajax({
+        type: 'GET',
+        url: `/polls/${$.getQueryKey('key')}`
+      }).then(res=> {
+        console.log('admin')
+        renderAdminView(res);
 
-      renderAdminView(res);
+        $('#no-results-admin').hide();
+        $('#display-results-admin').show();
+        $('#admin-view').fadeToggle('slow');
+      }).catch(res=>{
+        console.log('fail', res);
+      });
+    } else if ($.getQueryKey('view') === 'sv') {
+      $.ajax({
+        type: 'GET',
+        url: `/polls/${$.getQueryKey('key')}`
+      }).then(res=> {
+        console.log('voter')
+        renderVoteView(res);
 
-      $('#no-results-admin').hide();
-      $('#display-results-admin').show();
+        $('#no-results-admin').hide();
+        $('#display-results-admin').show();
+        $('#admin-view').fadeToggle('slow');
+      }).catch(res=>{
+        console.log('fail', res);
+      });
+    }
 
-      $('#admin-view').fadeToggle('slow');
-    }).catch(res=>{
-      console.log('fail', res);
-    });
   } else {
     $('#home-view').fadeToggle('slow');
   }
