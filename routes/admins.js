@@ -20,6 +20,7 @@ module.exports = (db, knex, mailgun) => {
         console.log('Row from retrieving poll', poll);
       })
       .then(poll_id => {
+        console.log('PollID:', poll_id);
         return db.retrieve.choicesAndRanks(poll_id);
       })
       .then(results => {

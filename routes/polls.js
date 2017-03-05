@@ -26,14 +26,10 @@ module.exports = (db, knex) => {
     // let meaning = 'This route is responsible for receiving the POST data from the "Create a New Poll" form';
     // meaning += ' and then querying the database to eventually return a response containing relevant data';
 
-    let response = {};
-
     let adminUUID = uuid();
-
 
     db.insert.pollRow(req.body, adminUUID)
       .then(poll_id => {
-        console.log(poll_id);
         return db.insert.choices(poll_id, req.body.choices);
       })
       .then(results => {
@@ -72,9 +68,13 @@ module.exports = (db, knex) => {
         return db.retrieve.choicesAndRanks(poll_id);
       })
       .then(queryData => {
-        // Run function to combine data from query and post data here
         response['choices'] =  queryData;
-        // console.log('Response object: ', response); // DONE: This logs the response 100% correctly
+
+        if(req.params.uuid !== response.poll.admin_uuid) {
+          response.poll.admin_uuid = 'hidden';
+          response.poll.creator_email = 'hidden';
+        }
+        res.json(response);
       })
       .catch(err => {
         console.error(err);
@@ -94,38 +94,10 @@ module.exports = (db, knex) => {
     // This route is reponsible for receiving vote data,
     // inserting this data into the database meaningfully,
     // and then returning updated vote counts
-    winston.debug('Request', req.body.ballot, '\n\n\n\n');
-    function mergeData(dbData, requestData) {
-      dbData.map(dbData => {
-        requestData.forEach(requestData => {
-          if(dbData.choice_id === requestData.choice_id) {
-            return dbData.rank = requestData.rank;
-          }
-        });
-        return dbData;
-      });
-      return dbData;
-    }
 
-    // overrides actual req.body.choices for now
-    // req.body.choices = [
-    //   { choice_id: 1, rank: 3 },
-    //   { choice_id: 2, rank: 1 },
-    //   { choice_id: 3, rank: 2 }
-    // ];
-
-    db.retrieve.choicesAndRanks(req.params.uuid)
-      .then(dbData => {
-        return mergeData(dbData, req.body.ballot);
-      })
-      .then(mergedData => {
-        return db.insert.votes({success: true});
-      })
-      .then(results => {
-        res.json(results);
-      })
-      .catch(err => {
-        console.error(err);
+    db.retrieve.voter(req.params.uuid)
+      .then(voter_id => {
+        db.insert.votes(voter_id, req.body.ballot);
       });
 
   });

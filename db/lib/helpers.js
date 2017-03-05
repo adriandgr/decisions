@@ -9,20 +9,19 @@ module.exports = knex => {
     insert: {
 
       voters:
-
         (poll_id, body, adminUUID) => {
           // Data for admin to be incuded in the voters table
           // console.log(req.send_to);
+          body.send_to.forEach(voter => {
+            voter.poll_id = poll_id;
+            voter.voter_uuid = uuid();
+          });
           body.send_to.push( {
             name: body.created_by,
             email: body.creator_email,
             poll_id: poll_id,
             voter_uuid: adminUUID
           } );
-          body.send_to.forEach(voter => {
-            voter.poll_id = poll_id;
-            voter.voter_uuid = uuid();
-          });
           return knex('voters')
             .insert(body.send_to)
             .returning('id')
@@ -76,51 +75,57 @@ module.exports = knex => {
         },
 
       votes:
-        poll => {
-          let votes = [
-            { voter_id: 3, choice_id: 1, rank: 3 },
-            { voter_id: 3, choice_id: 2, rank: 1 },
-            { voter_id: 3, choice_id: 3, rank: 2 }
-          ];
-          let inserts = new Promise((resolve, reject) => {
-            votes.forEach(v => {
-              let query = [
-                v
-              ];
-              winston.debug(query);
-              knex('votes')
-                .insert(query)
-                .returning('id')
-                .then(id => {
-                  winston.debug('  Created vote => id:', id);
-                })
-                .catch(err => {
-                  reject('Error: One of the knex inserts has failed => \n' + err);
-                });
-            });
-            resolve(poll);
+        (voter_id, ballot) => {
+
+          // this is a bit confusing because ballot's voter_id is actually the voter_uuid
+          // so it has to be reassigned to the voter_id value, eg. ballot.voter_id is not
+          // 1 or 2 or 3, it's axbz89v7 or vb9vahjjs or vaopkpo80wa, so here's some logic:
+          ballot.forEach(vote => {
+            vote.voter_id = voter_id;
           });
-          return inserts;
+
+          return knex('votes')
+            .insert(ballot)
+            .returning('id')
+            .then(ids => {
+              ids.forEach(id => {
+                console.log('  Created vote => id:', id);
+              });
+            })
+            .catch(err => {
+              console.log('Error: One of the knex inserts has failed => \n' + err);
+            });
         }
 
     },
 
     retrieve: {
 
-      voterAndChoices:
+      voter:
         uuid => {
+          // return knex('voters')
+          //         .select('voters.id as voter_id', 'choices.id as choice_id')
+          //         .join('polls', 'voters.poll_id', 'polls.id')
+          //         .join('choices', 'polls.id', 'choices.poll_id')
+          //         .where('voter_uuid', uuid)
+          //         .then(rows => {
+          //           winston.debug('Retrieved voter_id and associated choice_ids =>');
+          //           winston.debug('  => voter_id:', rows[0].voter_id);
+          //           rows.forEach(r => {
+          //             winston.debug('    => choice_id:', r.choice_id);
+          //           });
+          //           return rows;
+          //         })
+          //         .catch(err => {
+          //           console.error(err);
+          //         });
+
           return knex('voters')
-                  .select('voters.id as voter_id', 'choices.id as choice_id')
-                  .join('polls', 'voters.poll_id', 'polls.id')
-                  .join('choices', 'polls.id', 'choices.poll_id')
+                  .select('id as voter_id')
                   .where('voter_uuid', uuid)
-                  .then(rows => {
-                    winston.debug('Retrieved voter_id and associated choice_ids =>');
-                    winston.debug('  => voter_id:', rows[0].voter_id);
-                    rows.forEach(r => {
-                      winston.debug('    => choice_id:', r.choice_id);
-                    });
-                    return rows;
+                  .then(id => {
+                    console.log('Retrieved voter_id =>', id[0].voter_id);
+                    return id[0].voter_id;
                   })
                   .catch(err => {
                     console.error(err);
