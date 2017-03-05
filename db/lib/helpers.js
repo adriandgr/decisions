@@ -43,27 +43,53 @@ module.exports = knex => {
 
       choices:
         (poll_id, choices) => {
-          let query;
+
+
+          // let query;
+          // let promises = [];
+          // choices.forEach(c => {
+          //   query = [{
+          //     name: c.choice,
+          //     description: c.description,
+          //     poll_id: poll_id
+          //   }];
+          //   promises.push(
+          //     new Promise((resolve, reject) => {
+          //       knex('choices')
+          //         .insert(query)
+          //         .returning('id', 'name')
+          //         .then(id => {
+          //           console.log('  Created choice => id:', id, '\n  => name:', c);
+          //           return {id, name};
+          //         })
+          //         .catch(err => {
+          //           reject('Error: One of the knex inserts has failed => \n' + err);
+          //         });
+          //     })
+          //   );
+          // });
+          // return promises;
+
+
+
           inserts = new Promise((resolve, reject) => {
             choices.forEach(c => {
               query = [{
-                name: c.name,
+                name: c.choice,
                 description: c.description,
                 poll_id: poll_id
               }];
-              choiceData = []
               knex('choices')
                 .insert(query)
                 .returning('id', 'name')
                 .then(id => {
                   console.log('  Created choice => id:', id, '\n  => name:', c);
-                  choiceData.push({id, name});
                 })
                 .catch(err => {
                   reject('Error: One of the knex inserts has failed => \n' + err);
                 });
             });
-            resolve(poll_id, choiceData);
+            resolve(poll_id);
           });
           return inserts;
         },
