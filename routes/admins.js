@@ -2,7 +2,6 @@
 
 const express = require('express');
 const route = express.Router();
-const email = require('./util/email.js');
 
 
 module.exports = (db, knex, mailgun) => {
@@ -48,7 +47,7 @@ module.exports = (db, knex, mailgun) => {
       db.poll.end(req.params.uuid)
         .then(success => {
           if(success) {
-            email.send(req.params.uuid);
+            mailgun.send(req.params.uuid);
             res.json({end: true});
           } else {
             res.json({end: false});

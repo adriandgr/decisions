@@ -1,4 +1,3 @@
-console.log('hi');
 const ejs         = require('ejs');
 const fs          = require('fs');
 var path          = require('path');
