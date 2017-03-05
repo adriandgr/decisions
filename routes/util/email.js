@@ -1,7 +1,8 @@
 console.log('hi');
 const ejs         = require('ejs');
 const fs          = require('fs');
-const str         = fs.readFileSync('pollend.ejs', 'utf8');
+const str         = fs.readFileSync('./pollend.ejs', 'utf8');
+const path        = require('path');
 const mailgun     = require('mailgun-js')({
   apiKey: process.env.MG_KEY,
   domain: process.env.MG_DOMAIN
