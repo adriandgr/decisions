@@ -32,13 +32,14 @@ module.exports = (db, knex) => {
       .then(poll => {
         return db.insert.choices(poll[0].id, req.body.choices);
       })
-      // the line below may break things because of how the promise
-      // in insert.choices() is resolved: keep an eye on it
-      .then((poll_id) => {
-        return db.insert.voters(poll_id, req.body);
-      })
-      .then(() => {
-        res.json({success: true, admin_uuid: adminUUID});
+      .then(promises => {
+        let ids = [];
+        promises.forEach(promise => {
+          ids.push(promise);
+        });
+        let voterId = ids.shift();
+        db.insert.voters(promises, req.body);
+        res.json({success: true, voterId: voterId, ids: ids});
       })
       .catch(err => {
         console.error('Error:', err);
