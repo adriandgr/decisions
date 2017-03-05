@@ -60,7 +60,6 @@ module.exports = knex => {
                 console.log(body);
               });
               i ++;
-              console.log("TO ALL VOTERS!!!!!!!!")
             })
           })
       },
@@ -87,7 +86,6 @@ module.exports = knex => {
             mailgun.messages().send(data, (error, body) => {
               console.log(body);
             });
-            console.log('ToCREATRORRRRRRRR')
           })
       }
 
