@@ -56,11 +56,11 @@ module.exports = knex => {
                 subject: 'String Interpolation Integrated',
                 html: `${messageHtml}`
               };
-              // mailgun.messages().send(data, (error, body) => {
-              //   console.log(body);
-              // });
-              i++;
-
+              mailgun.messages().send(data, (error, body) => {
+                console.log(body);
+              });
+              i ++;
+              console.log("TO ALL VOTERS!!!!!!!!")
             })
           })
       },
@@ -71,23 +71,23 @@ module.exports = knex => {
           .select('polls.admin_uuid')
           .returning('polls.admin_uuid')
           .then(uuid => {
-            console.log('This is UUID =========>',uuid)
             let messageHtml = ejs.render(str_creators, {
               title: body.name,
               email: body.creator_email,
               creator: body.created_by,
               uuid: uuid[0].admin_uuid
             })
+            console.log(body.creator_email)
             let  data = {
               from: `Merge App <app@${process.env.MG_DOMAIN}>`,
               to: body.creator_email,
               subject: 'String Interpolation Integrated',
               html: `${messageHtml}`
             };
-        // mailgun.messages().send(data, (error, body) => {
-        //   console.log(body);
-        // });
-            console.log(messageHtml)
+            mailgun.messages().send(data, (error, body) => {
+              console.log(body);
+            });
+            console.log('ToCREATRORRRRRRRR')
           })
       }
 
