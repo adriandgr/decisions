@@ -8,16 +8,15 @@ module.exports = knex => {
     insert: {
 
       voters:
-        (poll_id, body, uuids) => {
+        (poll_id, voters, uuids) => {
           // let body.sent_to = [
           //   { name: 'Donald', email: 'geddes.3574', voter_uuid: 'asdf', poll_id: 1},
           //   { name: 'Richard', email: 'an@email.com', voter_uuid: 'fdsa', poll_id: 1 },
           //   { name: 'Adrian', email: 'another@email.com', voter_uuid: 'afsd', poll_id: 1 }
           //   // { name: req.body.created_by, email: req.creator_email,  voter_uuid: uuids[1] }
           // ];
-          console.log(body);
           let result = new Promise((resolve, reject) => {
-            body.send_to.forEach(v => {
+            voters.send_to.forEach(v => {
               let query = [{
                 name: v.name,
                 email: v.email,
