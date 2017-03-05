@@ -1,8 +1,9 @@
 "use strict";
 
-const express = require('express');
-const route = express.Router();
-const uuid = require('./util/uuid-generator');
+const express  = require('express');
+const route    = express.Router();
+const winston  = require('winston');
+const uuid     = require('./util/uuid-generator');
 
 module.exports = (db, knex, mailgun) => {
 
@@ -18,25 +19,27 @@ module.exports = (db, knex, mailgun) => {
         {
           SUCCESS: TRUE/FALSE,
           (ADMIN_UUID: <UUID>)
+          CHOICE_DATA
         }
  */
   route.post('/', (req, res) => {
-    let meaning = 'This route is responsible for receiving the POST data from the "Create a New Poll" form';
-    meaning += ' and then querying the database to eventually return a response containing relevant data';
+    // let meaning = 'This route is responsible for receiving the POST data from the "Create a New Poll" form';
+    // meaning += ' and then querying the database to eventually return a response containing relevant data';
 
-    let response = {};
-    let uuids = [uuid(), uuid()];
-    db.insert.pollRow(req.body, uuids[1])
-      .then(poll => {
-        return db.insert.choices(poll[0].id, req.body.choices);
-      })
+    let adminUUID = uuid();
+
+    db.insert.pollRow(req.body, adminUUID)
       .then(poll_id => {
-        return db.insert.voters(poll_id, req.body, uuids);
+        return db.insert.choices(poll_id, req.body.choices);
       })
-      .then(poll_id => {
-        mailgun.toAllVoters(req.body, poll_id);
-        mailgun.toCreator(req.body, poll_id);
-        res.json({success: true});
+
+      // .then(poll_id => {
+      //   mailgun.toAllVoters(req.body, poll_id);
+      //   mailgun.toCreator(req.body, poll_id);
+      //   res.json({success: true});
+      .then(results => {
+        db.insert.voters(results.poll_id, req.body, adminUUID);
+        res.json({adminUUID: adminUUID, pollId: results.poll_id, ids: results.choices});
       })
       .catch(err => {
         console.error('Error:', err);
@@ -56,22 +59,36 @@ module.exports = (db, knex, mailgun) => {
         }
  */
   route.get('/:uuid', (req, res) => {
+    winston.debug('PARAMS!! >>>> ', req.params.uuid);
     let meaning = 'This route is responsible for a given voter\'s view of a poll';
 
     let response = {};
 
     db.retrieve.poll(req.params.uuid)
       .then(poll => {
-        response['poll'] = poll;
-        return poll.id;
+        // NOTE TO DEV TEAM:
+        // these guards are important to handle non-existing uuids in db
+        // if no key found, sends 404 status code to client.
+        if (poll) {
+          response['poll'] = poll;
+          return poll.id;
+        }
+        return null;
       })
       .then(poll_id => {
         return db.retrieve.choicesAndRanks(poll_id);
       })
       .then(queryData => {
-        // Run function to combine data from query and post data here
-        response['choices'] =  queryData;
-        // console.log('Response object: ', response); // DONE: This logs the response 100% correctly
+        if (queryData.length) {
+          response['choices'] =  queryData;
+          if(req.params.uuid !== response.poll.admin_uuid) {
+            response.poll.admin_uuid = 'hidden';
+            response.poll.creator_email = 'hidden';
+          }
+          return res.json(response);
+        }
+        winston.debug('sending 404');
+        res.status(404).json({mssg: 'Not Found'});
       })
       .catch(err => {
         console.error(err);
@@ -88,40 +105,14 @@ module.exports = (db, knex, mailgun) => {
           ]
  */
   route.post('/:uuid', (req, res) => {
-    let meaning = 'This route is reponsible for receiving vote data, inserting this data into the database';
-    meaning += ' meaningfully, and then returning updated vote counts';
+    // This route is reponsible for receiving vote data,
+    // inserting this data into the database meaningfully,
+    // and then returning updated vote counts
 
-    function mergeData(dbData, requestData) {
-      dbData.map(dbData => {
-        requestData.forEach(requestData => {
-          if(dbData.choice_id === requestData.choice_id) {
-            return dbData.rank = requestData.rank;
-          }
-        });
-        return dbData;
-      });
-      return dbData;
-    }
-
-    // overrides actual req.body.choices for now
-    req.body.choices = [
-      { choice_id: 1, rank: 3 },
-      { choice_id: 2, rank: 1 },
-      { choice_id: 3, rank: 2 }
-    ];
-
-    db.retrieve.choices(req.params.uuid)
-      .then(dbData => {
-        return mergeData(dbData, req.body.choices);
-      })
-      .then(mergedData => {
-        return db.insert.votes({success: trues});
-      })
-      .then(results => {
-        res.json(results);
-      })
-      .catch(err => {
-        console.error(err);
+    db.retrieve.voter(req.params.uuid)
+      .then(voter_id => {
+        db.insert.votes(voter_id, req.body.ballot);
+        res.json({mssg:'okay'});
       });
 
   });

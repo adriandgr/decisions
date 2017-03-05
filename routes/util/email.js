@@ -12,80 +12,87 @@ const mailgun     = require('mailgun-js')({
 
 module.exports = knex => {
   return {
-    send:
-      id => {
+    pollEnds:
+      poll => {
         knex('polls')
           .join('voters', 'polls.id', 'voters.poll_id')
-          .where('polls.admin_uuid', id)
+          .where('polls.admin_uuid', poll.admin_uuid)
           .select('polls.name', 'polls.created_by', 'voters.email', 'voters.voter_uuid')
           .returning(['polls.name', 'polls.created_by', 'voters.email', 'voters.voter_uuid'])
           .then(column => {
+            console.log('column======>',column)
             column.forEach(pollInfo => {
-              let messageHtml = ejs.render(str, pollInfo);
-              let  data = {
-                from: `Merge App <app@${process.env.MG_DOMAIN}>`,
-                to: pollInfo.email,
-                subject: 'Merge has ended!',
-                html: `${messageHtml}`
-              };
-              mailgun.messages().send(data, (error, body) => {
-                console.log(body);
-              });
+              console.log('admin:', poll.admin_uuid);
+              console.log('voter:', pollInfo.voter_uuid);
+              if(pollInfo.admin_uuid !== pollInfo.voter_uuid) {
+                let messageHtml = ejs.render(str, pollInfo);
+                let  data = {
+                  from: `Merge App <app@${process.env.MG_DOMAIN}>`,
+                  to: pollInfo.email,
+                  subject: 'Merge has ended!',
+                  html: `${messageHtml}`
+                };
+                // mailgun.messages().send(data, (error, body) => {
+                  // console.log(body);
+                // });
+                console.log(messageHtml)
+              }
             });
           });
       },
     toAllVoters:
-      (body, poll_id) => {
+      (poll) => {
+        console.log("POLL ID =========>", poll.id)
         let i = 0;
         knex('polls')
           .join('voters', 'polls.id', 'voters.poll_id')
-          .where('voters.poll_id', poll_id)
-          .select('voters.voter_uuid')
-          .returning(['voter_uuid'])
+          .where('voters.poll_id', poll.id)
+          .select('voters.voter_uuid', 'voters.email')
+          .returning(['voter_uuid', 'voters.email'])
           .then(totalUuid => {
             totalUuid.forEach(uuid => {
+              console.log(uuid);
               let messageHtml = ejs.render(str_voters, {
-                title: body.name,
-                creator: body.created_by,
-                voter: body.send_to[i],
+                title: poll.name,
+                creator: poll.created_by,
+                voter: uuid.email,
                 uuid: uuid.voter_uuid
               })
               let  data = {
                 from: `Merge App <app@${process.env.MG_DOMAIN}>`,
-                to: body.send_to[i].email,
+                to: poll.email,
                 subject: 'You have a Merge request!',
                 html: `${messageHtml}`
               };
-              mailgun.messages().send(data, (error, body) => {
-                console.log(body);
-              });
+              // mailgun.messages().send(data, (error, body) => {
+              //   console.log(body);
+              // });
               i ++;
             })
           })
       },
     toCreator:
-      (body, poll_id) => {
+      (poll) => {
         knex('polls')
-          .where('polls.id', poll_id)
+          .where('polls.id', poll.id)
           .select('polls.admin_uuid')
           .returning('polls.admin_uuid')
           .then(uuid => {
             let messageHtml = ejs.render(str_creators, {
-              title: body.name,
-              email: body.creator_email,
-              creator: body.created_by,
-              uuid: uuid[0].admin_uuid
+              title: poll.name,
+              email: poll.creator_email,
+              creator: poll.created_by,
+              uuid: uuid.voter_uuid
             })
-            console.log(body.creator_email)
             let  data = {
               from: `Merge App <app@${process.env.MG_DOMAIN}>`,
-              to: body.creator_email,
+              to: poll.creator_email,
               subject: 'Thank you for creating this Merge!',
               html: `${messageHtml}`
             };
-            mailgun.messages().send(data, (error, body) => {
-              console.log(body);
-            });
+            // mailgun.messages().send(data, (error, body) => {
+            //   console.log(body);
+            // });
           })
       }
 

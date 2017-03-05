@@ -24,12 +24,22 @@ module.exports = (db, knex, mailgun) => {
         console.log('Row from retrieving poll', poll);
       })
       .then(poll_id => {
+        console.log('PollID:', poll_id);
         return db.retrieve.choicesAndRanks(poll_id);
       })
       .then(results => {
         console.log('Choices and ranks:', results);
         response['choices'] = results;
-        res.json(response);
+        // if(req.xhr) {
+          return res.json(response);
+        // }
+        // res.status(401).render('status', {
+        //   status: {
+        //     code: '401 Unauthorized',
+        //     reason: 'You are not an authorized client.',
+        //     forgot: false
+        //   }
+        // });
       })
       .catch(err => {
         console.error('Error retrieving poll:', err);
@@ -40,32 +50,32 @@ module.exports = (db, knex, mailgun) => {
 
 
     //Send emails to existing voters
-    function sendEmail (){
-      knex('polls')
-      .join('voters', 'polls.id', 'voters.poll_id')
-      .where('polls.admin_uuid', id)
-      .select('polls.name','polls.created_by', 'voters.email', 'voters.voter_uuid')
-      .returning(['polls.name', 'polls.created_by','voters.email', 'voters.voter_uuid'])
-      .then(function(column) {
-        column.forEach(pollInfo => {
+    // function sendEmail (){
+    //   knex('polls')
+    //   .join('voters', 'polls.id', 'voters.poll_id')
+    //   .where('polls.admin_uuid', id)
+    //   .select('polls.name','polls.created_by', 'voters.email', 'voters.voter_uuid')
+    //   .returning(['polls.name', 'polls.created_by','voters.email', 'voters.voter_uuid'])
+    //   .then(function(column) {
+    //     column.forEach(pollInfo => {
 
 
-          let messageHtml = ejs.render(str, pollInfo);
-          console.log(messageHtml);
-          let  data = {
-            from: `Merge App <app@${process.env.MG_DOMAIN}>`,
-            to: pollInfo.email,
-            subject: 'String Interpolation Integrated',
-            html: `${messageHtml}`
-          }
-          mailgun.messages().send(data, function (error, body) {
-            console.log(body);
-          });
-        })
-      })
-    }
+    //       let messageHtml = ejs.render(str, pollInfo);
+    //       console.log(messageHtml);
+    //       let  data = {
+    //         from: `Merge App <app@${process.env.MG_DOMAIN}>`,
+    //         to: pollInfo.email,
+    //         subject: 'String Interpolation Integrated',
+    //         html: `${messageHtml}`
+    //       }
+    //       mailgun.messages().send(data, function (error, body) {
+    //         console.log(body);
+    //       });
+    //     })
+    //   })
+    // }
 
-    sendEmail();
+    // sendEmail();
 
 
 /*
@@ -79,7 +89,6 @@ module.exports = (db, knex, mailgun) => {
       db.poll.end(req.params.uuid)
         .then(success => {
           if(success) {
-            mailgun.send(req.params.uuid);
             res.json({end: true});
           } else {
             res.json({end: false});

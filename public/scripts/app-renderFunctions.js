@@ -1,49 +1,67 @@
 
 
-let string = '{"name":"question","created_by":"me","creator_email":"my@emai","choices":[{"choice":"choice1","description":"option1"},{"choice":"choice2","description":"option2"},{"choice":"choice3","description":"option3"}],"send_to":[{"name":"friend","email":"friend@email"}]}'
-let testData = JSON.parse(string);
+function renderAdminView(res) {
+  console.log(res.poll.admin_uuid);
+  let $list = $('<ul>').attr('id', res.poll.admin_uuid);
+  let $question = $('<h2>').addClass('poll-question').text(res.poll.name);
+  res.choices.forEach((a, b) => {
+    console.log(a)
+    let $span = $('<span>');
+    $('<i>')
+      .addClass('fa fa-bars')
+      .attr('aria-hidden', 'true')
+      .appendTo($span);
+    let $li = $('<li>').data( "choice-id", a.id );
+    $span.appendTo($li);
 
-    //  <li>
-     //   <span class="drag-handle">
-     //     <i class="fa fa-bars" aria-hidden="true"></i>
-    //    </span>
-  //      one
-    //  </li>
-//<ul id="foo">
-//
-function genSortableList(data, uuid) {
-  let $list = $('<ul>').attr('id', uuid);
+    let $choice = $('<p>')
+      .addClass('list-choice')
+      .text(a.name);
+    let $description = $('<p>')
+      .addClass('list-description')
+      .text(`description... borda: ${a.borda_rank}`);
+
+    $choice.appendTo($li);
+    $description.appendTo($li);
+    $li.appendTo($list);
+  });
+
+  $list.prependTo('#display-results-admin');
+  $question.prependTo('#display-results-admin');
+
+}
 
 
 
-  data.choices.forEach((a, b) =>{
+function genSortableList(data, res) {
+   let $list = $('<ul>').attr('id', res.adminUUID);
+  let $question = $('<h2>').addClass('poll-question').text(data.name);
+  res.ids.forEach((a, b) => {
+
     let $span = $('<span>').addClass('drag-handle');
     $('<i>')
       .addClass('fa fa-bars')
       .attr('aria-hidden', 'true')
       .appendTo($span);
-    let $li = $('<li>');
+    let $li = $('<li>').data( "choice-id", a.id );
     $span.appendTo($li);
 
     let $choice = $('<p>')
       .addClass('list-choice')
-      .text(a.choice);
+      .text(data.choices[b].name);
     let $description = $('<p>')
       .addClass('list-description')
-      .text(a.description);
+      .text(data.choices[b].description);
 
     $choice.appendTo($li);
     $description.appendTo($li);
     $li.appendTo($list);
-
   });
+
   $list.prependTo('#display-results');
-  //insertAfter( '#display-results' > div:nth-child(${len - 2})` )
+  $question.prependTo('#display-results');
+
 }
-
-
-
-//genSortableList(testData, 'uuid');
 
 
 function addInput(targetId, word) {

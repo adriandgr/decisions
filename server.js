@@ -3,7 +3,6 @@
 require('dotenv').config();
 
 
-
 const PORT        = process.env.PORT || 8080;
 const ENV         = process.env.ENV || "development";
 const express     = require("express");
@@ -25,9 +24,11 @@ const knexLogger  = require('knex-logger');
 
 const db          = require('./db/lib/helpers.js')(knex);
 const mailgun     = require('./routes/util/email')(knex);
+
 // Seperated Routes for each Resource
 const pollsRoutes = require('./routes/polls');
 const adminsRoutes = require('./routes/admins');
+const mgRoutes = require('./routes/mg');
 
 winston.level = process.env.LOG_LEVEL || 'debug';
 
@@ -61,17 +62,15 @@ app.use(express.static('public'));
 
 
 // Mount all resource routes
-app.use('/polls', pollsRoutes(db, knex, mailgun));
-app.use('/admins', adminsRoutes(db, knex, mailgun));
-// Home page
+app.use('/polls', pollsRoutes(db, knex));
+app.use('/admins', adminsRoutes(db, knex));
+app.use('/mg', mgRoutes(db, knex, mailgun));
 
-// app.get('/', (req, res) => {
-//   res.render('index');
-// });
-
-
-app.get("/", (req, res) => {
-  res.render("index");
+app.use(function (req, res, next) {
+  res.status(404).render('status', { status: {
+    code: '404 Not Found',
+    reason: `/${req._parsedUrl.path.substring(1)}`,
+    forgot: false }});
 });
 
 app.listen(PORT, () => {

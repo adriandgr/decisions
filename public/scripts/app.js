@@ -1,7 +1,28 @@
 
-
-
 $(document).ready(()=> {
+
+  if($.getQueryKeys() ? $.getQueryKey('key') : false ){
+    console.log('GET /polls/' + $.getQueryKey('key'));
+    $.ajax({
+      type: 'GET',
+      url: `/polls/${$.getQueryKey('key')}`,
+      headers: {
+        "X-Source": "merge_app"
+      }
+    }).then(res=> {
+
+      renderAdminView(res);
+
+      $('#no-results-admin').hide();
+      $('#display-results-admin').show();
+
+      $('#admin-view').fadeToggle('slow');
+    }).catch(res=>{
+      console.log('fail', res);
+    });
+  } else {
+    $('#home-view').fadeToggle('slow');
+  }
 
   $('.add-choice-btn').on('click', (event)=> {
     event.preventDefault();
@@ -44,7 +65,6 @@ $(document).ready(()=> {
     $('#home-view').fadeToggle('fast',()=>{
       $('#create-view').fadeToggle('slow');
     });
-
   });
 
   $('#capture-emails').on('click', (event)=> {
@@ -56,7 +76,6 @@ $(document).ready(()=> {
 
   // MAIN SUBMIT EVENT
   $('#submit-form').on('click', (event)=> {
-
     event.preventDefault();
     data = dataComposer();
     console.log(JSON.stringify(data));
@@ -66,9 +85,9 @@ $(document).ready(()=> {
       data: data,
       dataType: 'json'
     }).then(res=> {
-      console.log('success', res);
-      genSortableList(data, 'uuid');
-      Sortable.create(byId('uuid'), {
+      console.log('success', res.ids);
+      genSortableList(data, res);
+      Sortable.create(byId(res.adminUUID), {
         handle: '.drag-handle',
         animation: 150
       });
@@ -88,6 +107,40 @@ $(document).ready(()=> {
     // }).then((res) => {
     // });
 
+  });
+
+  $('#submit-vote').on('click', event => {
+    event.preventDefault();
+    let id = $('#display-results > ul').attr('id');
+    let len = $('#display-results ul > li').length;
+    let data = [];
+    console.log(len);
+
+    for (let i = 1; i <= len; i++ ) {
+      let vote = {
+        voter_id: id,
+        choice_id: $( `#display-results ul > li:nth-child(${i})` ).data('choiceId'),
+        rank: len - (i - 1)
+      };
+      data.push(vote);
+    }
+    console.log(data);
+    $.ajax({
+      type: 'POST',
+      url: `/polls/${id}`,
+      data: {
+        ballot: data,
+        mssg: 'democracy rules...'
+       },
+      dataType: 'json'
+    }).then(res=> {
+      console.log('hey');
+      $('#results-view').fadeToggle('fast', ()=> {
+        $('#admin-view').fadeToggle('slow');
+      });
+    }).catch(res=>{
+      console.log('fail', res);
+    });
 
   });
 
