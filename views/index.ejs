@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="/styles/merge.css">
 
 </head>
-<body class="container" data-uuid="<%= poll.voter_uuid %>">
+<body class="container"<%if (poll) {%> data-uuid="<%= poll.voter_uuid %>"<%}%>>
 <div class="app-wrap">
   <!--[if lte IE 9]>
       <div class="browserupgrade">
@@ -154,7 +154,22 @@
   </section>
 
   <section id="admin-view">
-  hello there!
+  <div class="row" id="no-results-admin">
+      <div class="col-1 offset-2 offset-sm-3">
+        <i class="fa fa-eye-slash" aria-hidden="true"></i>
+      </div>
+      <div class="col-9 col-sm-8">
+        No results to show.
+      </div>
+      <div class="col-9 col-sm-8 offset-3 offset-sm-4 no-results-info">
+        <p>Perhaps you would like to create a new merge?</p>
+      </div>
+    </div>
+    <div id="display-results-admin">
+
+
+
+    </div>
   </section>
 
 

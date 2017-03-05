@@ -1,12 +1,12 @@
 
 
-function genSortableList(data, res) {
-
-  let $list = $('<ul>').attr('id', res.adminUUID);
-  let $question = $('<h2>').addClass('poll-question').text(data.name);
-  res.ids.forEach((a, b) => {
-
-    let $span = $('<span>').addClass('drag-handle');
+function renderAdminView(res) {
+  console.log(res.poll.admin_uuid);
+  let $list = $('<ul>').attr('id', res.poll.admin_uuid);
+  let $question = $('<h2>').addClass('poll-question').text(res.poll.name);
+  res.choices.forEach((a, b) => {
+    console.log(a)
+    let $span = $('<span>');
     $('<i>')
       .addClass('fa fa-bars')
       .attr('aria-hidden', 'true')
@@ -16,18 +16,26 @@ function genSortableList(data, res) {
 
     let $choice = $('<p>')
       .addClass('list-choice')
-      .text(data.choices[b].name);
+      .text(a.name);
     let $description = $('<p>')
       .addClass('list-description')
-      .text(data.choices[b].description);
+      .text(`description... borda: ${a.borda_rank}`);
 
     $choice.appendTo($li);
     $description.appendTo($li);
     $li.appendTo($list);
   });
 
-  $list.prependTo('#display-results');
-  $question.prependTo('#display-results');
+  $list.prependTo('#display-results-admin');
+  $question.prependTo('#display-results-admin');
+
+}
+
+
+
+function genSortableList(data, res) {
+
+
 }
 
 

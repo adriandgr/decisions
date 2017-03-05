@@ -3,7 +3,21 @@ $(document).ready(()=> {
 
   if ($('body').data('uuid')){
     console.log("hey! I know you!");
-    $('#admin-view').fadeToggle('slow');
+
+    $.ajax({
+      type: 'GET',
+      url: `/polls/${$('body').data('uuid')}`
+    }).then(res=> {
+      renderAdminView(res);
+
+      $('#no-results-admin').hide();
+      $('#display-results-admin').show();
+
+      $('#admin-view').fadeToggle('slow');
+    }).catch(res=>{
+      console.log('fail', res);
+    });
+
   } else {
     $('#home-view').fadeToggle('slow');
   }
@@ -118,6 +132,7 @@ $(document).ready(()=> {
        },
       dataType: 'json'
     }).then(res=> {
+      console.log('hey');
       $('#results-view').fadeToggle('fast', ()=> {
         $('#admin-view').fadeToggle('slow');
       });

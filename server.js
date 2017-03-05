@@ -74,6 +74,13 @@ app.get('/polls/:id', (req, res) => {
   // } })
 })
 
+app.use(function (req, res, next) {
+  res.status(404).render('status', { status: {
+    code: '404 Not Found',
+    reason: `/${req._parsedUrl.path.substring(1)}`,
+    forgot: false }});
+});
+
 app.listen(PORT, () => {
   winston.info('Example app listening on port ' + PORT);
 });
