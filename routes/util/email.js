@@ -25,7 +25,7 @@ module.exports = knex => {
               let  data = {
                 from: `Merge App <app@${process.env.MG_DOMAIN}>`,
                 to: pollInfo.email,
-                subject: 'String Interpolation Integrated',
+                subject: 'Merge has ended!',
                 html: `${messageHtml}`
               };
               mailgun.messages().send(data, (error, body) => {
@@ -53,7 +53,7 @@ module.exports = knex => {
               let  data = {
                 from: `Merge App <app@${process.env.MG_DOMAIN}>`,
                 to: body.send_to[i].email,
-                subject: 'String Interpolation Integrated',
+                subject: 'You have a Merge request!',
                 html: `${messageHtml}`
               };
               mailgun.messages().send(data, (error, body) => {
@@ -80,7 +80,7 @@ module.exports = knex => {
             let  data = {
               from: `Merge App <app@${process.env.MG_DOMAIN}>`,
               to: body.creator_email,
-              subject: 'String Interpolation Integrated',
+              subject: 'Thank you for creating this Merge!',
               html: `${messageHtml}`
             };
             mailgun.messages().send(data, (error, body) => {
