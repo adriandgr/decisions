@@ -141,8 +141,9 @@ module.exports = knex => {
                   .join('polls', 'polls.id', 'voters.poll_id')
                   .where('voters.voter_uuid', uuid)
                   .orWhere('polls.admin_uuid', uuid)
-                  .then(row => {
-                    return row[0];
+                  .then(poll => {
+                    console.log('Retrieved poll => id:', poll[0].id);
+                    return poll[0];
                   })
                   .catch(err => {
                     console.error(err);
@@ -157,9 +158,27 @@ module.exports = knex => {
                   .where('choices.poll_id', poll_id)
                   .sum('votes.rank as borda_rank')
                   .groupBy('name', 'choices.id', 'rank')
-                  .then(rows => {
-                    console.log(rows);
-                    return rows;
+                  .then(choices => {
+                    choices.forEach(c => {
+                      console.log('  Retrieved choice => id: ', c.id);
+                    });
+                    return choices;
+                  })
+                  .catch(err => {
+                    console.error(err);
+                  });
+        },
+
+      choices:
+        poll_id => {
+          return knex('choices')
+                  .select('choices.id', 'choices.name', 'choices.description')
+                  .where('choices.poll_id', poll_id)
+                  .then(choices => {
+                    choices.forEach(c => {
+                      console.log('  Retrieved choice => id: ', c.id);
+                    });
+                    return choices;
                   })
                   .catch(err => {
                     console.error(err);
