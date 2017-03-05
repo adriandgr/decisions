@@ -23,7 +23,7 @@ module.exports = (db, knex) => {
  */
   route.post('/', (req, res) => {
 
-    if(!isXHR(req.xhr)) {
+    if(!req.xhr) {
       res.status(401).render('status', {
         status: {
           code: '401 Unauthorized',
