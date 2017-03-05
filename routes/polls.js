@@ -32,18 +32,13 @@ module.exports = (db, knex) => {
 
 
     db.insert.pollRow(req.body, adminUUID)
-      .then(poll => {
-        return db.insert.choices(poll[0].id, req.body.choices);
+      .then(poll_id => {
+        console.log(poll_id);
+        return db.insert.choices(poll_id, req.body.choices);
       })
-
-      .then(promises => {
-        let ids = [];
-        promises.forEach(promise => {
-          ids.push(promise);
-        });
-        let pollId = ids.shift();
-        db.insert.voters(promises, req.body);
-        res.json({success: true, adminUUID: adminUUID, pollId: pollId, ids: ids});
+      .then(results => {
+        db.insert.voters(results.poll_id, req.body, adminUUID);
+        res.json({adminUUID: adminUUID, pollId: results.poll_id, ids: results.choices});
       })
       .catch(err => {
         console.error('Error:', err);
@@ -124,7 +119,7 @@ module.exports = (db, knex) => {
         return mergeData(dbData, req.body.ballot);
       })
       .then(mergedData => {
-        return db.insert.votes({success: trues});
+        return db.insert.votes({success: true});
       })
       .then(results => {
         res.json(results);
