@@ -153,14 +153,14 @@ module.exports = knex => {
       choicesAndRanks:
         poll_id => {
           return knex('choices')
-                  .select('choices.id', 'choices.name', 'rank')
+                  .select('choices.id', 'choices.name', 'choices.description', 'rank')
                   .join('votes', 'votes.choice_id', 'choices.id')
                   .where('choices.poll_id', poll_id)
                   .sum('votes.rank as borda_rank')
-                  .groupBy('name', 'choices.id', 'rank')
+                  .groupBy('name', 'choices.id', 'choices.description', 'rank')
                   .then(choices => {
                     choices.forEach(c => {
-                      console.log('  Retrieved choice => id: ', c.id);
+                      console.log('  Retrieved choice => id: ', c.id, 'description:', c.description);
                     });
                     return choices;
                   })
