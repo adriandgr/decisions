@@ -73,34 +73,46 @@ function ordinalWord(num, word) {
 
 function addInput(targetId, word) {
   let len = $(`${targetId} > div`).length;
-  let colWidth, $plusSpace, $input2;
-  if (word === 'choice') {
-    colWidth = 11;
-  } else {
-    $plusSpace = $('<div>').addClass('col-1 plus-space-sm');
-    $('<i>').addClass('fa fa-plus').attr('aria-hidden', 'true').appendTo($plusSpace);
 
-    $input2 = $('<input>').addClass('col-4 form-control friend-name').attr({
-      id: `friend-name-${len - 2}`,
+  let $div = $("<div>")
+    .addClass('form-group row')
+    .attr('id', `node-${len - 2}`);
+
+  let $label = $("<label>")
+    .addClass('col-1')
+    .attr( 'for', `${word}-${len - 2}`);
+
+  $("<i>")
+    .addClass('delete-choice fa fa-trash-o')
+    .attr({ id: `x${len - 2}`, 'aria-hidden': 'true' })
+    .appendTo( $label );
+
+  $label.appendTo( $div );
+
+  $("<input>")
+    .addClass(`col-10 col-md-6 form-control op1 ${ word === 'choice' ? word : 'friend-email' }`)
+    .attr({
+      id: `${word}-${len - 2}`,
       type: 'text',
-      placeholder: 'their name'
-    });
-    colWidth = 6;
-  }
+      placeholder: ordinalWord(len - 2, word)
+    }).appendTo( $div );
 
-  let $div = $("<div>").addClass('form-group row').attr('id', `node-${len - 2}`);
-  let $label = $("<label>").addClass('col-1').attr( 'for', `${word}-${len - 2}`);
-  $("<i>").addClass('delete-choice fa fa-times').attr({ id: `x${len - 2}`, 'aria-hidden': 'true' }).appendTo($label);
-  $label.appendTo($div);
-  $("<input>").addClass(`col-${colWidth} form-control ${ word === 'choice' ? word : 'friend-email' }`).attr({
-    id: `${word}-${len - 2}`,
-    type: 'text',
-    placeholder: ordinalWord(len - 2, word)
-  }).appendTo($div);
-  if (word === 'friend'){
-    $plusSpace.appendTo($div);
-    $input2.appendTo($div);
-  }
+  let $plusSpace = $('<div>')
+    .addClass('col-1 offset-md-0 plus-space-sm');
+
+  $('<i>')
+    .addClass('fa fa-plus show-option')
+    .attr('aria-hidden', 'true')
+    .appendTo( $plusSpace );
+  $plusSpace.appendTo( $div );
+
+  $('<input>')
+    .addClass(`hidden-sm-down col-md-4 form-control op2 ${ word === 'choice' ? 'description' : 'friend-name' }`)
+    .attr({
+      id: `${ word === 'choice' ? 'description' : 'friend-name' }-${len - 2}`,
+      type: 'text',
+      placeholder: `${ word === 'choice' ? 'optional description' : 'their name' }`
+    }).appendTo( $div );
 
   $( $div ).insertAfter( `${targetId} > div:nth-child(${len - 2})` );
 }
@@ -127,37 +139,19 @@ function composeObject(arr1, arr2, keys) {
     //   }
     // ]
 
-function dataComposer() {
-  let choices = [];
-  for ( let choice of $('.choice')){
-    choices.push(choice.value);
-  }
 
-  let friends = [];
-  for ( let friend of $('.friend-name')){
-    friends.push(friend.value);
-  }
 
-  let emails = [];
-  for ( let email of $('.friend-email')){
-    emails.push(email.value);
-  }
+let string = '{"name":"question","created_by":"me","creator_email":"my@emai","choices":[{"choice":"choice1","description":"option1"},{"choice":"choice2","description":"option2"},{"choice":"choice3","description":"option3"}],"send_to":[{"name":"friend","email":"friend@email"}]}'
+let testData = JSON.parse(string);
 
-  let data = {
-    name: $('#poll-name')[0].value,
-    created_by: $('#creator-name')[0].value,
-    creator_email: $('#creator-email')[0].value,
-    choices: choices,
-    send_to: composeObject(friends, emails, ['name', 'email'])
-  };
-  return data;
-}
-
-function genSortableList(data) {
+function genSortableList(data, uuid) {
+  let $list = $('ul').attr('id', uuid);
   console.log(data)
   data.choices.forEach((a,b) =>{
-    console.log('a', a);
-    console.log('b', b);
+
+
+    console.log('a', a); //the object
+    console.log('b', b); //the index
   });
 
   let $li = $('<li>')
@@ -166,6 +160,8 @@ function genSortableList(data) {
     .appendTo($li).text('hoots');
 
 }
+
+genSortableList(testData);
 
 
 $(document).ready(()=> {
@@ -190,6 +186,20 @@ $(document).ready(()=> {
     $(event.target).closest('div').remove();
   });
 
+  $(document).on('click', '.show-option', (event)=> {
+    event.preventDefault();
+    $(event.target)
+      .toggleClass('fa-plus fa-minus');
+    $(event.target)
+      .closest('div').toggleClass('offset-1');
+    $(event.target)
+      .closest('div').siblings('.op1')
+      .toggleClass('col-10 col-11');
+    $(event.target)
+      .closest('div').siblings('.op2')
+      .toggleClass('hidden-sm-down col-10');
+  });
+
   $('#nav-control').on('click', ()=> {
     $('#main-nav').toggle();
   });
@@ -203,14 +213,17 @@ $(document).ready(()=> {
 
   $('#capture-emails').on('click', (event)=> {
     event.preventDefault();
-    $('#create-view').toggle();
-    $('#send-view').toggle();
+    $('#create-view').fadeToggle('fast',()=>{
+      $('#send-view').fadeToggle('slow');
+    });
   });
-  let data = dataComposer();
-  genSortableList(data);
+
+  // MAIN SUBMIT EVENT
   $('#submit-form').on('click', (event)=> {
+
     event.preventDefault();
-    console.log(dataComposer())
+    data = dataComposer();
+    console.log(JSON.stringify(data));
     $.ajax({
       type: 'POST',
       url: '/polls',
@@ -241,25 +254,6 @@ $(document).ready(()=> {
 
   });
 
-
-  let isDragging = false;
-
-  $('#display-results li > .drag-handle').mousedown(function() {
-    isDragging = false;
-  })
-  .mousemove(function() {
-      isDragging = true;
-   })
-  .mouseup(function() {
-      var wasDragging = isDragging;
-      isDragging = false;
-      if (!wasDragging) {
-        console.log('did not drag!')
-          $("#throbble").toggle();
-      } else {
-        console.log('you\'re such a drag!')
-      }
-  });
 
 
   // helper menu
