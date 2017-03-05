@@ -1,6 +1,4 @@
 
-
-
 $(document).ready(()=> {
 
   $('.add-choice-btn').on('click', (event)=> {
@@ -44,7 +42,6 @@ $(document).ready(()=> {
     $('#home-view').fadeToggle('fast',()=>{
       $('#create-view').fadeToggle('slow');
     });
-
   });
 
   $('#capture-emails').on('click', (event)=> {
@@ -56,7 +53,6 @@ $(document).ready(()=> {
 
   // MAIN SUBMIT EVENT
   $('#submit-form').on('click', (event)=> {
-
     event.preventDefault();
     data = dataComposer();
     console.log(JSON.stringify(data));
@@ -88,6 +84,39 @@ $(document).ready(()=> {
     // }).then((res) => {
     // });
 
+  });
+
+  $('#submit-vote').on('click', event => {
+    event.preventDefault();
+    let id = $('#display-results > ul').attr('id');
+    let len = $('#display-results ul > li').length;
+    let data = [];
+    console.log(len);
+
+    for (let i = 1; i <= len; i++ ) {
+      let vote = {
+        voter_id: id,
+        choice_id: $( `#display-results ul > li:nth-child(${i})` ).data('choiceId'),
+        rank: len - (i - 1)
+      };
+      data.push(vote);
+    }
+    console.log(data);
+    $.ajax({
+      type: 'POST',
+      url: `/polls/${id}`,
+      data: {
+        ballot: data,
+        mssg: 'democracy rules...'
+       },
+      dataType: 'json'
+    }).then(res=> {
+      $('#results-view').fadeToggle('fast', ()=> {
+        $('#admin-view').fadeToggle('slow');
+      });
+    }).catch(res=>{
+      console.log('fail', res);
+    });
 
   });
 

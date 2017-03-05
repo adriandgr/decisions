@@ -1,24 +1,10 @@
 
 
-let string = '{"name":"question","created_by":"me","creator_email":"my@emai","choices":[{"choice":"choice1","description":"option1"},{"choice":"choice2","description":"option2"},{"choice":"choice3","description":"option3"}],"send_to":[{"name":"friend","email":"friend@email"}]}'
-let testData = JSON.parse(string);
-
-    //  <li>
-     //   <span class="drag-handle">
-     //     <i class="fa fa-bars" aria-hidden="true"></i>
-    //    </span>
-  //      one
-    //  </li>
-//<ul id="foo">
-//
 function genSortableList(data, res) {
 
   let $list = $('<ul>').attr('id', res.adminUUID);
-
+  let $question = $('<h2>').addClass('poll-question').text(data.name);
   res.ids.forEach((a, b) => {
-    console.log('id', a.id);
-    console.log('description', data.choices[b].description);
-    console.log('name', data.choices[b].name);
 
     let $span = $('<span>').addClass('drag-handle');
     $('<i>')
@@ -41,12 +27,8 @@ function genSortableList(data, res) {
   });
 
   $list.prependTo('#display-results');
-
+  $question.prependTo('#display-results');
 }
-
-
-
-//genSortableList(testData, 'uuid');
 
 
 function addInput(targetId, word) {
