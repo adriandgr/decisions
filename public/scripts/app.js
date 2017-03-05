@@ -1,6 +1,13 @@
 
 $(document).ready(()=> {
 
+  if ($('body').data('uuid')){
+    console.log("hey! I know you!");
+    $('#admin-view').fadeToggle('slow');
+  } else {
+    $('#home-view').fadeToggle('slow');
+  }
+
   $('.add-choice-btn').on('click', (event)=> {
     event.preventDefault();
     addInput('#create-form', 'choice');

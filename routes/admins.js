@@ -25,7 +25,8 @@ module.exports = (db, knex, mailgun) => {
       .then(results => {
         console.log('Choices and ranks:', results);
         response['choices'] = results;
-        res.json(response);
+        console.log(response)
+        res.render('index', response);
       })
       .catch(err => {
         console.error('Error retrieving poll:', err);
