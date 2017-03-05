@@ -14,50 +14,42 @@ module.exports = (db, knex, mailgun) => {
 
     const response = {};
 
+    // if(!req.xhr) {
+    //   res.status(401).render('status', {
+    //     status: {
+    //       code: '401 Unauthorized',
+    //       reason: 'You are not an authorized client.',
+    //       forgot: false
+    //     }
+    //   });
+    // }
+
     db.retrieve.poll(req.params.uuid)
       .then(poll => {
-        response['poll'] = poll;
-        return poll.id;
+        if(poll) {
+          response['poll'] = poll;
+          return poll.id;
+        } else {
+          res.status('404').json({ poll_id: false });
+        }
       })
       .then(poll_id => {
-        return db.retrieve.ranks(poll_id);
+        return db.retrieve.choicesAndRanks(poll_id);
       })
-      .then(results => {
-        console.log('Choices and ranks:', results);
-        response['choices'] = results;
-        // if(req.xhr) {
-        return res.json(response);
-        // }
-        // res.status(401).render('status', {
-        //   status: {
-        //     code: '401 Unauthorized',
-        //     reason: 'You are not an authorized client.',
-        //     forgot: false
-        //   }
-        // });
+      .then(choicesAndRanks => {
+        if (choicesAndRanks.length) {
+          response['choices'] =  choicesAndRanks;
+          res.json(response);
+        } else {
+          return db.retrieve.choices(response.poll.id);
+        }
       })
-      // .then(ranks => {
-      //   return db.retrieve.choices(poll_id);
-      // })
-      //     return db.retrieve.choices(poll_id);
-      //   } else {
-      //     return false;
-      //   }
-      // })
-      // .then(choices => {
-      //   if(choices) {
-      //     response.choices = choices;
-      //     res.json(response);
-      //   } else {
-      //     response.choices = { default: 'empty' };
-      //     res.json(response);
-      //   }
-      //   // response['choices'] = results;
-      //   // console.log(results);
-      //   res.json(response);
-      // })
+      .then(choices => {
+        response['choices'] = choices;
+        res.json(response);
+      })
       .catch(err => {
-        res.json({Error: 'Encountered an error while attempting to render this page'});
+        res.status('500').json({Error: 'Encountered an error while attempting to render this page'});
       });
 
 
@@ -78,7 +70,6 @@ module.exports = (db, knex, mailgun) => {
       db.poll.end(req.params.uuid)
         .then(success => {
           if(success) {
-            mailgun.sendResult(req.params.uuid);
             res.json({end: true});
           } else {
             res.json({end: false});
