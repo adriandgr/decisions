@@ -14,16 +14,6 @@ module.exports = (db, knex, mailgun) => {
 
     const response = {};
 
-    // if(!req.xhr) {
-    //   res.status(401).render('status', {
-    //     status: {
-    //       code: '401 Unauthorized',
-    //       reason: 'You are not an authorized client.',
-    //       forgot: false
-    //     }
-    //   });
-    // }
-
     db.retrieve.poll(req.params.uuid)
       .then(poll => {
         if(poll) {
@@ -64,8 +54,8 @@ module.exports = (db, knex, mailgun) => {
 
       Responsible for ending poll or updating poll title
  */
-  route.post('/:uuid', (req, res) =>{
-    console.log(req.body);
+  route.post('/:uuid', (req, res) => {
+
     if(req.body.method === 'end') {
       db.poll.end(req.params.uuid)
         .then(success => {
