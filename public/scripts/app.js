@@ -67,11 +67,12 @@ $(document).ready(()=> {
       dataType: 'json'
     }).then(res=> {
       console.log('success', res);
-      Sortable.create(byId('foo'), {
+      genSortableList(data, 'uuid');
+      Sortable.create(byId('uuid'), {
         handle: '.drag-handle',
         animation: 150
       });
-      genSortableList(data);
+
       $('#send-view').fadeToggle('fast',()=> {
         $('#no-results').hide();
         $('#display-results').show();

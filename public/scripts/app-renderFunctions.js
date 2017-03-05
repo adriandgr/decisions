@@ -3,23 +3,47 @@
 let string = '{"name":"question","created_by":"me","creator_email":"my@emai","choices":[{"choice":"choice1","description":"option1"},{"choice":"choice2","description":"option2"},{"choice":"choice3","description":"option3"}],"send_to":[{"name":"friend","email":"friend@email"}]}'
 let testData = JSON.parse(string);
 
+    //  <li>
+     //   <span class="drag-handle">
+     //     <i class="fa fa-bars" aria-hidden="true"></i>
+    //    </span>
+  //      one
+    //  </li>
+//<ul id="foo">
+//
 function genSortableList(data, uuid) {
-  let $list = $('ul').attr('id', uuid);
-  console.log(data)
-  data.choices.forEach((a,b) =>{
+  let $list = $('<ul>').attr('id', uuid);
 
-    console.log('a', a); //the object
-    console.log('b', b); //the index
+
+
+  data.choices.forEach((a, b) =>{
+    let $span = $('<span>').addClass('drag-handle');
+    $('<i>')
+      .addClass('fa fa-bars')
+      .attr('aria-hidden', 'true')
+      .appendTo($span);
+    let $li = $('<li>');
+    $span.appendTo($li);
+
+    let $choice = $('<p>')
+      .addClass('list-choice')
+      .text(a.choice);
+    let $description = $('<p>')
+      .addClass('list-description')
+      .text(a.description);
+
+    $choice.appendTo($li);
+    $description.appendTo($li);
+    $li.appendTo($list);
+
   });
-
-  let $li = $('<li>')
-  let $span = $('<i>').addClass('fa fa-bars').attr('aria-hidden', 'true')
-    .appendTo($('<span>').addClass('drag-handle'))
-    .appendTo($li).text('hoots');
-
+  $list.prependTo('#display-results');
+  //insertAfter( '#display-results' > div:nth-child(${len - 2})` )
 }
 
-genSortableList(testData);
+
+
+//genSortableList(testData, 'uuid');
 
 
 function addInput(targetId, word) {
