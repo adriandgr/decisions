@@ -34,17 +34,7 @@ module.exports = (db, knex) => {
       })
       .then(results => {
         db.insert.voters(results.poll_id, req.body, adminUUID);
-        winston.warn('IMPORTANT: You have not uncommented XHR guard in routes/polls.js');
-        // if(req.xhr) {
-          return res.json({adminUUID: adminUUID, pollId: results.poll_id, ids: results.choices});
-        // }
-        // res.status(401).render('status', {
-        //   status: {
-        //     code: '401 Unauthorized',
-        //     reason: 'You are not an authorized client.',
-        //     forgot: false
-        //   }
-        // });
+        res.json({adminUUID: adminUUID, pollId: results.poll_id, ids: results.choices});
       })
       .catch(err => {
         console.error('Error:', err);
@@ -91,7 +81,17 @@ module.exports = (db, knex) => {
             response.poll.admin_uuid = 'hidden';
             response.poll.creator_email = 'hidden';
           }
+          winston.warn('IMPORTANT: You have not uncommented XHR guard in routes/polls.js');
+        // if(req.xhr) {
           return res.json(response);
+          // }
+        // res.status(401).render('status', {
+        //   status: {
+        //     code: '401 Unauthorized',
+        //     reason: 'You are not an authorized client.',
+        //     forgot: false
+        //   }
+        // });
         }
         winston.debug('sending 404');
         res.status(404).json({mssg: 'Not Found'});
