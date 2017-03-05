@@ -37,9 +37,9 @@ module.exports = (db, knex) => {
         promises.forEach(promise => {
           ids.push(promise);
         });
-        let voterId = ids.shift();
+        let pollId = ids.shift();
         db.insert.voters(promises, req.body);
-        res.json({success: true, voterId: voterId, ids: ids});
+        res.json({success: true, pollId: pollId, ids: ids});
       })
       .catch(err => {
         console.error('Error:', err);
