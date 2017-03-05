@@ -20,7 +20,7 @@ module.exports = knex => {
           .select('polls.name', 'polls.created_by', 'voters.email', 'voters.voter_uuid')
           .returning(['polls.name', 'polls.created_by', 'voters.email', 'voters.voter_uuid'])
           .then(column => {
-            console.log('column======>',column);
+            console.log('column======>', column);
             column.forEach(pollInfo => {
               if(pollInfo.admin_uuid !== pollInfo.voter_uuid) {
                 let messageHtml = ejs.render(str, pollInfo);
@@ -48,7 +48,6 @@ module.exports = knex => {
           .returning(['voter_uuid', 'voters.email'])
           .then(totalUuid => {
             totalUuid.forEach(pollInfo => {
-
               if(poll.admin_uuid !== pollInfo.voter_uuid) {
                 let messageHtml = ejs.render(str_voters, {
                   title: poll.name,
