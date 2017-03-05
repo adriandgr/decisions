@@ -66,9 +66,9 @@ $(document).ready(()=> {
       data: data,
       dataType: 'json'
     }).then(res=> {
-      console.log('success', res);
-      genSortableList(data, 'uuid');
-      Sortable.create(byId('uuid'), {
+      console.log('success', res.ids);
+      genSortableList(data, res);
+      Sortable.create(byId(res.adminUUID), {
         handle: '.drag-handle',
         animation: 150
       });

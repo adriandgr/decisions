@@ -11,8 +11,9 @@ let testData = JSON.parse(string);
     //  </li>
 //<ul id="foo">
 //
-function genSortableList(data, uuid) {
-  let $list = $('<ul>').attr('id', uuid);
+function genSortableList(data, res) {
+  console.log(res.ids[0]);
+  let $list = $('<ul>').attr('id', res.adminUUID);
 
 
 
