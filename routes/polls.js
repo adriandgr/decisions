@@ -55,36 +55,36 @@ module.exports = (db, knex) => {
         }
  */
   route.get('/:uuid', (req, res) => {
-    winston.debug('PARAMS!! >>>> ', req.params.uuid);
     let meaning = 'This route is responsible for a given voter\'s view of a poll';
-
     let response = {};
 
     db.retrieve.poll(req.params.uuid)
       .then(poll => {
-        // NOTE TO DEV TEAM:
-        // these guards are important to handle non-existing uuids in db
-        // if no key found, sends 404 status code to client.
         if (poll) {
           response['poll'] = poll;
           return poll.id;
+        } else {
+          res.status('404').json({ poll_id: false });
         }
-        return null;
       })
       .then(poll_id => {
         return db.retrieve.choicesAndRanks(poll_id);
       })
-      .then(queryData => {
-        if (queryData.length) {
-          response['choices'] =  queryData;
+      .then(choicesAndRanks => {
+        if (choicesAndRanks.length) {
+          response['choices'] =  choicesAndRanks;
           if(req.params.uuid !== response.poll.admin_uuid) {
             response.poll.admin_uuid = 'hidden';
             response.poll.creator_email = 'hidden';
           }
           return res.json(response);
+        } else {
+          return db.retrieve.choices(response.poll.id);
         }
-        winston.debug('sending 404');
-        res.status(404).json({mssg: 'Not Found'});
+      })
+      .then(choices => {
+        response['choices'] = choices;
+        res.json(response);
       })
       .catch(err => {
         console.error(err);
@@ -108,7 +108,7 @@ module.exports = (db, knex) => {
     db.retrieve.voter(req.params.uuid)
       .then(voter_id => {
         db.insert.votes(voter_id, req.body.ballot);
-        res.json({mssg:'okay'});
+        res.json({mssg: 'okay'});
       });
 
   });
