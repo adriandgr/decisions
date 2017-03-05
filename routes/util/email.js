@@ -1,4 +1,4 @@
-// console.log('hi');
+console.log('hi');
 const ejs         = require('ejs');
 const fs          = require('fs');
 var path          = require('path');
@@ -8,9 +8,10 @@ const mailgun     = require('mailgun-js')({
   domain: process.env.MG_DOMAIN
 });
 
+
 module.exports = knex => {
   return {
-    sendResult:
+    send:
       id => {
         knex('polls')
           .join('voters', 'polls.id', 'voters.poll_id')
@@ -33,5 +34,5 @@ module.exports = knex => {
             });
           });
       }
-  };
+  }
 };

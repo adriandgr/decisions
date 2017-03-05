@@ -2,10 +2,10 @@
 
 const express = require('express');
 const route = express.Router();
+const email = require('./util/email.js');
 
 
-
-module.exports = (db, knex) => {
+module.exports = (db, knex, mailgun) => {
 
 /*
     GET /admins/:uuid
@@ -44,11 +44,11 @@ module.exports = (db, knex) => {
       Responsible for ending poll or updating poll title
  */
   route.post('/:uuid', (req, res) =>{
-    console.log(req.body);
     if(req.body.method === 'end') {
       db.poll.end(req.params.uuid)
         .then(success => {
           if(success) {
+            email.send(req.params.uuid);
             res.json({end: true});
           } else {
             res.json({end: false});
