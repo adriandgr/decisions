@@ -64,7 +64,7 @@ module.exports = (db, knex) => {
           response['poll'] = poll;
           return poll.id;
         } else {
-          res.status('404').json({ poll_id: false });
+          res.status('404').json({ poll_id: null });
         }
       })
       .then(poll_id => {
@@ -87,7 +87,7 @@ module.exports = (db, knex) => {
         res.json(response);
       })
       .catch(err => {
-        console.error(err);
+        res.status('500').json({Error: 'Encountered an error while attempting to render this page'});
       });
   });
 
