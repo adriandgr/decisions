@@ -12,34 +12,36 @@ let testData = JSON.parse(string);
 //<ul id="foo">
 //
 function genSortableList(data, res) {
-  console.log(res.ids[0]);
+
   let $list = $('<ul>').attr('id', res.adminUUID);
 
+  res.ids.forEach((a, b) => {
+    console.log('id', a.id);
+    console.log('description', data.choices[b].description);
+    console.log('name', data.choices[b].name);
 
-
-  data.choices.forEach((a, b) =>{
     let $span = $('<span>').addClass('drag-handle');
     $('<i>')
       .addClass('fa fa-bars')
       .attr('aria-hidden', 'true')
       .appendTo($span);
-    let $li = $('<li>');
+    let $li = $('<li>').data( "choice-id", a.id );
     $span.appendTo($li);
 
     let $choice = $('<p>')
       .addClass('list-choice')
-      .text(a.choice);
+      .text(data.choices[b].name);
     let $description = $('<p>')
       .addClass('list-description')
-      .text(a.description);
+      .text(data.choices[b].description);
 
     $choice.appendTo($li);
     $description.appendTo($li);
     $li.appendTo($list);
-
   });
+
   $list.prependTo('#display-results');
-  //insertAfter( '#display-results' > div:nth-child(${len - 2})` )
+
 }
 
 
