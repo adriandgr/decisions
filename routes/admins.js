@@ -30,11 +30,12 @@ module.exports = (db, knex, mailgun) => {
 
     db.retrieve.poll(req.params.uuid)
       .then(poll => {
-        if(poll) {
+        if(!poll) {
+          res.status('404').json({ poll_id: false });
+        }
+        else {
           response['poll'] = poll;
           return poll.id;
-        } else {
-          res.status('404').json({ poll_id: false });
         }
       })
       .then(poll_id => {

@@ -62,20 +62,18 @@ module.exports = (db, knex, mailgun) => {
         }
  */
   route.get('/:uuid', (req, res) => {
-    let meaning = 'This route is responsible for a given voter\'s view of a poll';
     let response = {};
 
     db.retrieve.poll(req.params.uuid)
-      .then((poll, err) => {
-        if (poll) {
+      .then(poll => {
+        if(!poll) {
+          return res.status(404).json({ poll_id: false });
+        } else {
           response['poll'] = poll;
           if(req.params.uuid !== response.poll.admin_uuid) {
             response.poll.admin_uuid = 'hidden';
             response.poll.creator_email = 'hidden';
           }
-          return poll.id;
-        } else {
-          res.status(404).json( { poll_id: false } );
         }
       })
       .then(poll_id => {
@@ -98,6 +96,7 @@ module.exports = (db, knex, mailgun) => {
       });
 
   });
+
 
 
 /*

@@ -139,11 +139,16 @@ module.exports = knex => {
                   .join('polls', 'polls.id', 'voters.poll_id')
                   .where('voters.voter_uuid', uuid)
                   .then(poll => {
-                    console.log('Retrieved poll => id:', poll[0].id);
-                    return poll[0];
+                    if(poll.length) {
+                      console.log('Retrieved poll => id:', poll[0].id);
+                      return poll;
+                    } else {
+                      throw 'a hissy fit';
+                    }
                   })
                   .catch(err => {
-                    console.error('  Poll ID not found => returning 404');
+                    console.log('  Error: could not find poll => responding with 404');
+                    return false;
                   });
         },
 
