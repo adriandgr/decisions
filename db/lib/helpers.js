@@ -133,6 +133,24 @@ module.exports = knex => {
 
         }, // closes voterAndChoices
 
+
+      // poll:
+      //   uuid => {
+      //     return knex('voters')
+      //             .select('*')
+      //             .join('polls', 'polls.id', 'voters.poll_id')
+      //             .where('voters.voter_uuid', uuid)
+      //             // .orWhere('polls.admin_uuid', uuid)
+      //             .then(poll => {
+      //               console.log(poll);
+      //               console.log('Retrieved poll => id:', poll[0].id);
+      //               return poll[0];
+      //             })
+      //             .catch(err => {
+      //               console.error('  Poll ID not found => returning 404');
+      //             });
+      //   }
+
       poll:
         uuid => {
           console.log('Finding poll from uuid:', uuid);
@@ -140,8 +158,9 @@ module.exports = knex => {
                   .select('*')
                   .join('polls', 'polls.id', 'voters.poll_id')
                   .where('voters.voter_uuid', uuid)
-                  .orWhere('polls.admin_uuid', uuid)
+                  // .orWhere('polls.admin_uuid', uuid)
                   .then(poll => {
+                    console.log(poll);
                     console.log('Retrieved poll => id:', poll[0].id);
                     return poll[0];
                   })
