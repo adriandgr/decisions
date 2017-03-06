@@ -99,7 +99,7 @@ $(document).ready(()=> {
         data: { 'create': true, admin_uuid: res.adminUUID },
         dataType: 'json'
       }).then(res => {
-        console.log('Mailgun response', wres);
+        console.log('Mailgun response', `res);
       }).catch(err => {
         console.error('Error sending mmail for poll creation', err);
       });
