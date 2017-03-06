@@ -213,6 +213,7 @@ function attachButtonListeners() {
     $('#create-view').hide();
     $('#send-view').hide();
     $('#vote-view').hide();
+    $('#poll-ended').hide();
     $('#home-view').show();
     $('#main-nav').fadeToggle();
 
@@ -223,6 +224,7 @@ function attachButtonListeners() {
     $('#send-view').hide();
     $('#vote-view').hide();
     $('#home-view').hide();
+    $('#poll-ended').hide();
     $('#main-nav').hide();
   });
 
@@ -231,6 +233,7 @@ function attachButtonListeners() {
     $('#home-view').hide();
     $('#create-view').hide();
     $('#vote-view').hide();
+    $('#poll-ended').hide();
     $('#main-nav').hide();
   });
 
@@ -239,6 +242,7 @@ function attachButtonListeners() {
     $('#home-view').hide();
     $('#create-view').hide();
     $('#send-view').hide();
+    $('#poll-ended').hide();
     $('#main-nav').hide();
   });
 
