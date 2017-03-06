@@ -92,6 +92,17 @@ $(document).ready(()=> {
         animation: 150
       });
 
+      // handles mailgun request on poll creation
+      $.ajax({
+        type: 'POST',
+        url: '/mg',
+        data: { 'create': true, admin_uuid: res.adminUUID },
+        dataType: 'json'
+      }).then(res => {
+        console.log('Mailgun response', wres);
+      }).catch(err => {
+        console.error('Error sending mmail for poll creation', err);
+      });
 
       $('#send-view').fadeToggle('fast', ()=> {
         $('#no-results').hide();
