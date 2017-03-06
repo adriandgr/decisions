@@ -61,6 +61,9 @@ $(document).ready( () => {
       dataType: 'json'
     }).then(res=> {
       console.log('hey');
+      // call the same render function
+      $('<p>').text('I need to call the render function here')
+        .appendTo('#display-results-admin')
       $('#vote-view').fadeToggle('fast', () => {
         $('#no-results-admin').hide();
         $('#display-results-admin').show();

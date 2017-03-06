@@ -72,6 +72,7 @@ function checkUserQuery(){
           return $('#admin-view').fadeToggle('slow');
         }
         if(!res.choices[0].rank){
+          // the user has not voted yet
           return renderVoteView(res);
         }
         renderAdminView(res);

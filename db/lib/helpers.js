@@ -16,35 +16,6 @@ module.exports = knex => {
             voter.poll_id = poll_id;
             voter.voter_uuid = uuid();
           });
-          // function sendEmailtoVoters (){
-          //   knex('polls')
-          //   .join('voters', 'polls.id', poll_id)
-          //   .where('polls.admin_uuid', id)
-          //   .select('polls.name','polls.created_by', 'voters.email')
-          //   .returning(['polls.name', 'polls.created_by','voters.email'])
-          //   .then(function(column) {
-          //     column.forEach(pollInfo => {
-
-
-          //       let messageHtml = ejs.render(str, pollInfo);
-          //       console.log(messageHtml);
-          //       let  data = {
-          //         from: `Merge App <app@${process.env.MG_DOMAIN}>`,
-          //         to: pollInfo.email,
-          //         subject: 'String Interpolation Integrated',
-          //         html: `${messageHtml}`
-          //       }
-          //       mailgun.messages().send(data, function (error, body) {
-          //         console.log(body);
-          //       });
-          //     })
-          //   })
-          // }
-
-          //  sendEmail();
-
-          // return result;
-
           body.send_to.push( {
             name: body.created_by,
             email: body.creator_email,
