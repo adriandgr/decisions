@@ -250,7 +250,7 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 
     // ### UI
     // Enable\Disable error messages
-    uiEnabled: true,
+    uiEnabled: false,
 
     // Key events threshold before validation
     validationThreshold: 3,

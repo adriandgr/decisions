@@ -51,6 +51,11 @@ $(document).ready( () => {
     $('.friend-email:last').attr('data-parsley-required', 'true');
     $('#send-form').parsley();
 
+    $('#send-form').parsley().destroy();
+    $('.friend-name:last').attr('data-parsley-group', 'emails');
+    $('.friend-name:last').attr('data-parsley-required', 'true');
+    $('#send-form').parsley();
+
     $('.friend-email:last').focus();
   });
 
@@ -230,5 +235,20 @@ $(document).ready( () => {
   $('#close-menu').on('click', () => {
     $('#main-nav').hide();
   });
+
+  /*
+      Catches any validation errors and changes border colour of input
+   */
+  window.Parsley.on('field:error', function() {
+    this.$element.css('border', 'solid tomato 4px');
+  });
+
+  window.Parsley.on('field:success', function() {
+    this.$element.css('border', 'solid #7dafd8 4px');
+    console.log('works');
+    // this.$element.css('border', 'solid white 4px');
+  });
+
+
 
 });
