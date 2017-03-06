@@ -29,7 +29,7 @@ module.exports = (db, knex, mailgun) => {
           if (poll) {
             mailgun.pollEnds(poll);
           }
-          return null;
+          return res.json( { success: true } );
         }).catch(err => {
           console.error(err);
         });
