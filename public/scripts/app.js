@@ -28,6 +28,11 @@ $(document).ready( () => {
     event.preventDefault();
     addInput('#create-form', 'choice');
 
+    window.Parsley.on('field:error', function() {
+  // This global callback will be called for any field that fails validation.
+  console.log('Validation failed for: ', this.$element);
+});
+
     //  Ensure new choice is outfitted w/ parsley attributes
     $('#create-form').parsley().destroy();
     $('.choice:last').attr('data-parsley-group', 'choices');
