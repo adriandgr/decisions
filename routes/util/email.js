@@ -20,7 +20,6 @@ module.exports = knex => {
           .select('polls.name', 'polls.created_by', 'voters.email', 'voters.voter_uuid')
           .returning(['polls.name', 'polls.created_by', 'voters.email', 'voters.voter_uuid'])
           .then(column => {
-            console.log('column======>',column)
             column.forEach(pollInfo => {
               if(poll.admin_uuid !== pollInfo.voter_uuid) {
                 let messageHtml = ejs.render(str, pollInfo);
@@ -31,9 +30,9 @@ module.exports = knex => {
                   html: `${messageHtml}`
                 };
                 mailgun.messages().send(data, (error, body) => {
-                  console.log(body);
+                  console.log('= Email successful =\n', body.message);
                 });
-                console.log(messageHtml)
+                console.log(messageHtml);
               }
             });
           });
@@ -48,14 +47,13 @@ module.exports = knex => {
           .returning(['voter_uuid', 'voters.email'])
           .then(totalUuid => {
             totalUuid.forEach(pollInfo => {
-
               if(poll.admin_uuid !== pollInfo.voter_uuid) {
                 let messageHtml = ejs.render(str_voters, {
                   title: poll.name,
                   creator: poll.created_by,
                   voter: pollInfo.email,
                   uuid: pollInfo.voter_uuid
-                })
+                });
                 let  data = {
                   from: `Merge App <app@${process.env.MG_DOMAIN}>`,
                   to: pollInfo.email,
@@ -63,12 +61,12 @@ module.exports = knex => {
                   html: `${messageHtml}`
                 };
                 mailgun.messages().send(data, (error, body) => {
-                  console.log(body);
+                  console.log('= Email successful =\n', body.message);
                 });
-                console.log(i++)
+                console.log(i++);
               }
-            })
-          })
+            });
+          });
       },
     toCreator:
       (poll) => {
@@ -82,7 +80,7 @@ module.exports = knex => {
               email: poll.creator_email,
               creator: poll.created_by,
               uuid: uuid.voter_uuid
-            })
+            });
             let  data = {
               from: `Merge App <app@${process.env.MG_DOMAIN}>`,
               to: poll.creator_email,
@@ -90,10 +88,10 @@ module.exports = knex => {
               html: `${messageHtml}`
             };
             mailgun.messages().send(data, (error, body) => {
-              console.log(body);
+              console.log('= Email successful =\n', body.message);
             });
-          })
+          });
       }
 
-  }
+  };
 };
