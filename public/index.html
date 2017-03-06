@@ -63,7 +63,7 @@
     </header>
 
     <div class="d-flex justify-content-center">
-      <div class="p-2"><button id="create-poll" class="btn-nofill btn-center">CREATE</button></div>
+      <div class="p-2"><button id="create-poll" class="btn-nofill btn-center view-btn">CREATE</button></div>
     </div>
   </section>
 
@@ -92,7 +92,7 @@
       </div>
       <div class="row"> <!-- (len) submit -->
         <div class="col-8"></div>
-        <button id="capture-emails" type="submit" class="col-4 btn-nofill btn-center">NEXT</button>
+        <button id="capture-emails" type="submit" class="col-4 btn-nofill btn-center view-btn">NEXT</button>
       </div>
     </form>
 
@@ -125,7 +125,7 @@
       </div>
       <div class="row"> <!-- (len) submit -->
         <div class="col-8"></div>
-        <button id="submit-form" type="submit" class="col-4 btn-nofill btn-center"><i class="fa fa-paper-plane-o" aria-hidden="true"></i> SEND</button>
+        <button id="submit-form" type="submit" class="col-4 btn-nofill btn-center view-btn"><i class="fa fa-paper-plane-o" aria-hidden="true"></i> SEND</button>
       </div>
     </form>
 
@@ -148,7 +148,7 @@
   <div id="display-results">
 
 
-    <button id="submit-vote" type="submit" class="col-5 btn-nofill btn-center"><i class="fa fa-check-square-o" aria-hidden="true"></i> SUBMIT</button>
+    <button id="submit-vote" type="submit" class="col-5 btn-nofill btn-center view-btn"><i class="fa fa-check-square-o" aria-hidden="true"></i> SUBMIT</button>
   </div>
 
   </section>
@@ -156,14 +156,18 @@
   <section id="admin-view">
     <div class="row" id="no-results-admin">
       <div class="col-1 offset-2 offset-sm-3">
-        <i class="fa fa-eye-slash" aria-hidden="true"></i>
+        <i class="fa fa-chain-broken" aria-hidden="true"></i>
       </div>
       <div class="col-9 col-sm-8">
-        No results to show.
+        Invalid link
       </div>
       <div class="col-9 col-sm-8 offset-3 offset-sm-4 no-results-info">
-        <p>Perhaps you would like to create a new merge?</p>
+        <p>The link you entered is malformed or is not authorized to view the requested resource.</p>
       </div>
+
+      <a href="http://localhost:5000/">
+      <button id="back-home" type="submit" class="btn-nofill btn-center view-btn"><i class="fa fa-code-fork" aria-hidden="true"></i> TAKE ME HOME</button>
+      </a>
     </div>
     <div id="display-results-admin">
       hello there!

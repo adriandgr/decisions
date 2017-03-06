@@ -2,12 +2,25 @@
 $(document).ready(()=> {
 
   if($.getQueryKeys() ? $.getQueryKey('key') : false ){
-    if($.getQueryKey('view') === 'man') {
+    // if querystring has assertion level 1, check if user is admin
+    if($.getQueryKey('assert') === '1' ) {
       $.ajax({
         type: 'GET',
-        url: `/polls/${$.getQueryKey('key')}`
+        url: `/admins/${$.getQueryKey('key')}`
       }).then(res=> {
-        console.log('admin')
+        if (res.poll.voter_uuid !== res.poll.admin_uuid){
+          return $('#admin-view').fadeToggle('slow');
+        }
+        if(!res.choices[0].rank){
+          renderVoteView(res);
+          Sortable.create(byId(res.poll.voter_uuid), {
+            handle: '.drag-handle',
+            animation: 150
+          });
+          $('#no-results').hide();
+          $('#display-results').show();
+          return $('#results-view').fadeToggle('slow');
+        }
         renderAdminView(res);
 
         $('#no-results-admin').hide();
@@ -23,10 +36,14 @@ $(document).ready(()=> {
       }).then(res=> {
         console.log('voter')
         renderVoteView(res);
+        Sortable.create(byId(res.poll.voter_uuid), {
+          handle: '.drag-handle',
+          animation: 150
+        });
 
-        $('#no-results-admin').hide();
-        $('#display-results-admin').show();
-        $('#admin-view').fadeToggle('slow');
+        $('#no-results').hide();
+        $('#display-results').show();
+        $('#results-view').fadeToggle('slow');
       }).catch(res=>{
         console.log('fail', res);
       });

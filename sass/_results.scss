@@ -12,8 +12,14 @@
 }
 
 
-#no-results-info {
-  font-size: .8em;
+.no-results-info {
+  line-height: 1.2em;
+  color: $main-light;
+  font-size: .75em;
+  @media (min-width: $tablet-breakpoint){
+    line-height: 1.3em;
+    font-size: .8em;
+  }
 }
 
 
@@ -26,3 +32,5 @@
   list-style: none;
   font-size: 2em;
 }
+
+

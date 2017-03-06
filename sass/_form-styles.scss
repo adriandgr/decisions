@@ -83,17 +83,29 @@ color: $main-light;
   opacity: 1;
 }
 
-.add-choice-btn, .add-friend-btn {
+
+#back-home {
+
+  text-align: center;
+  position: inline-block;
+  margin: 0 auto;
+}
+.view-btn, {
   margin:0;
+  left:0;
+  right:0;
   color: $main-light;
-  font-size: 1em;
+  font-size: .7em;
+  @media (min-width: $tablet-breakpoint){
+    font-size: .8em;
+  }
 }
-.add-choice-btn:hover, .add-friend-btn:hover {
+.view-btn:hover {
   color: $main-text;
 }
-.add-choice-btn:focus {
+.view-btn:focus {
   color: $main-text;
 }
-.add-choice-btn:active {
+.view-btn:active {
   color: $main-dark;
 }
