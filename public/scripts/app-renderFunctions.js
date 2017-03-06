@@ -131,7 +131,7 @@ let $list = $('<ul>').attr('id', res.adminUUID);
     animation: 150
   });
 
-  $('#send-view').fadeToggle('fast',()=> {
+  $('#send-view').fadeToggle('fast', () => {
     $('#no-results').hide();
     $('#display-results').show();
     $('#vote-view').fadeToggle('slow');

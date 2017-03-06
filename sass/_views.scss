@@ -2,16 +2,16 @@
   padding: 150px 0 0 0;
 }
 
-
-
-#create-view, #send-view, #vote-view, #admin-view {
+#create-view, #send-view, #vote-view, #admin-view, #poll-ended {
   padding: 100px 0 0 0;
 }
 
 #home-view, #create-view, #send-view,
-#vote-view, #admin-view {
-  display:none;
+#vote-view, #admin-view, #merge-has-ended, .hide-my-section {
+  display:none; !important
 }
+
+
 
 .list-choice {
   position: relative;
