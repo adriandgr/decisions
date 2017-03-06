@@ -75,7 +75,7 @@ module.exports = (db, knex, mailgun) => {
           }
           return poll.id;
         } else {
-          throw err;
+          res.status(404).json( { poll_id: false } );
         }
       })
       .then(poll_id => {
