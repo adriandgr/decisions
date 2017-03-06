@@ -36,7 +36,7 @@
         <a id="toggle-send-view" class="nav-link" href="#">Toggle Send View</a>
       </li>
       <li class="nav-item">
-        <a id="toggle-results-view" class="nav-link" href="#">Toggle results View</a>
+        <a id="toggle-vote-view" class="nav-link" href="#">Toggle results View</a>
       </li>
       <li class="nav-item">
         <a id="close-menu" class="nav-link" href="#">close this menu</a>
@@ -133,24 +133,22 @@
 
 
 
-  <section id="results-view">
-  <div class="row" id="no-results">
-    <div class="col-1 offset-2 offset-sm-3">
-      <i class="fa fa-eye-slash" aria-hidden="true"></i>
+  <section id="vote-view">
+    <div class="row" id="no-results">
+      <div class="col-1 offset-2 offset-sm-3">
+        <i class="fa fa-eye-slash" aria-hidden="true"></i>
+      </div>
+      <div class="col-9 col-sm-8">
+        No choices to show.
+      </div>
+      <div class="col-9 col-sm-8 offset-3 offset-sm-4 no-results-info">
+        <p>Perhaps you would like to create a new merge?</p>
+        <p>Sounds great! <a href="http://localhost:5000/">Take me there.</a></p>
+      </div>
     </div>
-    <div class="col-9 col-sm-8">
-      No results to show.
+    <div id="display-results">
+      <button id="submit-vote" type="submit" class="col-5 btn-nofill btn-center view-btn"><i class="fa fa-check-square-o" aria-hidden="true"></i> SUBMIT</button>
     </div>
-    <div class="col-9 col-sm-8 offset-3 offset-sm-4 no-results-info">
-      <p>Perhaps you would like to create a new merge?</p>
-    </div>
-  </div>
-  <div id="display-results">
-
-
-    <button id="submit-vote" type="submit" class="col-5 btn-nofill btn-center view-btn"><i class="fa fa-check-square-o" aria-hidden="true"></i> SUBMIT</button>
-  </div>
-
   </section>
 
   <section id="admin-view">
@@ -170,7 +168,7 @@
       </a>
     </div>
     <div id="display-results-admin">
-      hello there!
+
     </div>
   </section>
 

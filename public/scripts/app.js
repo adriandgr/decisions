@@ -12,20 +12,9 @@ $(document).ready(()=> {
           return $('#admin-view').fadeToggle('slow');
         }
         if(!res.choices[0].rank){
-          renderVoteView(res);
-          Sortable.create(byId(res.poll.voter_uuid), {
-            handle: '.drag-handle',
-            animation: 150
-          });
-          $('#no-results').hide();
-          $('#display-results').show();
-          return $('#results-view').fadeToggle('slow');
+          return renderVoteView(res);
         }
         renderAdminView(res);
-
-        $('#no-results-admin').hide();
-        $('#display-results-admin').show();
-        $('#admin-view').fadeToggle('slow');
       }).catch(res=>{
         console.log('fail', res);
       });
@@ -34,16 +23,7 @@ $(document).ready(()=> {
         type: 'GET',
         url: `/polls/${$.getQueryKey('key')}`
       }).then(res=> {
-        console.log('voter')
         renderVoteView(res);
-        Sortable.create(byId(res.poll.voter_uuid), {
-          handle: '.drag-handle',
-          animation: 150
-        });
-
-        $('#no-results').hide();
-        $('#display-results').show();
-        $('#results-view').fadeToggle('slow');
       }).catch(res=>{
         console.log('fail', res);
       });
@@ -117,16 +97,7 @@ $(document).ready(()=> {
       console.log('RES', res);
       console.log('success', res.ids);
       genSortableList(data, res);
-      Sortable.create(byId(res.adminUUID), {
-        handle: '.drag-handle',
-        animation: 150
-      });
 
-      $('#send-view').fadeToggle('fast',()=> {
-        $('#no-results').hide();
-        $('#display-results').show();
-        $('#results-view').fadeToggle('slow');
-      });
     }).catch(res=>{
       console.log('fail', res);
     });
@@ -165,7 +136,9 @@ $(document).ready(()=> {
       dataType: 'json'
     }).then(res=> {
       console.log('hey');
-      $('#results-view').fadeToggle('fast', ()=> {
+      $('#vote-view').fadeToggle('fast', ()=> {
+        $('#no-results-admin').hide();
+        $('#display-results-admin').show();
         $('#admin-view').fadeToggle('slow');
       });
     }).catch(res=>{
@@ -174,13 +147,28 @@ $(document).ready(()=> {
 
   });
 
+  $(document).on('click','#end-merge', event => {
+    const id = $(event.target).data('uuid');
+    $.ajax({
+      type: 'POST',
+      url: `/admins/${id}`,
+      data: {
+        method: 'end'
+      },
+      dataType: 'json'
+    }).then( res => {
+      console.log(res);
+    }).catch( res => {
+      console.log(res);
+    })
+  });
 
 
   // helper menu
   $('#toggle-home-view').on('click', () => {
     $('#create-view').hide();
     $('#send-view').hide();
-    $('#results-view').hide();
+    $('#vote-view').hide();
     $('#home-view').show();
     $('#main-nav').fadeToggle();
 
@@ -189,7 +177,7 @@ $(document).ready(()=> {
   $('#toggle-create-view').on('click', () => {
     $('#create-view').toggle();
     $('#send-view').hide();
-    $('#results-view').hide();
+    $('#vote-view').hide();
     $('#home-view').hide();
     $('#main-nav').hide();
   });
@@ -198,12 +186,12 @@ $(document).ready(()=> {
     $('#send-view').toggle();
     $('#home-view').hide();
     $('#create-view').hide();
-    $('#results-view').hide();
+    $('#vote-view').hide();
     $('#main-nav').hide();
   });
 
-  $('#toggle-results-view').on('click', () => {
-    $('#results-view').toggle();
+  $('#toggle-vote-view').on('click', () => {
+    $('#vote-view').toggle();
     $('#home-view').hide();
     $('#create-view').hide();
     $('#send-view').hide();

@@ -44,6 +44,17 @@ function renderAdminView(res) {
   $list.prependTo('#display-results-admin');
   $question.prependTo('#display-results-admin');
 
+  $('<button>')
+    .addClass('btn-nofill btn-center view-btn')
+    .attr('id', 'end-merge')
+    .data('uuid', res.poll.admin_uuid)
+    .text('END MERGE')
+    .appendTo('#display-results-admin');
+
+  $('#no-results-admin').hide();
+  $('#display-results-admin').show();
+  $('#admin-view').fadeToggle('slow');
+
 }
 
 function renderVoteView(res){
@@ -76,6 +87,15 @@ function renderVoteView(res){
 
   $list.prependTo('#display-results');
   $question.prependTo('#display-results');
+
+  Sortable.create(byId(res.poll.voter_uuid), {
+    handle: '.drag-handle',
+    animation: 150
+  });
+
+  $('#no-results').hide();
+  $('#display-results').show();
+  $('#vote-view').fadeToggle('slow');
 }
 
 
@@ -106,6 +126,17 @@ let $list = $('<ul>').attr('id', res.adminUUID);
 
   $list.prependTo('#display-results');
   $question.prependTo('#display-results');
+
+  Sortable.create(byId(res.adminUUID), {
+    handle: '.drag-handle',
+    animation: 150
+  });
+
+  $('#send-view').fadeToggle('fast',()=> {
+    $('#no-results').hide();
+    $('#display-results').show();
+    $('#vote-view').fadeToggle('slow');
+  });
 }
 
 
