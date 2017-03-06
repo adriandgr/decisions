@@ -58,6 +58,64 @@ function renderAdminView(res) {
 
 }
 
+function renderUserView(res) {
+  //console.log('RES.poll.voter_uuid inside renderAdminView', res.poll.voter_uuid);
+  console.log('RES at renderAdmin', res)
+  let $list = $('<ul>').attr('id', res.poll.voter_uuid);
+  let $question = $('<h2>').addClass('poll-question').text(res.poll.name);
+  res.choices.forEach((a, b) => {
+    console.log('a in forEach of renderAdminView',a)
+    let $span = $('<span>').addClass('choice-rank').text(`${a.borda_count}`);
+    let $li = $('<li>').data( {
+      "choice-id": a.id,
+      "rank": a.borda_count
+    });
+    $span.appendTo($li);
+
+    let $choice = $('<p>')
+      .addClass('list-choice')
+      .text(a.name);
+    let $description = $('<p>')
+      .addClass('list-description')
+      .text(a.description);
+
+    $choice.appendTo($li);
+    $description.appendTo($li);
+    $li.appendTo($list);
+  });
+
+  $sortedList = $list.children('li');
+
+  $sortedList.sort(function(a,b){
+    let aRank = $(a).data('rank');
+    let bRank = $(b).data('rank');
+    if(aRank < bRank) {
+      return 1;
+    }
+    if(aRank > bRank) {
+      return -1;
+    }
+    return 0;
+  });
+
+  $sortedList.detach().appendTo($list);
+
+  $list.prependTo('#display-results-admin');
+  $question.prependTo('#display-results-admin');
+
+  $('<button>')
+    .addClass('btn-nofill btn-center view-btn')
+    .attr('id', 'end-merge')
+    .data('uuid', res.poll.admin_uuid)
+    .text('END MERGE')
+    .appendTo('#display-results-admin');
+
+  $('#no-results-admin').hide();
+  $('#display-results-admin').show();
+  $('#admin-view').fadeToggle('slow');
+
+}
+
 function renderVoteView(res){
   console.log('renderVoteView')
   let $list = $('<ul>').attr('id', res.poll.voter_uuid);

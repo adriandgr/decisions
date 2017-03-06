@@ -61,7 +61,7 @@ function ordinalWord(num, word) {
 }
 
 function checkUserQuery(){
-  if($.getQueryKeys() ? $.getQueryKey('key') : false ){
+  if($.getQueryKeys() ? $.getQueryKey('key') : false ) {
     // if querystring has assertion level 1, check if user is admin
     if($.getQueryKey('assert') === '1' ) {
       $.ajax({
@@ -71,7 +71,7 @@ function checkUserQuery(){
         if (query.poll.voter_uuid !== query.poll.admin_uuid){
           return $('#admin-view').fadeToggle('slow');
         }
-        console.log('CHECK Q',query)
+        console.log('CHECK Q', query)
         $.ajax({
           type: 'GET',
           url: `/admins/unique/${query.choices[0].id}`
@@ -91,17 +91,23 @@ function checkUserQuery(){
       $.ajax({
         type: 'GET',
         url: `/polls/${$.getQueryKey('key')}`
-      }).then(res=> {
-        console.log('RES of non admin', res)
-        //if(!res.choices[0].rank){
-          // the user has not voted yet
-          return renderVoteView(res);
-        //}
-      }).catch(res=>{
-        console.log('fail', res);
-      });
-    }
+      }).then(query=> {
+        console.log('RES of non admin', query)
+        $.ajax({
+          type: 'GET',
+          url: `/admins/unique/${query.choices[0].id}`
+        }).then(res => {
 
+          if(res.hasOwnProperty($.getQueryKey('key'))) {
+            // the user has voted
+            console.log('has voted', res.hasOwnProperty($.getQueryKey('key')))
+            return renderUserView(query);
+          }
+          renderVoteView(query);
+
+      });
+    });
+    }
   } else {
     $('#home-view').fadeToggle('slow');
   }
