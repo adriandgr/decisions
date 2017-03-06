@@ -73,10 +73,14 @@ function checkUserQuery(){
         type: 'GET',
         url: `/admins/${$.getQueryKey('key')}`
       }).then(query=> {
+        if (!query.poll.active) {
+          endOfPoll(query);
+          return $('#poll-ended').fadeToggle('slow');
+        }
+
         if (query.poll.voter_uuid !== query.poll.admin_uuid){
           return $('#admin-view').fadeToggle('slow');
         }
-        console.log('CHECK Q', query)
         $.ajax({
           type: 'GET',
           url: `/admins/unique/${query.choices[0].id}`
@@ -99,7 +103,8 @@ function checkUserQuery(){
       }).then(query=> {
 
         if (!query.poll.active) {
-          return $('#poll-ended').fadeToggle();
+          endOfPoll(query);
+          return $('#poll-ended').fadeToggle('slow');
         }
         $.ajax({
           type: 'GET',

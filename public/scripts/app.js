@@ -97,6 +97,18 @@ $(document).ready( () => {
       dataType: 'json'
     }).then( res => {
       console.log(res);
+      $.ajax({
+        type: 'POST',
+        url: '/mg/',
+        data: {
+          method: 'end',
+          admin_uuid: id
+        },
+        dataType: 'json'
+      }).then( res => {
+        console.log(res);
+      })
+
     }).catch( res => {
       console.log(res);
     });
