@@ -68,9 +68,9 @@ function checkUserQuery(){
         type: 'GET',
         url: `/admins/${$.getQueryKey('key')}`
       }).then(res=> {
-        if (res.poll.voter_uuid !== res.poll.admin_uuid){
-          return $('#admin-view').fadeToggle('slow');
-        }
+        // if (res.poll.voter_uuid !== res.poll.admin_uuid){
+        //   return $('#admin-view').fadeToggle('slow');
+        // }
         if(!res.choices[0].rank){
           // the user has not voted yet
           return renderVoteView(res);
@@ -79,12 +79,16 @@ function checkUserQuery(){
       }).catch(res=>{
         console.log('fail', res);
       });
-    } else if ($.getQueryKey('view') === 'sv') {
+    } else {
       $.ajax({
         type: 'GET',
         url: `/admins/${$.getQueryKey('key')}`
       }).then(res=> {
-        renderVoteView(res);
+        console.log('RES of non admin', res)
+        //if(!res.choices[0].rank){
+          // the user has not voted yet
+          return renderVoteView(res);
+        //}
       }).catch(res=>{
         console.log('fail', res);
       });
