@@ -20,7 +20,6 @@ module.exports = knex => {
           .select('polls.name', 'polls.created_by', 'voters.email', 'voters.voter_uuid')
           .returning(['polls.name', 'polls.created_by', 'voters.email', 'voters.voter_uuid'])
           .then(column => {
-            console.log('column======>', column);
             column.forEach(pollInfo => {
               if(pollInfo.admin_uuid !== pollInfo.voter_uuid) {
                 let messageHtml = ejs.render(str, pollInfo);
@@ -31,7 +30,7 @@ module.exports = knex => {
                   html: `${messageHtml}`
                 };
                 mailgun.messages().send(data, (error, body) => {
-                  console.log(body);
+                  console.log('= Email successful =\n', body.message);
                 });
                 console.log(messageHtml);
               }
@@ -62,7 +61,7 @@ module.exports = knex => {
                   html: `${messageHtml}`
                 };
                 mailgun.messages().send(data, (error, body) => {
-                  console.log(body);
+                  console.log('= Email successful =\n', body.message);
                 });
                 console.log(i++);
               }
@@ -89,7 +88,7 @@ module.exports = knex => {
               html: `${messageHtml}`
             };
             mailgun.messages().send(data, (error, body) => {
-              console.log(body);
+              console.log('= Email successful =\n', body.message);
             });
           });
       }
