@@ -2,8 +2,11 @@
 
 const express = require('express');
 const route = express.Router();
-
-
+const fs          = require('fs');
+const mailgun     = require('mailgun-js')({
+  apiKey: process.env.MG_KEY,
+  domain: process.env.MG_DOMAIN
+});
 
 module.exports = (db, knex, mailgun) => {
 
@@ -54,6 +57,7 @@ module.exports = (db, knex, mailgun) => {
 
       Responsible for ending poll or updating poll title
  */
+
   route.post('/:uuid', (req, res) => {
 
     if(req.body.method === 'end') {

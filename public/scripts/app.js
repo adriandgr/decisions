@@ -98,14 +98,32 @@ $(document).ready(()=> {
       console.log('success', res.ids);
       genSortableList(data, res);
 
+      // handles mailgun request on poll creation
+      $.ajax({
+        type: 'POST',
+        url: '/mg',
+        data: { 'create': true, admin_uuid: res.adminUUID },
+        dataType: 'json'
+      }).then(res => {
+        console.log('Mailgun response', res);
+      }).catch(err => {
+        console.error('Error sending mmail for poll creation', err);
+      });
+
+      $('#send-view').fadeToggle('fast', ()=> {
+        $('#no-results').hide();
+        $('#display-results').show();
+        $('#results-view').fadeToggle('slow');
+      });
     }).catch(res=>{
       console.log('fail', res);
     });
 
     // $.ajax({
-    //     type: 'DELETE',
-    //     url: '/users/session'
+    //   type: 'DELETE',
+    //   url: '/users/session'
     // }).then((res) => {
+    //   console.log('res', res);
     // });
 
   });

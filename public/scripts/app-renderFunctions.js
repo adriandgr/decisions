@@ -118,7 +118,6 @@ let $list = $('<ul>').attr('id', res.adminUUID);
     let $description = $('<p>')
       .addClass('list-description')
       .text(data.choices[b].description);
-
     $choice.appendTo($li);
     $description.appendTo($li);
     $li.appendTo($list);

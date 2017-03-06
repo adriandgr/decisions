@@ -5,7 +5,7 @@ const route    = express.Router();
 const winston  = require('winston');
 const uuid     = require('./util/uuid-generator');
 
-module.exports = (db, knex) => {
+module.exports = (db, knex, mailgun) => {
 
   route.get('/', (req, res) => {
     res.send('');

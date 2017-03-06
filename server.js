@@ -2,13 +2,17 @@
 
 require('dotenv').config();
 
+
 const PORT        = process.env.PORT || 5000;
-const ENV         = process.env.ENV || 'development';
-const express     = require('express');
-const bodyParser  = require('body-parser');
-const sass        = require('node-sass-middleware');
-const fs          = require('fs');
+const ENV         = process.env.ENV || "development";
+const express     = require("express");
+const bodyParser  = require("body-parser");
 const path        = require('path');
+const sass        = require("node-sass-middleware");
+const ejs         = require('ejs')
+const fs          = require('fs');
+
+
 const app         = express();
 
 const knexConfig  = require('./knexfile');
@@ -24,6 +28,7 @@ const mailgun     = require('./routes/util/email')(knex);
 // Seperated Routes for each Resource
 const pollsRoutes = require('./routes/polls');
 const adminsRoutes = require('./routes/admins');
+const mgRoutes = require('./routes/mg');
 
 winston.level = process.env.LOG_LEVEL || 'debug';
 
@@ -46,19 +51,20 @@ if (ENV === 'development') {
 
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(sass({
-  src: path.join(__dirname, '/sass'),
-  dest: path.join(__dirname, '/public/styles'),
+app.use("/styles", sass({
+  src: __dirname + "/styles",
+  dest: __dirname + "/public/styles",
   debug: true,
-  outputStyle: 'expanded',
-  prefix: '/styles'
+  outputStyle: 'expanded'
 }));
 app.use(express.static('public'));
 
+
+
 // Mount all resource routes
 app.use('/polls', pollsRoutes(db, knex));
-app.use('/admins', adminsRoutes(db, knex, mailgun));
-
+app.use('/admins', adminsRoutes(db, knex));
+app.use('/mg', mgRoutes(db, knex, mailgun));
 
 app.use(function (req, res, next) {
   res.status(404).render('status', { status: {
@@ -68,5 +74,6 @@ app.use(function (req, res, next) {
 });
 
 app.listen(PORT, () => {
-  winston.info('Example app listening on port ' + PORT);
+  console.log("Example app listening on port " + PORT);
 });
+
