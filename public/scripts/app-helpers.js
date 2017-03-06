@@ -113,10 +113,6 @@ function checkUserQuery(){
     $('.friend-email:last').attr('data-parsley-required', 'true');
     $('#send-form').parsley();
 
-    $('#send-form').parsley().destroy();
-    $('.friend-name:last').attr('data-parsley-group', 'emails');
-    $('.friend-name:last').attr('data-parsley-required', 'true');
-    $('#send-form').parsley();
 
     $('.friend-email:last').focus();
   });
@@ -171,9 +167,14 @@ function attachButtonListeners() {
 
   $('#capture-emails').on('click', event => {
     event.preventDefault();
-    $('#create-view').fadeToggle('fast', () => {
-      $('#send-view').fadeToggle('slow');
-    });
+    // Take user to next page if first page of form is valid
+    if($('#create-form').parsley().validate({ group: 'choices' })) {
+      $('#create-view').fadeToggle('fast', () => {
+        $('#send-view').fadeToggle('slow');
+      });
+    } else {
+      $('#create-form').parsley().validate({ group: 'choices' });
+    }
   });
 
 
