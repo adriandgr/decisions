@@ -1,9 +1,9 @@
 const ejs         = require('ejs');
 const fs          = require('fs');
 var path          = require('path');
-const str         = fs.readFileSync(path.join(__dirname, 'email-templates/pollend.ejs'), 'utf8');
-const str_voters  = fs.readFileSync(path.join(__dirname, 'email-templates/createpollemail.ejs'), 'utf8');
-const str_creators= fs.readFileSync(path.join(__dirname, 'email-templates/creatoremail.ejs'), 'utf8');
+const str         = fs.readFileSync(path.join(__dirname, 'email-templates/emailTemplatePollEnd.ejs'), 'utf8');
+const str_voters  = fs.readFileSync(path.join(__dirname, 'email-templates/emailTemplateCreateEmail.ejs'), 'utf8');
+const str_creators= fs.readFileSync(path.join(__dirname, 'email-templates/emailTemplateAdmin.ejs'), 'utf8');
 const mailgun     = require('mailgun-js')({
   apiKey: process.env.MG_KEY,
   domain: process.env.MG_DOMAIN
@@ -22,7 +22,12 @@ module.exports = knex => {
           .then(column => {
             column.forEach(pollInfo => {
               if(poll.admin_uuid !== pollInfo.voter_uuid) {
-                let messageHtml = ejs.render(str, pollInfo);
+                console.log(pollInfo)
+                let messageHtml = ejs.render(str, {
+                  title: poll.name,
+                  creator: poll.created_by,
+                  uuid: pollInfo.voter_uuid
+                });
                 let  data = {
                   from: `Merge App <app@${process.env.MG_DOMAIN}>`,
                   to: pollInfo.email,
@@ -32,7 +37,6 @@ module.exports = knex => {
                 mailgun.messages().send(data, (error, body) => {
                   console.log('= Email successful =\n', body.message);
                 });
-                console.log(messageHtml);
               }
             });
           });
@@ -63,7 +67,6 @@ module.exports = knex => {
                 mailgun.messages().send(data, (error, body) => {
                   console.log('= Email successful =\n', body.message);
                 });
-                console.log(i++);
               }
             });
           });
@@ -79,7 +82,7 @@ module.exports = knex => {
               title: poll.name,
               email: poll.creator_email,
               creator: poll.created_by,
-              uuid: uuid.voter_uuid
+              uuid: uuid[0].admin_uuid
             });
             let  data = {
               from: `Merge App <app@${process.env.MG_DOMAIN}>`,

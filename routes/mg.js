@@ -33,6 +33,5 @@ module.exports = (db, knex, mailgun) => {
         });
     }
   });
-
   return route;
 };
