@@ -72,16 +72,16 @@
 
   <section id="create-view">
 
-    <form id="create-form" class="merge-form" action="/tweets" method="POST">
+    <form id="create-form" class="merge-form" action="/tweets" method="POST" data-parsley-validate>
       <div class="form-group row"> <!-- (len - len) -->
-        <input type="text" class="col-12 xl-input form-control" id="poll-name" placeholder="enter a question">
+        <input type="text" class="col-12 xl-input form-control" id="poll-name" placeholder="enter a question" data-parsley-group="choices" required>
       </div>
 
       <div class="form-group row"> <!-- (len - 2 index to insert) -->
         <label class="col-1" for="choice-1">
         <!-- close button not shown on first choice -->
         </label>
-        <input class="col-10 col-md-6 form-control op1 choice" id="choice-1" type="text" placeholder="enter first choice">
+        <input class="col-10 col-md-6 form-control op1 choice" id="choice-1" type="text" placeholder="enter first choice" data-parsley-group="choices" required>
         <div class="col-1 offset-md-0 plus-space-sm"><i class="fa fa-plus show-option" aria-hidden="true"></i></div>
         <input class="hidden-sm-down col-md-4 form-control op2 description" id="description-1" type="text" placeholder="optional description">
       </div>
@@ -103,20 +103,20 @@
 
   <section id="send-view">
 
-    <form id="send-form" class="merge-form" action="/tweets" method="POST">
+    <form id="send-form" class="merge-form" action="/tweets" method="POST" data-parsley-validate>
       <div class="form-group row"> <!-- (len - len) -->
-        <input type="text" class="col-12 col-md-7 xl-input form-control" id="creator-email" placeholder="enter your email">
+        <input type="text" class="col-12 col-md-7 xl-input form-control" id="creator-email" placeholder="enter your email" data-parsley-group="emails" data-parsley-type="email" required>
         <div class="col-2 col-md-1 plus-space"><i class="fa fa-plus" aria-hidden="true"></i></div>
-        <input type="text" class="col-10 col-md-4 xl-input form-control " id="creator-name" placeholder="your name">
+        <input type="text" class="col-10 col-md-4 xl-input form-control " id="creator-name" placeholder="your name" data-parsley-group="emails" required>
       </div>
 
       <div class="form-group row"> <!-- (len - 2 index to insert) -->
         <label class="col-1 " for="friend-1">
         <!-- close button not shown on first choice -->
         </label>
-        <input class="col-10 col-md-6 form-control op1 friend-email" id="friend-1" type="text" placeholder="enter a friend's email or phone number">
+        <input class="col-10 col-md-6 form-control op1 friend-email" id="friend-1" type="text" placeholder="enter a friend's email" data-parsley-group="emails" required>
         <div class="col-1 offset-md-0 plus-space-sm"><i class="fa fa-plus show-option" aria-hidden="true"></i> </div>
-        <input class="hidden-sm-down col-md-4 form-control op2 friend-name" id="friend-name-1" type="text" placeholder="their name">
+        <input class="hidden-sm-down col-md-4 form-control op2 friend-name" id="friend-name-1" type="text" placeholder="their name" data-parsley-group="emails" required>
       </div>
 
       <div class="row"> <!-- (len - 1) add choice -->
@@ -187,6 +187,9 @@
   <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+  <!-- parsley -->
+  <script src="/scripts/parsley.js"></script>
+  <!-- fontawesome -->
   <script src="https://use.fontawesome.com/bc065c89ec.js"></script>
   <!-- Sortable.js -->
   <script src="//rubaxa.github.io/Sortable/Sortable.js"></script>

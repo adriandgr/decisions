@@ -96,11 +96,29 @@ function checkUserQuery(){
   $('.add-choice-btn').on('click', (event)=> {
     event.preventDefault();
     addInput('#create-form', 'choice');
+    //  Ensure new choice is outfitted w/ parsley attributes
+    $('#create-form').parsley().destroy();
+    $('.choice:last').attr('data-parsley-group', 'choices');
+    $('.choice:last').attr('data-parsley-required', 'true');
+    $('#create-form').parsley();
+
+    $('.choice:last').focus();
   });
 
   $('.add-friend-btn').on('click', (event)=> {
     event.preventDefault();
     addInput('#send-form', 'friend');
+    $('#send-form').parsley().destroy();
+    $('.friend-email:last').attr('data-parsley-group', 'emails');
+    $('.friend-email:last').attr('data-parsley-required', 'true');
+    $('#send-form').parsley();
+
+    $('#send-form').parsley().destroy();
+    $('.friend-name:last').attr('data-parsley-group', 'emails');
+    $('.friend-name:last').attr('data-parsley-required', 'true');
+    $('#send-form').parsley();
+
+    $('.friend-email:last').focus();
   });
 }
 
@@ -108,7 +126,7 @@ function fireMailgun(res) {
   $.ajax({
     type: 'POST',
     url: '/mg',
-    data: { 'create': true, admin_uuid: res.adminUUID },
+    data: { 'method': 'create', admin_uuid: res.adminUUID },
     dataType: 'json'
   }).then(res => {
     console.log('Mailgun response', res);

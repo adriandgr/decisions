@@ -9,7 +9,7 @@ module.exports = (db, knex, mailgun) => {
 
   route.post('/', (req, res) => {
 
-    if(req.body.create) {
+    if(req.body.method === 'create') {
       db.retrieve.poll(req.body.admin_uuid)
         .then(poll => {
           if (poll) {
@@ -21,7 +21,9 @@ module.exports = (db, knex, mailgun) => {
         .catch(err => {
           return res.json( { success: false } );
         });
-    } else if (req.body.end) {
+
+    } else if (req.body.method === 'end') {
+
       db.retrieve.poll(req.body.admin_uuid)
         .then(poll => {
           if (poll) {
@@ -33,5 +35,6 @@ module.exports = (db, knex, mailgun) => {
         });
     }
   });
+
   return route;
 };

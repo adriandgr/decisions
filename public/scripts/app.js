@@ -1,5 +1,6 @@
 
-$(document).ready(()=> {
+$(document).ready( () => {
+
 
   $.hideAll();
 
@@ -7,26 +8,31 @@ $(document).ready(()=> {
 
   attachButtonListeners();
 
+
   // MAIN SUBMIT EVENT
-  $('#submit-form').on('click', (event)=> {
+  $('#submit-form').on('click', event => {
     event.preventDefault();
-    data = dataComposer();
-    console.log(JSON.stringify(data));
-    $.ajax({
-      type: 'POST',
-      url: '/polls',
-      data: data,
-      dataType: 'json'
-    }).then(res=> {
-      console.log('RES', res);
-      console.log('success', res.ids);
-      genSortableList(data, res);
+    if($('#send-form').parsley().isValid( { group: 'emails' })) {
+      data = dataComposer();
+      console.log(JSON.stringify(data));
+      $.ajax({
+        type: 'POST',
+        url: '/polls',
+        data: data,
+        dataType: 'json'
+      }).then(res=> {
+        console.log('RES', res);
+        console.log('success', res.ids);
+        genSortableList(data, res);
 
-      fireMailgun(res);
+        fireMailgun(res);
 
-    }).catch(res=>{
-      console.log('fail', res);
-    });
+      }).catch(res=>{
+        console.log('fail', res);
+      });
+    } else {
+      $('#send-form').parsley().validate({ group: 'emails' });
+    }
   });
 
   $('#submit-vote').on('click', event => {
@@ -55,7 +61,7 @@ $(document).ready(()=> {
       dataType: 'json'
     }).then(res=> {
       console.log('hey');
-      $('#vote-view').fadeToggle('fast', ()=> {
+      $('#vote-view').fadeToggle('fast', () => {
         $('#no-results-admin').hide();
         $('#display-results-admin').show();
         $('#admin-view').fadeToggle('slow');
@@ -81,5 +87,20 @@ $(document).ready(()=> {
       console.log(res);
     });
   });
+
+
+  /*
+      Catches any validation errors and changes border colour of input
+   */
+  window.Parsley.on('field:error', function() {
+    this.$element.css('border', 'solid tomato 4px');
+  });
+
+  window.Parsley.on('field:success', function() {
+    this.$element.css('border', 'solid #7dafd8 4px');
+    console.log('works');
+    // this.$element.css('border', 'solid white 4px');
+  });
+
 
 });
