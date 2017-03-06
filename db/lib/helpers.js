@@ -10,8 +10,6 @@ module.exports = knex => {
 
       voters:
         (poll_id, body, adminUUID) => {
-          // Data for admin to be incuded in the voters table
-          // console.log(req.send_to);
           body.send_to.forEach(voter => {
             voter.poll_id = poll_id;
             voter.voter_uuid = uuid();
@@ -76,7 +74,6 @@ module.exports = knex => {
 
       votes:
         (voter_id, ballot) => {
-
           // this is a bit confusing because ballot's voter_id is actually the voter_uuid
           // so it has to be reassigned to the voter_id value, eg. ballot.voter_id is not
           // 1 or 2 or 3, it's axbz89v7 or vb9vahjjs or vaopkpo80wa, so here's some logic:
@@ -100,26 +97,27 @@ module.exports = knex => {
     },
 
     retrieve: {
+      // I AM INTRUDING IN YOUR TERRITORY!!
+      //this function is intended to get the list of user uuids that have voted for a given choice
+
+      unique:
+        choiceId => {
+          return knex('votes')
+                    .select('voters.voter_uuid')
+                    .join('voters', 'votes.voter_id', 'voters.id')
+                    .where('choice_id', choiceId)
+                    .then(ids => {
+                      return ids;
+                    }).catch( err => {
+                      console.log(err);
+                    });
+                  },
+
+
+
 
       voter:
         uuid => {
-          // return knex('voters')
-          //         .select('voters.id as voter_id', 'choices.id as choice_id')
-          //         .join('polls', 'voters.poll_id', 'polls.id')
-          //         .join('choices', 'polls.id', 'choices.poll_id')
-          //         .where('voter_uuid', uuid)
-          //         .then(rows => {
-          //           winston.debug('Retrieved voter_id and associated choice_ids =>');
-          //           winston.debug('  => voter_id:', rows[0].voter_id);
-          //           rows.forEach(r => {
-          //             winston.debug('    => choice_id:', r.choice_id);
-          //           });
-          //           return rows;
-          //         })
-          //         .catch(err => {
-          //           console.error(err);
-          //         });
-
           return knex('voters')
                   .select('id as voter_id')
                   .where('voter_uuid', uuid)
@@ -131,25 +129,7 @@ module.exports = knex => {
                     console.error(err);
                   });
 
-        }, // closes voterAndChoices
-
-
-      // poll:
-      //   uuid => {
-      //     return knex('voters')
-      //             .select('*')
-      //             .join('polls', 'polls.id', 'voters.poll_id')
-      //             .where('voters.voter_uuid', uuid)
-      //             // .orWhere('polls.admin_uuid', uuid)
-      //             .then(poll => {
-      //               console.log(poll);
-      //               console.log('Retrieved poll => id:', poll[0].id);
-      //               return poll[0];
-      //             })
-      //             .catch(err => {
-      //               console.error('  Poll ID not found => returning 404');
-      //             });
-      //   }
+        },
 
       poll:
         uuid => {
@@ -158,30 +138,21 @@ module.exports = knex => {
                   .select('*')
                   .join('polls', 'polls.id', 'voters.poll_id')
                   .where('voters.voter_uuid', uuid)
-                  // .orWhere('polls.admin_uuid', uuid)
                   .then(poll => {
-                    console.log(poll);
                     console.log('Retrieved poll => id:', poll[0].id);
                     return poll[0];
                   })
                   .catch(err => {
                     console.error('  Poll ID not found => returning 404');
                   });
-        }, // closes poll()
+        },
 
       choicesAndRanks:
         poll_id => {
-          // return knex('choices')
-          //         .select('choides.id', 'choices.name')
-          //         .sum('rank')
-          //         .join('votes', 'votes.choice_id', 'choices.id')
-          //         .where('choices.poll_id', poll_id)
-          //         .groupBy('choices.name', 'choices.id')
-          return knex.raw('select choices.id, sum(rank) AS "borda_count", choices.name from choices join votes on votes.choice_id = choices.id where poll_id = 159 group by choices.id, choices.name')
+          return knex.raw('select choices.id, sum(rank) AS "borda_count", choices.name, choices.description from choices join votes on votes.choice_id = choices.id where poll_id = ' + poll_id + ' group by choices.id, choices.name, choices.description')
                   .then(choices => {
-                    console.log('choice rows:', choices.rows);
                     choices.rows.forEach(c => {
-                      console.log('  Retrieved choice => id: ', c.id, 'description:', c.description);
+                      console.log('  Retrieved choice => id:', c.id, 'description:', c.description);
                     });
                     return choices.rows;
                   })
@@ -205,7 +176,7 @@ module.exports = knex => {
                     console.error(err);
                   });
         }
-        // closes choicesAndRanks
+
     },
 
     poll: {

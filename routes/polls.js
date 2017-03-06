@@ -34,7 +34,6 @@ module.exports = (db, knex, mailgun) => {
     } else {
 
       let adminUUID = uuid();
-
       db.insert.pollRow(req.body, adminUUID)
         .then(poll_id => {
           return db.insert.choices(poll_id, req.body.choices);
@@ -85,17 +84,19 @@ module.exports = (db, knex, mailgun) => {
       .then(choicesAndRanks => {
         if (choicesAndRanks.length) {
           response['choices'] =  choicesAndRanks;
+          res.json(response);
         } else {
-          return db.retrieve.choices(response.poll.id);
+          throw 'it down to avoid setting headers after they are sent';
         }
       })
-      .then(choices => {
-        response['choices'] = choices;
-        res.json(response);
-      })
-      .catch(err => {
-        res.status('404').json({ poll_id: null });
+      .catch(() => {
+        db.retrieve.choices(response.poll.id)
+          .then(choices => {
+            response.choices = choices;
+            res.json(response);
+          });
       });
+
   });
 
 

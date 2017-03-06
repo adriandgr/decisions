@@ -21,8 +21,10 @@ $(document).ready( () => {
         data: data,
         dataType: 'json'
       }).then(res=> {
-        console.log('RES', res);
-        console.log('success', res.ids);
+        console.log('DATA from SUBMIT-FORM', data);
+        $('body').data('uuid', res.adminUUID);
+        let stateObj = { foo: `?key=${res.adminUUID}&assert=1` };
+        history.pushState(stateObj, "New Poll", `?key=${res.adminUUID}&assert=1`);
         genSortableList(data, res);
 
         fireMailgun(res);
@@ -60,15 +62,24 @@ $(document).ready( () => {
        },
       dataType: 'json'
     }).then(res=> {
+      $.ajax({
+      type: 'GET',
+      url: `/admins/${$.getQueryKey('key')}`
+    }).then( res => {
       console.log('hey');
-      console.log('RES at SUBMIT VOTE', res)
+      console.log('RES at INNER AJAX', res)
       // call the same render function
       renderAdminView(res);
-      $('#vote-view').fadeToggle('fast', () => {
-        $('#no-results-admin').hide();
-        $('#display-results-admin').show();
-        $('#admin-view').fadeToggle('slow');
+      $('#no-results-admin').hide();
+      $('#display-results-admin').show();
+
+      $('#vote-view').fadeToggle('fast', ()=>{
+        $('#admin-view').fadeIn();
       });
+
+    });
+
+
     }).catch(res=>{
       console.log('fail', res);
     });

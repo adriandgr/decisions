@@ -2,14 +2,15 @@
 
 function renderAdminView(res) {
   //console.log('RES.poll.voter_uuid inside renderAdminView', res.poll.voter_uuid);
+  console.log('RES at renderAdmin', res)
   let $list = $('<ul>').attr('id', res.poll.voter_uuid);
   let $question = $('<h2>').addClass('poll-question').text(res.poll.name);
   res.choices.forEach((a, b) => {
     console.log('a in forEach of renderAdminView',a)
-    let $span = $('<span>').addClass('choice-rank').text(`${a.borda_rank}`);
+    let $span = $('<span>').addClass('choice-rank').text(`${a.borda_count}`);
     let $li = $('<li>').data( {
       "choice-id": a.id,
-      "rank": a.borda_rank
+      "rank": a.borda_count
     });
     $span.appendTo($li);
 
@@ -70,7 +71,7 @@ function renderVoteView(res){
       .appendTo($span);
     let $li = $('<li>').data({
       "choice-id": a.id,
-      "rank": a.borda_rank
+      "rank": a.borda_count
     });
     $span.appendTo($li);
 

@@ -13,6 +13,17 @@ module.exports = (db, knex, mailgun) => {
 /*
     GET /admins/:uuid
  */
+  route.get('/unique/:choiceId', (req, res) => {
+    let uuids = {};
+    db.retrieve.unique(req.params.choiceId)
+    .then(ids => {
+      ids.forEach( id =>{
+        uuids[id.voter_uuid] = true;
+      });
+      res.json(uuids);
+    });
+  });
+
   route.get('/:uuid', (req, res) => {
 
     const response = {};
@@ -30,20 +41,19 @@ module.exports = (db, knex, mailgun) => {
         return db.retrieve.choicesAndRanks(poll_id);
       })
       .then(choicesAndRanks => {
-        console.log('test');
         if (choicesAndRanks.length) {
           response['choices'] =  choicesAndRanks;
           res.json(response);
         } else {
-          return db.retrieve.choices(response.poll.id);
+          throw 'it down to avoid setting headers after they are';
         }
       })
-      .then(choices => {
-        response['choices'] = choices;
-        res.json(response);
-      })
-      .catch(err => {
-        res.status('500').json({Error: 'Encountered an error while attempting to render this page'});
+      .catch(() => {
+        db.retrieve.choices(response.poll.id)
+          .then(choices => {
+            response.choices = choices;
+            res.json(response);
+          });
       });
 
 
