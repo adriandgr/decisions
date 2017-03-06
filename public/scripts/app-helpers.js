@@ -117,7 +117,7 @@ function checkUserQuery(){
     }
   } else {
     $('#not-found').hide();
-    $('#home-view').fadeToggle('slow');
+    $('#home-view').toggle();
   }
 
   $('.add-choice-btn').on('click', (event)=> {
