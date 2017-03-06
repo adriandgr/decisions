@@ -44,14 +44,14 @@ function renderAdminView(res) {
 
   $list.prependTo('#display-results-admin');
   $question.prependTo('#display-results-admin');
-
+  if( res.poll.voter_uuid === res.poll.admin_uuid ) {
   $('<button>')
     .addClass('btn-nofill btn-center view-btn')
     .attr('id', 'end-merge')
     .data('uuid', res.poll.admin_uuid)
     .text('END MERGE')
     .appendTo('#display-results-admin');
-
+  }
   $('#no-results-admin').hide();
   $('#display-results-admin').show();
   $('#admin-view').fadeToggle('slow');
