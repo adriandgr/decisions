@@ -1,4 +1,4 @@
-#no-results, #no-results-admin {
+#no-results, #no-results-admin, #poll-end {
   font-size: 1.5em;
 
 
@@ -23,12 +23,14 @@
 }
 
 
+
 #display-results, #display-results-admin {
   display:none;
 }
 
 
-#display-results ul, #display-results-admin ul {
+
+#display-results ul, #display-results-admin ul, #poll-end ul {
   list-style: none;
   font-size: 2em;
 }

@@ -1,5 +1,5 @@
 
-function renderUserView(res) {
+function renderUserView(res, end) {
   //console.log('RES.poll.voter_uuid inside renderAdminView', res.poll.voter_uuid);
   console.log('RES at renderAdmin', res)
   let $list = $('<ul>').attr('id', res.poll.voter_uuid);
@@ -41,6 +41,10 @@ function renderUserView(res) {
 
   $sortedList.detach().appendTo($list);
 
+  if (end) {
+    return $list;
+  }
+
   $list.prependTo('#display-results-admin');
   $question.prependTo('#display-results-admin');
 
@@ -58,6 +62,17 @@ function renderAdminView(res) {
     .data('uuid', res.poll.admin_uuid)
     .text('END MERGE')
     .appendTo('#display-results-admin');
+
+}
+
+function endOfPoll(query){
+  let $question = $('<h2>').addClass('poll-question').text(query.poll.name);
+  let $list = renderUserView(query, true);
+
+  $list.prependTo('#end-target');
+  $question.prependTo('#end-target');
+
+
 
 }
 
