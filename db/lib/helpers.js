@@ -171,17 +171,19 @@ module.exports = knex => {
 
       choicesAndRanks:
         poll_id => {
-          return knex('choices')
-                  .select('choices.id', 'choices.name', 'choices.description', 'rank')
-                  .join('votes', 'votes.choice_id', 'choices.id')
-                  .where('choices.poll_id', poll_id)
-                  .sum('votes.rank as borda_rank')
-                  .groupBy('name', 'choices.id', 'choices.description', 'rank')
+          // return knex('choices')
+          //         .select('choides.id', 'choices.name')
+          //         .sum('rank')
+          //         .join('votes', 'votes.choice_id', 'choices.id')
+          //         .where('choices.poll_id', poll_id)
+          //         .groupBy('choices.name', 'choices.id')
+          return knex.raw('select choices.id, sum(rank) AS "borda_count", choices.name from choices join votes on votes.choice_id = choices.id where poll_id = 159 group by choices.id, choices.name')
                   .then(choices => {
-                    choices.forEach(c => {
+                    console.log('choice rows:', choices.rows);
+                    choices.rows.forEach(c => {
                       console.log('  Retrieved choice => id: ', c.id, 'description:', c.description);
                     });
-                    return choices;
+                    return choices.rows;
                   })
                   .catch(err => {
                     console.error(err);

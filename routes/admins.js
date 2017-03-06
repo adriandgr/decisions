@@ -30,6 +30,7 @@ module.exports = (db, knex, mailgun) => {
         return db.retrieve.choicesAndRanks(poll_id);
       })
       .then(choicesAndRanks => {
+        console.log('test');
         if (choicesAndRanks.length) {
           response['choices'] =  choicesAndRanks;
           res.json(response);
