@@ -61,8 +61,13 @@ function ordinalWord(num, word) {
 }
 
 function checkUserQuery(){
+
+
   if($.getQueryKeys() ? $.getQueryKey('key') : false ) {
     // if querystring has assertion level 1, check if user is admin
+
+
+
     if($.getQueryKey('assert') === '1' ) {
       $.ajax({
         type: 'GET',
@@ -92,21 +97,22 @@ function checkUserQuery(){
         type: 'GET',
         url: `/polls/${$.getQueryKey('key')}`
       }).then(query=> {
-        console.log('RES of non admin', query)
+
+        if (!query.poll.active) {
+          return $('#poll-ended').fadeToggle();
+        }
         $.ajax({
           type: 'GET',
           url: `/admins/unique/${query.choices[0].id}`
         }).then(res => {
-
           if(res.hasOwnProperty($.getQueryKey('key'))) {
             // the user has voted
-            console.log('has voted', res.hasOwnProperty($.getQueryKey('key')))
+            console.log('has voted', res.hasOwnProperty($.getQueryKey('key')));
             return renderUserView(query);
           }
           renderVoteView(query);
-
+        });
       });
-    });
     }
   } else {
     $('#home-view').fadeToggle('slow');
