@@ -106,6 +106,8 @@ $(document).ready( () => {
         },
         dataType: 'json'
       }).then(res => {
+        $('#admin-view').hide();
+        $('#poll-ended').fadeToggle();
         console.log(res);
       });
     });

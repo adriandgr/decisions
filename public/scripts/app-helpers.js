@@ -68,6 +68,10 @@ function checkUserQuery(){
         type: 'GET',
         url: `/admins/${$.getQueryKey('key')}`
       }).then(query=> {
+        if (!query.poll.active) {
+          endOfPoll(query);
+          return $('#poll-ended').fadeToggle('slow');
+        }
         if (query.poll.voter_uuid !== query.poll.admin_uuid){
           return $('#admin-view').fadeToggle('slow');
         }
@@ -91,17 +95,24 @@ function checkUserQuery(){
       $.ajax({
         type: 'GET',
         url: `/polls/${$.getQueryKey('key')}`
-      }).then(res=> {
-        console.log('RES of non admin', res)
-        //if(!res.choices[0].rank){
-          // the user has not voted yet
-          return renderVoteView(res);
-        //}
-      }).catch(res=>{
-        console.log('fail', res);
+      }).then(query=> {
+        if (!query.poll.active) {
+          endOfPoll(query);
+          return $('#poll-ended').fadeToggle('slow');
+        }
+        $.ajax({
+          type: 'GET',
+          url: `/admins/unique/${query.choices[0].id}`
+        }).then(res => {
+          if(res.hasOwnProperty($.getQueryKey('key'))) {
+            // the user has voted
+            console.log('has voted', res.hasOwnProperty($.getQueryKey('key')));
+            return renderUserView(query);
+          }
+          renderVoteView(query);
+        });
       });
     }
-
   } else {
     $('#home-view').fadeToggle('slow');
   }
@@ -196,9 +207,9 @@ function attachButtonListeners() {
     $('#create-view').hide();
     $('#send-view').hide();
     $('#vote-view').hide();
+    $('#poll-ended').hide();
     $('#home-view').show();
     $('#main-nav').fadeToggle();
-
   });
 
   $('#toggle-create-view').on('click', () => {
@@ -206,6 +217,7 @@ function attachButtonListeners() {
     $('#send-view').hide();
     $('#vote-view').hide();
     $('#home-view').hide();
+    $('#poll-ended').hide();
     $('#main-nav').hide();
   });
 
@@ -214,6 +226,7 @@ function attachButtonListeners() {
     $('#home-view').hide();
     $('#create-view').hide();
     $('#vote-view').hide();
+    $('#poll-ended').hide();
     $('#main-nav').hide();
   });
 
@@ -222,6 +235,7 @@ function attachButtonListeners() {
     $('#home-view').hide();
     $('#create-view').hide();
     $('#send-view').hide();
+    $('#poll-ended').hide();
     $('#main-nav').hide();
   });
 

@@ -1,6 +1,5 @@
 
-
-function renderAdminView(res) {
+function renderUserView(res, end) {
   //console.log('RES.poll.voter_uuid inside renderAdminView', res.poll.voter_uuid);
   console.log('RES at renderAdmin', res)
   let $list = $('<ul>').attr('id', res.poll.voter_uuid);
@@ -28,7 +27,7 @@ function renderAdminView(res) {
 
   $sortedList = $list.children('li');
 
-  $sortedList.sort(function(a,b){
+  $sortedList.sort(function(a, b){
     let aRank = $(a).data('rank');
     let bRank = $(b).data('rank');
     if(aRank < bRank) {
@@ -42,19 +41,37 @@ function renderAdminView(res) {
 
   $sortedList.detach().appendTo($list);
 
+  if (end) {
+    return $list;
+  }
+
   $list.prependTo('#display-results-admin');
   $question.prependTo('#display-results-admin');
-  if( res.poll.voter_uuid === res.poll.admin_uuid ) {
-  $('<button>')
-    .addClass('btn-nofill btn-center view-btn')
-    .attr('id', 'end-merge')
-    .data('uuid', res.poll.admin_uuid)
-    .text('END MERGE')
-    .appendTo('#display-results-admin');
-  }
+
   $('#no-results-admin').hide();
   $('#display-results-admin').show();
   $('#admin-view').fadeToggle('slow');
+
+}
+
+function renderAdminView(res) {
+  renderUserView(res);
+  if(res.poll.admin_uuid === res.poll.voter_uuid){
+    $('<button>')
+      .addClass('btn-nofill btn-center view-btn')
+      .attr('id', 'end-merge')
+      .data('uuid', res.poll.admin_uuid)
+      .text('END MERGE')
+      .appendTo('#display-results-admin');
+  }
+}
+
+function endOfPoll(query){
+  let $question = $('<h2>').addClass('poll-question').text(query.poll.name);
+  let $list = renderUserView(query, true);
+
+  $list.prependTo('#end-target');
+  $question.prependTo('#end-target');
 
 }
 
@@ -99,7 +116,6 @@ function renderVoteView(res){
   $('#display-results').show();
   $('#vote-view').fadeToggle('slow');
 }
-
 
 function genSortableList(data, res) {
 let $list = $('<ul>').attr('id', res.adminUUID);
