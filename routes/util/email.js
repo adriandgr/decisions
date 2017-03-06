@@ -72,7 +72,7 @@ module.exports = knex => {
           });
       },
     toCreator:
-      (poll) => {
+      poll => {
         knex('polls')
           .where('polls.id', poll.id)
           .select('polls.admin_uuid')
