@@ -123,6 +123,7 @@ function checkUserQuery(){
     addInput('#send-form', 'friend');
     $('#send-form').parsley().destroy();
     $('.friend-email:last').attr('data-parsley-group', 'emails');
+    $('.friend-email:last').attr('data-parsley-type', 'email');
     $('.friend-email:last').attr('data-parsley-required', 'true');
     $('#send-form').parsley();
 
