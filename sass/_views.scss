@@ -1,4 +1,4 @@
-#home-view {
+#home-view, #not-found {
   padding: 150px 0 0 0;
 }
 
@@ -11,6 +11,21 @@
   display:none;
 }
 
+#not-found, #no-results-admin {
+  color: $main-light;
+  font-size: 1.2em;
+
+  h2, div>i {
+    color: $main-text;
+  }
+
+  @media (min-width: $tablet-breakpoint){
+    font-size: 1.5em;
+  }
+  @media (min-width: $desktop-breakpoint){
+    font-size: 2em;
+  }
+}
 
 
 .list-choice {
@@ -26,3 +41,5 @@
   color: $main-light;
   font-size: 0.75em;
 }
+
+

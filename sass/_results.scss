@@ -1,24 +1,24 @@
-#no-results, #no-results-admin {
-  font-size: 1.5em;
+#no-results, #no-results-admin, #poll-ended {
+  font-size: .9em;
+  line-height: 1.5em;
 
 
   @media (min-width: $tablet-breakpoint){
-    font-size: 2em;
+    font-size: 1em;
   }
 
   @media (min-width: $desktop-breakpoint){
-    font-size: 2.5em;
+    font-size: 1.3em;
   }
 }
 
 
-.no-results-info {
-  line-height: 1.2em;
+
+#poll-ended .row {
+  font-size: 1.5em;
   color: $main-light;
-  font-size: .75em;
-  @media (min-width: $tablet-breakpoint){
-    line-height: 1.3em;
-    font-size: .8em;
+    @media (min-width: $tablet-breakpoint){
+    font-size: 1.4em;
   }
 }
 
@@ -27,10 +27,17 @@
   display:none;
 }
 
+h2.poll-question {
+  font-size: 1.9em;
+  padding: 20px 0;
 
-#display-results ul, #display-results-admin ul {
-  list-style: none;
-  font-size: 2em;
+  @media (min-width: $tablet-breakpoint){
+    font-size: 2.3em;
+  }
 }
 
 
+#display-results ul, #display-results-admin ul, #poll-ended ul {
+  list-style: none;
+  font-size: 1.8em;
+}

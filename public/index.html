@@ -27,7 +27,7 @@
         <h2>Helper Menu</h2>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="http://localhost:5000/">Go Home</a>
+        <a class="nav-link" href="http://10.10.44.234:5000/">Go Home</a>
       </li>
       <li class="nav-item">
         <a id="toggle-home-view" class="nav-link" href="#">Toggle Home View</a>
@@ -149,23 +149,23 @@
       </div>
     </div>
     <div id="display-results">
-      <button id="submit-vote" type="submit" class="col-5 btn-nofill btn-center view-btn"><i class="fa fa-check-square-o" aria-hidden="true"></i> SUBMIT</button>
+      <button id="submit-vote" type="submit" class="btn-nofill btn-center view-btn"><i class="fa fa-check-square-o" aria-hidden="true"></i> SUBMIT</button>
     </div>
   </section>
 
   <section id="admin-view">
     <div class="row" id="no-results-admin">
       <div class="col-1 offset-2 offset-sm-3">
-        <i class="fa fa-chain-broken" aria-hidden="true"></i>
+        <i class="fa fa-lock" aria-hidden="true"></i>
       </div>
       <div class="col-9 col-sm-8">
-        Invalid link
+        <h2> HTTP 403 - Forbidden </h2>
       </div>
       <div class="col-9 col-sm-8 offset-3 offset-sm-4 no-results-info">
-        <p>The link you entered is malformed or is not authorized to view the requested resource.</p>
+        <p>The server understood the request but refuses to authorize it.</p>
       </div>
 
-      <a href="http://localhost:5000/">
+      <a href="http://10.10.44.234:5000/">
       <button id="back-home" type="submit" class="btn-nofill btn-center view-btn"><i class="fa fa-code-fork" aria-hidden="true"></i> TAKE ME HOME</button>
       </a>
     </div>
@@ -174,7 +174,7 @@
     </div>
   </section>
 
-  <section id="poll-ended" class="hide-my-section">
+  <section id="poll-ended">
   <div class="row">
     <div class="col-1 offset-3">
       <i class="fa fa-hourglass-end" aria-hidden="true"></i>
@@ -184,6 +184,18 @@
     </div>
   </div>
   <div id="end-target">
+  </div>
+  </section>
+
+  <section id="not-found">
+  <div class="row">
+    <div class="col-1 offset-0 offset-md-2">
+      <i class="fa fa-anchor" aria-hidden="true"></i>
+    </div>
+    <div class="col-11 col-md-9">
+      <h2>HTTP 404 - Not Found</h2>
+      The origin server did not find a current representation for the target resource or is not willing to disclose that one exists.
+    </div>
   </div>
   </section>
 

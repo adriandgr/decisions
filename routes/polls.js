@@ -75,7 +75,7 @@ module.exports = (db, knex, mailgun) => {
           }
           return poll.id;
         } else {
-          throw err;
+          res.status(404).send('not found');
         }
       })
       .then(poll_id => {

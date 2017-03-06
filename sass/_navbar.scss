@@ -22,3 +22,14 @@
 #nav-control:hover {
  color: #fff;
 }
+
+
+#back-home {
+  position: relative;
+  top: 25px;
+  left: 100px;
+  @media (min-width: $tablet-breakpoint){
+    left: 200px;
+  }
+
+}

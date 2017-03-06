@@ -5,7 +5,9 @@
     padding: inherit 5px;
   }
 }
-
+#no-results-admin {
+  font-size: 120%;
+}
 
 .merge-form input[type="text"] {
   color: $main-text;
@@ -83,20 +85,17 @@ color: $main-light;
 }
 
 
-#back-home {
-
-  text-align: center;
-  position: inline-block;
-  margin: 0 auto;
-}
 .view-btn, {
   margin:0;
   left:0;
   right:0;
   color: $main-light;
-  font-size: .7em;
+  font-size: 1.25em;
   @media (min-width: $tablet-breakpoint){
-    font-size: .8em;
+    font-size: 1.45em;
+  }
+  @media (min-width: $desktop-breakpoint){
+    font-size: 1.65em;
   }
 }
 .view-btn:hover {

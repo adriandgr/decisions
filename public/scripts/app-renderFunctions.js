@@ -1,6 +1,8 @@
 
 function renderUserView(res, end) {
   //console.log('RES.poll.voter_uuid inside renderAdminView', res.poll.voter_uuid);
+  $('#not-found').hide();
+
   console.log('RES at renderAdmin', res)
   let $list = $('<ul>').attr('id', res.poll.voter_uuid);
   let $question = $('<h2>').addClass('poll-question').text(res.poll.name);
@@ -76,7 +78,8 @@ function endOfPoll(query){
 }
 
 function renderVoteView(res){
-  console.log('renderVoteView')
+  $('#not-found').hide();
+
   let $list = $('<ul>').attr('id', res.poll.voter_uuid);
   let $question = $('<h2>').addClass('poll-question').text(res.poll.name);
   res.choices.forEach((a, b) => {
@@ -118,7 +121,9 @@ function renderVoteView(res){
 }
 
 function genSortableList(data, res) {
-let $list = $('<ul>').attr('id', res.adminUUID);
+  $('#not-found').hide();
+
+  let $list = $('<ul>').attr('id', res.adminUUID);
   let $question = $('<h2>').addClass('poll-question').text(data.name);
   res.ids.forEach((a, b) => {
 

@@ -106,6 +106,7 @@ $(document).ready( () => {
         },
         dataType: 'json'
       }).then(res => {
+        console.log('clicky!!!')
         $('#admin-view').hide();
         $('#poll-ended').fadeToggle();
         console.log(res);

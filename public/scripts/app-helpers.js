@@ -61,6 +61,7 @@ function ordinalWord(num, word) {
 }
 
 function checkUserQuery(){
+
   if($.getQueryKeys() ? $.getQueryKey('key') : false ){
     // if querystring has assertion level 1, check if user is admin
     if($.getQueryKey('assert') === '1' ) {
@@ -73,6 +74,7 @@ function checkUserQuery(){
           return $('#poll-ended').fadeToggle('slow');
         }
         if (query.poll.voter_uuid !== query.poll.admin_uuid){
+          $('#not-found').hide();
           return $('#admin-view').fadeToggle('slow');
         }
         console.log('CHECK Q',query)
@@ -114,6 +116,7 @@ function checkUserQuery(){
       });
     }
   } else {
+    $('#not-found').hide();
     $('#home-view').fadeToggle('slow');
   }
 
