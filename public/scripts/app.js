@@ -108,7 +108,8 @@ $(document).ready( () => {
       }).then(res => {
         console.log(res);
       });
-
+    });
+  });
 
   /*
       Catches any validation errors and changes border colour of input
