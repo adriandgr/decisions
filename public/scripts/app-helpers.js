@@ -81,7 +81,7 @@ function checkUserQuery(){
     } else if ($.getQueryKey('view') === 'sv') {
       $.ajax({
         type: 'GET',
-        url: `/polls/${$.getQueryKey('key')}`
+        url: `/admins/${$.getQueryKey('key')}`
       }).then(res=> {
         renderVoteView(res);
       }).catch(res=>{
