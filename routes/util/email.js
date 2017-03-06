@@ -22,7 +22,7 @@ module.exports = knex => {
           .then(column => {
             console.log('column======>',column)
             column.forEach(pollInfo => {
-              if(pollInfo.admin_uuid !== pollInfo.voter_uuid) {
+              if(poll.admin_uuid !== pollInfo.voter_uuid) {
                 let messageHtml = ejs.render(str, pollInfo);
                 let  data = {
                   from: `Merge App <app@${process.env.MG_DOMAIN}>`,

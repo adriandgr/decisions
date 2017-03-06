@@ -11,7 +11,7 @@ module.exports = (db, knex, mailgun) => {
     // console.log("REQ BODY!!!!!!!!!", req.body)
     if(req.body.create) {
           // replace with req.body.uuid
-      db.retrieve.poll('an3k9tmdx3')
+      db.retrieve.poll('0y4u59ovvj')
         .then(poll => {
           if (poll) {
             mailgun.toAllVoters(poll);
@@ -24,7 +24,7 @@ module.exports = (db, knex, mailgun) => {
         });
     } else if (req.body.end) {
       //replace with req.body.uuid
-      db.retrieve.poll('an3k9tmdx3')
+      db.retrieve.poll('0y4u59ovvj')
         .then(poll => {
           if (poll) {
             mailgun.pollEnds(poll);
