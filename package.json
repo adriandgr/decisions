@@ -23,6 +23,7 @@
     "morgan": "^1.7.0",
     "node-sass": "^4.5.0",
     "node-sass-middleware": "^0.9.8",
+    "parsleyjs": "^2.7.0",
     "path": "^0.12.7",
     "pg": "^6.0.2",
     "winston": "^2.3.1"

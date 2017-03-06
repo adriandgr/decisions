@@ -64,6 +64,15 @@
   color: $main-warn;
 }
 
+/*
+  parsley "Required" error styling
+ */
+.parsley-required {
+  color: red;
+  float: right;
+  padding: 0;
+  margin: 0;
+}
 
 
 

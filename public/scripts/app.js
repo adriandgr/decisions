@@ -1,5 +1,5 @@
 
-$(document).ready(()=> {
+$(document).ready( () => {
 
   if($.getQueryKeys() ? $.getQueryKey('key') : false ){
     console.log('GET /polls/' + $.getQueryKey('key'));
@@ -9,7 +9,7 @@ $(document).ready(()=> {
       headers: {
         "X-Source": "merge_app"
       }
-    }).then(res=> {
+    }).then(res => {
 
       renderAdminView(res);
 
@@ -17,24 +17,39 @@ $(document).ready(()=> {
       $('#display-results-admin').show();
 
       $('#admin-view').fadeToggle('slow');
-    }).catch(res=>{
+    }).catch(res => {
       console.log('fail', res);
     });
   } else {
     $('#home-view').fadeToggle('slow');
   }
 
-  $('.add-choice-btn').on('click', (event)=> {
+  $('.add-choice-btn').on('click', event => {
     event.preventDefault();
     addInput('#create-form', 'choice');
+
+    //  Ensure new choice is outfitted w/ parsley attributes
+    $('#create-form').parsley().destroy();
+    $('.choice:last').attr('data-parsley-group', 'choices');
+    $('.choice:last').attr('data-parsley-required', 'true');
+    $('#create-form').parsley();
+
+    $('.choice:last').focus();
   });
 
-  $('.add-friend-btn').on('click', (event)=> {
+  $('.add-friend-btn').on('click', event => {
     event.preventDefault();
     addInput('#send-form', 'friend');
+
+    $('#send-form').parsley().destroy();
+    $('.friend-email:last').attr('data-parsley-group', 'emails');
+    $('.friend-email:last').attr('data-parsley-required', 'true');
+    $('#send-form').parsley();
+
+    $('.friend-email:last').focus();
   });
 
-  $(document).on('click', '.delete-choice', (event)=> {
+  $(document).on('click', '.delete-choice', event => {
     event.preventDefault();
     let len = $('#create-form > div').length;
     if (len < 4) {
@@ -43,7 +58,7 @@ $(document).ready(()=> {
     $(event.target).closest('div').remove();
   });
 
-  $(document).on('click', '.show-option', (event)=> {
+  $(document).on('click', '.show-option', event => {
     event.preventDefault();
     $(event.target)
       .toggleClass('fa-plus fa-minus');
@@ -61,51 +76,77 @@ $(document).ready(()=> {
     $('#main-nav').toggle();
   });
 
-  $('#create-poll').on('click', ()=> {
-    $('#home-view').fadeToggle('fast',()=>{
+
+  $('#create-poll').on('click', () => {
+    $('#home-view').fadeToggle('fast', () =>{
       $('#create-view').fadeToggle('slow');
     });
   });
 
-  $('#capture-emails').on('click', (event)=> {
+  $('#capture-emails').on('click', event => {
     event.preventDefault();
-    $('#create-view').fadeToggle('fast',()=>{
-      $('#send-view').fadeToggle('slow');
-    });
+
+    // Take user to next page if first page of form is valid
+    if($('#create-form').parsley().validate({ group: 'choices' })) {
+      $('#create-view').fadeToggle('fast', () => {
+        $('#send-view').fadeToggle('slow');
+      });
+    } else {
+      $('#create-form').parsley().validate({ group: 'choices' });
+    }
+
   });
 
   // MAIN SUBMIT EVENT
-  $('#submit-form').on('click', (event)=> {
+  $('#submit-form').on('click', event => {
     event.preventDefault();
-    data = dataComposer();
-    console.log(JSON.stringify(data));
-    $.ajax({
-      type: 'POST',
-      url: '/polls',
-      data: data,
-      dataType: 'json'
-    }).then(res=> {
-      console.log('RES', res);
-      console.log('success', res.ids);
-      genSortableList(data, res);
-      Sortable.create(byId(res.adminUUID), {
-        handle: '.drag-handle',
-        animation: 150
-      });
 
-      $('#send-view').fadeToggle('fast',()=> {
-        $('#no-results').hide();
-        $('#display-results').show();
-        $('#results-view').fadeToggle('slow');
+    if($('#send-form').parsley().isValid( { group: 'emails' })) {
+      data = dataComposer();
+      console.log(JSON.stringify(data));
+      $.ajax({
+        type: 'POST',
+        url: '/polls',
+        data: data,
+        dataType: 'json'
+      }).then(res=> {
+        console.log('success', res.ids);
+        genSortableList(data, res);
+        Sortable.create(byId(res.adminUUID), {
+          handle: '.drag-handle',
+          animation: 150
+        });
+
+        // handles mailgun request on poll creation
+        $.ajax({
+          type: 'POST',
+          url: '/mg',
+          data: { 'create': true, admin_uuid: res.adminUUID },
+          dataType: 'json'
+        }).then(res => {
+          console.log('Mailgun response', res);
+        }).catch(err => {
+          console.error('Error sending mmail for poll creation', err);
+        });
+
+        $('#send-view').fadeToggle('fast', ()=> {
+          $('#no-results').hide();
+          $('#display-results').show();
+          $('#results-view').fadeToggle('slow');
+        });
+      }).catch(res=>{
+        console.log('fail', res);
       });
-    }).catch(res=>{
-      console.log('fail', res);
-    });
+    } else {
+      $('#send-form').parsley().validate({ group: 'emails' });
+    }
+
 
     // $.ajax({
-    //     type: 'DELETE',
-    //     url: '/users/session'
+    //   type: 'DELETE',
+    //   url: '/users/session'
     // }).then((res) => {
+    //   console.log('res', res);
     // });
 
   });
@@ -184,7 +225,5 @@ $(document).ready(()=> {
   $('#close-menu').on('click', () => {
     $('#main-nav').hide();
   });
-
-
 
 });
