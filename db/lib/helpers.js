@@ -107,6 +107,7 @@ module.exports = knex => {
                     .join('voters', 'votes.voter_id', 'voters.id')
                     .where('choice_id', choiceId)
                     .then(ids => {
+                      console.log(ids);
                       return ids;
                     }).catch( err => {
                       console.log(err);

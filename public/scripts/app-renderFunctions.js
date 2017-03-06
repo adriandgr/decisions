@@ -27,7 +27,7 @@ function renderUserView(res, end) {
 
   $sortedList = $list.children('li');
 
-  $sortedList.sort(function(a,b){
+  $sortedList.sort(function(a, b){
     let aRank = $(a).data('rank');
     let bRank = $(b).data('rank');
     if(aRank < bRank) {
@@ -56,13 +56,14 @@ function renderUserView(res, end) {
 
 function renderAdminView(res) {
   renderUserView(res);
-  $('<button>')
-    .addClass('btn-nofill btn-center view-btn')
-    .attr('id', 'end-merge')
-    .data('uuid', res.poll.admin_uuid)
-    .text('END MERGE')
-    .appendTo('#display-results-admin');
-
+  if(res.poll.admin_uuid === res.poll.voter_uuid){
+    $('<button>')
+      .addClass('btn-nofill btn-center view-btn')
+      .attr('id', 'end-merge')
+      .data('uuid', res.poll.admin_uuid)
+      .text('END MERGE')
+      .appendTo('#display-results-admin');
+  }
 }
 
 function endOfPoll(query){

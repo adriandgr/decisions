@@ -66,8 +66,6 @@ function checkUserQuery(){
   if($.getQueryKeys() ? $.getQueryKey('key') : false ) {
     // if querystring has assertion level 1, check if user is admin
 
-
-
     if($.getQueryKey('assert') === '1' ) {
       $.ajax({
         type: 'GET',
@@ -110,6 +108,7 @@ function checkUserQuery(){
           type: 'GET',
           url: `/admins/unique/${query.choices[0].id}`
         }).then(res => {
+          console.log('re', res)
           if(res.hasOwnProperty($.getQueryKey('key'))) {
             // the user has voted
             console.log('has voted', res.hasOwnProperty($.getQueryKey('key')));
