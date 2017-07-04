@@ -36,6 +36,7 @@ module.exports = (db, knex, mailgun) => {
       let adminUUID = uuid();
       db.insert.pollRow(req.body, adminUUID)
         .then(poll_id => {
+          console.log(poll_id);
           return db.insert.choices(poll_id, req.body.choices);
         })
         .then(results => {
@@ -65,8 +66,10 @@ module.exports = (db, knex, mailgun) => {
     let meaning = 'This route is responsible for a given voter\'s view of a poll';
     let response = {};
 
-    db.retrieve.poll(req.params.uuid)
+    let pollPromise = db.retrieve.poll(req.params.uuid)
       .then((poll, err) => {
+        console.log(pollPromise)
+        console.log(poll);
         if (poll) {
           response['poll'] = poll;
           if(req.params.uuid !== response.poll.admin_uuid) {
